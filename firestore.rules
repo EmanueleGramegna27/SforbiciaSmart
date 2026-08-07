@@ -1,0 +1,310 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net default catch-all: Deny everything by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- REUSABLE SECURITY PRIMITIVES & HELPERS ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128;
+    }
+
+    // Returns true if the request is from the owner or a validated team member of that owner
+    function isAuthorizedOwner(ownerId) {
+      return ownerId == request.auth.uid || 
+             (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.tenant_id == ownerId) ||
+             (exists(/databases/$(database)/documents/team/$(request.auth.uid)) &&
+              get(/databases/$(database)/documents/team/$(request.auth.uid)).data.ownerId == ownerId) ||
+             (request.auth != null && 'token' in request.auth && 'email' in request.auth.token && request.auth.token.email != null &&
+              exists(/databases/$(database)/documents/team/$(request.auth.token.email)) &&
+              get(/databases/$(database)/documents/team/$(request.auth.token.email)).data.ownerId == ownerId);
+    }
+
+    // --- ENTITY SCHEMA VALIDATION HELPERS ---
+    function isValidSalon(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 128 &&
+             data.address is string && data.address.size() >= 0 && data.address.size() <= 256 &&
+             data.phone is string && data.phone.size() <= 32 &&
+             data.hours is string && data.hours.size() <= 128 &&
+             (!('partitaIva' in data) || (data.partitaIva is string && data.partitaIva.size() <= 64)) &&
+             (!('useMainCompanyInfo' in data) || data.useMainCompanyInfo is bool) &&
+             (!('sedeLegale' in data) || (data.sedeLegale is string && data.sedeLegale.size() <= 256)) &&
+             isAuthorizedOwner(data.ownerId);
+    }
+
+    function isValidBusinessSettings(data) {
+      return data.ownerId is string &&
+             (!('partitaIvaPrincipale' in data) || (data.partitaIvaPrincipale is string && data.partitaIvaPrincipale.size() <= 32)) &&
+             (!('sedeLegale' in data) || (data.sedeLegale is string && data.sedeLegale.size() <= 256)) &&
+             (!('ownerNome' in data) || data.ownerNome is string) &&
+             (!('ownerTelefono' in data) || data.ownerTelefono is string) &&
+             (!('ragioneSociale' in data) || data.ragioneSociale is string) &&
+             (!('via' in data) || data.via is string) &&
+             (!('citta' in data) || data.citta is string) &&
+             (!('cap' in data) || data.cap is string) &&
+             (!('provincia' in data) || data.provincia is string) &&
+             (!('sdi' in data) || data.sdi is string) &&
+             (!('pec' in data) || data.pec is string) &&
+             (!('userPlan' in data) || data.userPlan is string) &&
+             (!('subscriptionStatus' in data) || data.subscriptionStatus is string) &&
+             (!('trialStartDate' in data) || data.trialStartDate is string) &&
+             (!('trialEndDate' in data) || data.trialEndDate is string) &&
+             (!('paddleApiKey' in data) || data.paddleApiKey is string) &&
+             (!('paddleClientToken' in data) || data.paddleClientToken is string) &&
+             (!('paddleEnvironment' in data) || data.paddleEnvironment is string) &&
+             (!('paddleWebhookSecret' in data) || data.paddleWebhookSecret is string) &&
+             isAuthorizedOwner(data.ownerId);
+    }
+
+    function isValidCategory(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 128 &&
+             isAuthorizedOwner(data.ownerId);
+    }
+
+    function isValidService(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 128 &&
+             data.price is number && data.price >= 0 &&
+             data.duration is number && data.duration > 0 &&
+             data.categoryId is string &&
+             (!('categoryName' in data) || (data.categoryName is string && data.categoryName.size() <= 128)) &&
+             (!('salonIds' in data) || data.salonIds is list) &&
+             isAuthorizedOwner(data.ownerId);
+    }
+
+    function isValidCustomer(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 128 &&
+             data.phone is string && data.phone.size() <= 32 &&
+             (!('email' in data) || (data.email is string && data.email.size() <= 128)) &&
+             data.salonId is string &&
+             (!('notes' in data) || (data.notes is string && data.notes.size() <= 1000)) &&
+             isAuthorizedOwner(data.ownerId);
+    }
+
+    function isValidAppointment(data) {
+      return data.customerId is string &&
+             data.customerName is string && data.customerName.size() > 0 && data.customerName.size() <= 128 &&
+             data.serviceId is string &&
+             data.serviceName is string && data.serviceName.size() > 0 && data.serviceName.size() <= 128 &&
+             data.salonId is string &&
+             data.staffName is string && data.staffName.size() <= 128 &&
+             data.date is string && data.date.size() <= 32 &&
+             data.time is string && data.time.size() <= 32 &&
+             data.duration is number && data.duration > 0 &&
+             data.price is number && data.price >= 0 &&
+             data.status in ['confirmed', 'pending', 'cancelled', 'completed'] &&
+             (!('createdAt' in data) || data.createdAt is string) &&
+             isAuthorizedOwner(data.ownerId);
+    }
+
+    function isValidCustomPrice(data) {
+      return data.customerId is string &&
+             data.serviceId is string &&
+             data.serviceName is string && data.serviceName.size() <= 128 &&
+             data.price is number && data.price >= 0 &&
+             isAuthorizedOwner(data.ownerId);
+    }
+
+    function isValidInventoryItem(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 128 &&
+             data.category is string && data.category.size() > 0 && data.category.size() <= 128 &&
+             data.quantity is number && data.quantity >= 0 &&
+             data.minQuantity is number && data.minQuantity >= 0 &&
+             data.price is number && data.price >= 0 &&
+             (!('brand' in data) || (data.brand is string && data.brand.size() <= 128)) &&
+             isAuthorizedOwner(data.ownerId);
+    }
+
+    function isValidTeamMember(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 128 &&
+             data.role is string && data.role.size() > 0 && data.role.size() <= 128 &&
+             (!('phone' in data) || (data.phone is string && data.phone.size() <= 32)) &&
+             (!('email' in data) || (data.email is string && data.email.size() <= 128)) &&
+             data.salonIds is list &&
+             isAuthorizedOwner(data.ownerId);
+     }
+
+    function isValidUser(data) {
+      return data.uid is string && data.uid.size() > 0 && data.uid.size() <= 128 &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 128 &&
+             data.email is string && data.email.size() > 0 && data.email.size() <= 128 &&
+             data.role is string && data.role.size() > 0 && data.role.size() <= 64 &&
+             data.tenant_id is string && data.tenant_id.size() > 0 && data.tenant_id.size() <= 128 &&
+             (!('createdAt' in data) || data.createdAt is string);
+    }
+
+    function isValidProductSale(data) {
+      return data.appointmentId is string &&
+             data.customerId is string &&
+             data.customerName is string && data.customerName.size() > 0 && data.customerName.size() <= 128 &&
+             data.salonId is string &&
+             (!('salonName' in data) || (data.salonName is string && data.salonName.size() <= 128)) &&
+             data.productId is string &&
+             data.productName is string && data.productName.size() > 0 && data.productName.size() <= 128 &&
+             data.price is number && data.price >= 0 &&
+             data.quantity is number && data.quantity > 0 &&
+             data.total is number && data.total >= 0 &&
+             (!('staffName' in data) || (data.staffName is string && data.staffName.size() <= 128)) &&
+             data.date is string &&
+             data.time is string &&
+             data.paymentMethod in ['bancomat', 'contanti'] &&
+             isAuthorizedOwner(data.ownerId);
+    }
+
+    function isValidReservedSlot(data) {
+      return data.booked is bool &&
+             data.appointmentId is string &&
+             data.salonId is string &&
+             data.date is string &&
+             data.time is string &&
+             data.staffName is string &&
+             (!('createdAt' in data) || data.createdAt is string) &&
+             isAuthorizedOwner(data.ownerId);
+    }
+
+    function isValidCampaign(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 256 &&
+             data.type in ['sms', 'email'] &&
+             data.targetGroup is string && data.targetGroup.size() <= 128 &&
+             data.sentDate is string &&
+             data.deliveryRate is string &&
+             data.openRate is string &&
+             data.bookingsCount is number && data.bookingsCount >= 0 &&
+             data.text is string && data.text.size() > 0 &&
+             isAuthorizedOwner(data.ownerId);
+    }
+
+    // --- COLLECTION MATCH RULES WITH ABAC/RBAC SECURE QUERY CHECKS ---
+
+    match /salons/{salonId} {
+      allow read, list: if isSignedIn() && isAuthorizedOwner(resource.data.ownerId);
+      allow create: if isSignedIn() && isValidId(salonId) && isValidSalon(request.resource.data);
+      allow update: if isSignedIn() && isValidId(salonId) && isValidSalon(request.resource.data) && isAuthorizedOwner(resource.data.ownerId);
+      allow delete: if isSignedIn() && isValidId(salonId) && isAuthorizedOwner(resource.data.ownerId);
+    }
+
+    match /business_settings/{ownerId} {
+      allow read, list: if isSignedIn() && isAuthorizedOwner(ownerId);
+      allow create: if isSignedIn() && isValidId(ownerId) && request.auth.uid == ownerId && 
+                       isValidBusinessSettings(request.resource.data) &&
+                       (!('userPlan' in request.resource.data) || request.resource.data.userPlan != 'unlimited');
+      allow update: if isSignedIn() && isValidId(ownerId) && request.auth.uid == ownerId && 
+                       isValidBusinessSettings(request.resource.data) &&
+                       (!('userPlan' in request.resource.data) || 
+                        request.resource.data.userPlan != 'unlimited' || 
+                        (resource != null && 'userPlan' in resource.data && resource.data.userPlan == 'unlimited'));
+      allow delete: if isSignedIn() && isValidId(ownerId) && request.auth.uid == ownerId;
+    }
+
+    match /categories/{categoryId} {
+      allow read, list: if isSignedIn() && isAuthorizedOwner(resource.data.ownerId);
+      allow create: if isSignedIn() && isValidId(categoryId) && isValidCategory(request.resource.data);
+      allow update: if isSignedIn() && isValidId(categoryId) && isValidCategory(request.resource.data) && isAuthorizedOwner(resource.data.ownerId);
+      allow delete: if isSignedIn() && isValidId(categoryId) && isAuthorizedOwner(resource.data.ownerId);
+    }
+
+    match /services/{serviceId} {
+      allow read, list: if isSignedIn() && isAuthorizedOwner(resource.data.ownerId);
+      allow create: if isSignedIn() && isValidId(serviceId) && isValidService(request.resource.data);
+      allow update: if isSignedIn() && isValidId(serviceId) && isValidService(request.resource.data) && isAuthorizedOwner(resource.data.ownerId);
+      allow delete: if isSignedIn() && isValidId(serviceId) && isAuthorizedOwner(resource.data.ownerId);
+    }
+
+    match /customers/{customerId} {
+      allow read, list: if isSignedIn() && isAuthorizedOwner(resource.data.ownerId);
+      allow create: if isSignedIn() && isValidId(customerId) && isValidCustomer(request.resource.data);
+      allow update: if isSignedIn() && isValidId(customerId) && isValidCustomer(request.resource.data) && isAuthorizedOwner(resource.data.ownerId);
+      allow delete: if isSignedIn() && isValidId(customerId) && isAuthorizedOwner(resource.data.ownerId);
+    }
+
+    match /appointments/{appointmentId} {
+      allow read, list: if isSignedIn() && isAuthorizedOwner(resource.data.ownerId);
+      allow create: if isSignedIn() && isValidId(appointmentId) && isValidAppointment(request.resource.data);
+      allow update: if isSignedIn() && isValidId(appointmentId) && isValidAppointment(request.resource.data) && isAuthorizedOwner(resource.data.ownerId);
+      allow delete: if isSignedIn() && isValidId(appointmentId) && isAuthorizedOwner(resource.data.ownerId);
+    }
+
+    match /reserved_slots/{slotId} {
+      allow read, list: if isSignedIn() && (resource == null || isAuthorizedOwner(resource.data.ownerId));
+      allow create: if isSignedIn() && isValidId(slotId) && isValidReservedSlot(request.resource.data);
+      allow update: if isSignedIn() && isValidId(slotId) && isValidReservedSlot(request.resource.data) && isAuthorizedOwner(resource.data.ownerId);
+      allow delete: if isSignedIn() && isValidId(slotId) && isAuthorizedOwner(resource.data.ownerId);
+    }
+
+    match /custom_prices/{customPriceId} {
+      allow read, list: if isSignedIn() && isAuthorizedOwner(resource.data.ownerId);
+      allow create: if isSignedIn() && isValidId(customPriceId) && isValidCustomPrice(request.resource.data);
+      allow update: if isSignedIn() && isValidId(customPriceId) && isValidCustomPrice(request.resource.data) && isAuthorizedOwner(resource.data.ownerId);
+      allow delete: if isSignedIn() && isValidId(customPriceId) && isAuthorizedOwner(resource.data.ownerId);
+    }
+
+    match /inventory/{itemId} {
+      allow read, list: if isSignedIn() && isAuthorizedOwner(resource.data.ownerId);
+      allow create: if isSignedIn() && isValidId(itemId) && isValidInventoryItem(request.resource.data);
+      allow update: if isSignedIn() && isValidId(itemId) && isValidInventoryItem(request.resource.data) && isAuthorizedOwner(resource.data.ownerId);
+      allow delete: if isSignedIn() && isValidId(itemId) && isAuthorizedOwner(resource.data.ownerId);
+    }
+
+    match /team/{memberId} {
+      allow read: if isSignedIn() && (
+        memberId == request.auth.uid ||
+        memberId == request.auth.token.email ||
+        (resource != null && (
+          isAuthorizedOwner(resource.data.ownerId) ||
+          resource.data.email == request.auth.token.email ||
+          resource.data.uid == request.auth.uid
+        ))
+      );
+      allow list: if isSignedIn() && (
+        isAuthorizedOwner(resource.data.ownerId) ||
+        resource.data.email == request.auth.token.email ||
+        (request.auth.token.email != null && resource.data.email == request.auth.token.email.replace("@gmail.com", "@gmal.com")) ||
+        (request.auth.token.email != null && resource.data.email == request.auth.token.email.replace("@gmal.com", "@gmail.com"))
+      );
+      allow create: if isSignedIn() && isValidId(memberId) && (
+        memberId == request.auth.uid ||
+        isValidTeamMember(request.resource.data)
+      );
+      allow update: if isSignedIn() && isValidId(memberId) && (
+        memberId == request.auth.uid ||
+        (isValidTeamMember(request.resource.data) && isAuthorizedOwner(resource.data.ownerId))
+      );
+      allow delete: if isSignedIn() && isValidId(memberId) && isAuthorizedOwner(resource.data.ownerId);
+    }
+
+    match /users/{userId} {
+      allow read, list: if isSignedIn() && (userId == request.auth.uid || isAuthorizedOwner(resource.data.tenant_id));
+      allow create: if isSignedIn() && isValidId(userId) && userId == request.auth.uid && isValidUser(request.resource.data);
+      allow update: if isSignedIn() && isValidId(userId) && userId == request.auth.uid && isValidUser(request.resource.data) && request.resource.data.email == resource.data.email;
+      allow delete: if isSignedIn() && isValidId(userId) && userId == request.auth.uid;
+    }
+
+    match /product_sales/{saleId} {
+      allow read, list: if isSignedIn() && isAuthorizedOwner(resource.data.ownerId);
+      allow create: if isSignedIn() && isValidId(saleId) && isValidProductSale(request.resource.data);
+      allow update: if isSignedIn() && isValidId(saleId) && isValidProductSale(request.resource.data) && isAuthorizedOwner(resource.data.ownerId);
+      allow delete: if isSignedIn() && isValidId(saleId) && isAuthorizedOwner(resource.data.ownerId);
+    }
+
+    match /reports_history/{reportId} {
+      allow read, list: if isSignedIn() && isAuthorizedOwner(resource.data.ownerId);
+      allow create: if isSignedIn() && isValidId(reportId) && isAuthorizedOwner(request.resource.data.ownerId);
+      allow update: if false;
+      allow delete: if isSignedIn() && isValidId(reportId) && isAuthorizedOwner(resource.data.ownerId);
+    }
+
+    match /campaigns/{campaignId} {
+      allow read, list: if isSignedIn() && (resource == null || !('ownerId' in resource.data) || resource.data.ownerId == request.auth.uid || isAuthorizedOwner(resource.data.ownerId));
+      allow create: if isSignedIn() && isValidId(campaignId) && isValidCampaign(request.resource.data);
+      allow update, delete: if isSignedIn() && isValidId(campaignId) && (resource == null || !('ownerId' in resource.data) || resource.data.ownerId == request.auth.uid || isAuthorizedOwner(resource.data.ownerId));
+    }
+
+  }
+}

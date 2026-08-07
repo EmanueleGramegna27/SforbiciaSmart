@@ -1,0 +1,249 @@
+{
+  "entities": {
+    "Salon": {
+      "title": "Salon",
+      "description": "Operating physical location",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Name of the salon" },
+        "address": { "type": "string", "description": "Address of the salon" },
+        "phone": { "type": "string", "description": "Contact phone number" },
+        "hours": { "type": "string", "description": "Daily operational hours" },
+        "ownerId": { "type": "string", "description": "ID of the salon administrator" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" }
+      },
+      "required": ["name", "address", "phone", "hours", "ownerId"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "General treatment categorization label",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Name of the category" },
+        "ownerId": { "type": "string", "description": "ID of the administrator" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" }
+      },
+      "required": ["name", "ownerId"]
+    },
+    "Service": {
+      "title": "Service",
+      "description": "Individual salon service / treatment",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Name of the service" },
+        "price": { "type": "number", "description": "Service cost / rate" },
+        "duration": { "type": "number", "description": "Treatment duration in minutes" },
+        "categoryId": { "type": "string", "description": "Category ID reference" },
+        "categoryName": { "type": "string", "description": "Memo of category name" },
+        "salonIds": { "type": "array", "description": "List of salon branch IDs where available" },
+        "ownerId": { "type": "string", "description": "ID of the administrator" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" }
+      },
+      "required": ["name", "price", "duration", "categoryId", "ownerId"]
+    },
+    "Customer": {
+      "title": "Customer",
+      "description": "Registered customer in the customer directory",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Full name of the customer" },
+        "phone": { "type": "string", "description": "Phone number" },
+        "email": { "type": "string", "format": "email", "description": "Optional email address" },
+        "salonId": { "type": "string", "description": "Primary preferred salon ID" },
+        "notes": { "type": "string", "description": "Optional memo and treatment details" },
+        "ownerId": { "type": "string", "description": "ID of the administrator" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" }
+      },
+      "required": ["name", "phone", "salonId", "ownerId"]
+    },
+    "Appointment": {
+      "title": "Appointment",
+      "description": "Scheduled booking entry in the calendar system",
+      "type": "object",
+      "properties": {
+        "customerId": { "type": "string", "description": "Associated customer ID" },
+        "customerName": { "type": "string", "description": "Name of the customer" },
+        "serviceId": { "type": "string", "description": "Associated service ID" },
+        "serviceName": { "type": "string", "description": "Name of the service" },
+        "salonId": { "type": "string", "description": "Operating salon ID" },
+        "staffName": { "type": "string", "description": "Assigned staff member" },
+        "date": { "type": "string", "format": "date", "description": "Date ISO string YYYY-MM-DD" },
+        "time": { "type": "string", "format": "time", "description": "Scheduled time HH:MM" },
+        "duration": { "type": "number", "description": "Service duration in minutes" },
+        "price": { "type": "number", "description": "Treatment price" },
+        "status": { "type": "string", "enum": ["confirmed", "pending", "cancelled", "completed"], "description": "Booking status" },
+        "ownerId": { "type": "string", "description": "ID of the salon administrator" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" }
+      },
+      "required": ["customerId", "customerName", "serviceId", "serviceName", "salonId", "staffName", "date", "time", "duration", "price", "status", "ownerId"]
+    },
+    "CustomPrice": {
+      "title": "CustomPrice",
+      "description": "Specific pricing overrides for selected VIP / repeat customers",
+      "type": "object",
+      "properties": {
+        "customerId": { "type": "string", "description": "Target customer ID" },
+        "serviceId": { "type": "string", "description": "Target service ID" },
+        "serviceName": { "type": "string", "description": "Service name copy" },
+        "price": { "type": "number", "description": "Overridden pricing rate" },
+        "ownerId": { "type": "string", "description": "ID of the salon administrator" }
+      },
+      "required": ["customerId", "serviceId", "serviceName", "price", "ownerId"]
+    },
+    "InventoryItem": {
+      "title": "InventoryItem",
+      "description": "Product item in the salon stock inventory",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Product name" },
+        "brand": { "type": "string", "description": "Product brand or manufacturer" },
+        "category": { "type": "string", "description": "Category of the product" },
+        "quantity": { "type": "number", "description": "Current available quantity" },
+        "minQuantity": { "type": "number", "description": "Minimum stock warning threshold" },
+        "price": { "type": "number", "description": "Price tag of the product" },
+        "ownerId": { "type": "string", "description": "ID of the salon administrator" }
+      },
+      "required": ["name", "category", "quantity", "minQuantity", "price", "ownerId"]
+    },
+    "TeamMember": {
+      "title": "TeamMember",
+      "description": "Salon stylist or crew employee",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Stylist name" },
+        "role": { "type": "string", "description": "Specialization or job role" },
+        "phone": { "type": "string", "description": "Phone contact number" },
+        "email": { "type": "string", "description": "Email address" },
+        "salonIds": { "type": "array", "description": "List of active salon location IDs" },
+        "ownerId": { "type": "string", "description": "ID of the salon administrator" }
+      },
+      "required": ["name", "role", "salonIds", "ownerId"]
+    },
+    "User": {
+      "title": "User",
+      "description": "Registered user of the application",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "The Firebase Auth user ID" },
+        "name": { "type": "string", "description": "The user's full name" },
+        "email": { "type": "string", "format": "email", "description": "The user's email address" },
+        "role": { "type": "string", "description": "The user's role (e.g., admin, receptionist, barbiere)" },
+        "tenant_id": { "type": "string", "description": "The ID of the tenant (owner) the user belongs to" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "The creation timestamp" }
+      },
+      "required": ["uid", "name", "email", "role", "tenant_id", "createdAt"]
+    },
+    "ProductSale": {
+      "title": "ProductSale",
+      "description": "Recorded individual sale of an inventory product",
+      "type": "object",
+      "properties": {
+        "appointmentId": { "type": "string", "description": "Associated appointment ID" },
+        "customerId": { "type": "string", "description": "Associated customer ID" },
+        "customerName": { "type": "string", "description": "Name of the customer" },
+        "salonId": { "type": "string", "description": "Associated salon branch ID" },
+        "salonName": { "type": "string", "description": "Name of the salon branch" },
+        "productId": { "type": "string", "description": "Associated product ID" },
+        "productName": { "type": "string", "description": "Name of the product" },
+        "price": { "type": "number", "description": "Unit price of the product" },
+        "quantity": { "type": "number", "description": "Sold quantity" },
+        "total": { "type": "number", "description": "Total revenue of this sale item" },
+        "staffName": { "type": "string", "description": "Staff member who completed the sale" },
+        "date": { "type": "string", "description": "Date ISO string YYYY-MM-DD" },
+        "time": { "type": "string", "description": "Time string HH:MM" },
+        "paymentMethod": { "type": "string", "description": "Payment method" },
+        "ownerId": { "type": "string", "description": "ID of the salon administrator" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" }
+      },
+      "required": ["appointmentId", "customerId", "customerName", "salonId", "productId", "productName", "price", "quantity", "total", "date", "time", "paymentMethod", "ownerId"]
+    },
+    "BusinessSettings": {
+      "title": "BusinessSettings",
+      "description": "Main legal details of the business / company",
+      "type": "object",
+      "properties": {
+        "ownerId": { "type": "string", "description": "ID of the salon administrator" },
+        "partitaIvaPrincipale": { "type": "string", "description": "Main Partita IVA / VAT number" },
+        "sedeLegale": { "type": "string", "description": "Main legal headquarters address" },
+        "userPlan": { "type": "string", "enum": ["solo_pro", "network", "elite_ai", "unlimited"], "description": "Active subscription tier (unlimited is VIP infrastructure-only)" },
+        "subscriptionStatus": { "type": "string", "description": "Status of the subscription" },
+        "trialStartDate": { "type": "string", "format": "date-time", "description": "Start timestamp of trial" },
+        "trialEndDate": { "type": "string", "format": "date-time", "description": "End timestamp of trial" },
+        "paddleApiKey": { "type": "string", "description": "Custom real Paddle secret API Key" },
+        "paddleClientToken": { "type": "string", "description": "Custom real Paddle Client Token" },
+        "paddleEnvironment": { "type": "string", "description": "Custom Paddle environment (sandbox/production)" },
+        "paddleWebhookSecret": { "type": "string", "description": "Custom Paddle Webhook Secret key" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last updated timestamp" }
+      },
+      "required": ["ownerId", "partitaIvaPrincipale", "sedeLegale"]
+    },
+    "Campaign": {
+      "title": "Campaign",
+      "description": "Marketing blast campaigns targeting customer segments",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Campaign name or subject" },
+        "type": { "type": "string", "enum": ["sms", "email"], "description": "Communication channel" },
+        "targetGroup": { "type": "string", "description": "Description of targeted segment" },
+        "sentDate": { "type": "string", "description": "Formatted sent date" },
+        "deliveryRate": { "type": "string", "description": "Delivery success rate percentage" },
+        "openRate": { "type": "string", "description": "Open rate percentage" },
+        "bookingsCount": { "type": "number", "description": "Appointments booked through campaign" },
+        "text": { "type": "string", "description": "Body message or copywriting of campaign" },
+        "ownerId": { "type": "string", "description": "SaaS owner administrator ID" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" }
+      },
+      "required": ["name", "type", "targetGroup", "sentDate", "deliveryRate", "openRate", "bookingsCount", "text", "ownerId"]
+    }
+  },
+  "firestore": {
+    "/salons/{salonId}": {
+      "schema": "Salon",
+      "description": "Branch locations"
+    },
+    "/business_settings/{ownerId}": {
+      "schema": "BusinessSettings",
+      "description": "Main legal details of the business"
+    },
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "Service category classifications"
+    },
+    "/services/{serviceId}": {
+      "schema": "Service",
+      "description": "Treatment menu offerings"
+    },
+    "/customers/{customerId}": {
+      "schema": "Customer",
+      "description": "Directory of customers"
+    },
+    "/appointments/{appointmentId}": {
+      "schema": "Appointment",
+      "description": "Booked appointments schedule"
+    },
+    "/custom_prices/{customPriceId}": {
+      "schema": "CustomPrice",
+      "description": "Special VIP custom rates overrides table"
+    },
+    "/inventory/{itemId}": {
+      "schema": "InventoryItem",
+      "description": "Stock products management"
+    },
+    "/team/{memberId}": {
+      "schema": "TeamMember",
+      "description": "Staff and crew members directory"
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "SaaS system unified users directory"
+    },
+    "/product_sales/{saleId}": {
+      "schema": "ProductSale",
+      "description": "Product sales records"
+    },
+    "/campaigns/{campaignId}": {
+      "schema": "Campaign",
+      "description": "Blasted campaign records and logs"
+    }
+  }
+}

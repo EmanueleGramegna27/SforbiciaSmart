@@ -1,0 +1,6 @@
+{
+  "name": "SforbiciaSmart",
+  "description": "SaaS multi-sede per la gestione di barber shop e saloni di parrucchiere",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
