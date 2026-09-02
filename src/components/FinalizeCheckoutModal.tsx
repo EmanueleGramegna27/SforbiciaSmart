@@ -4,6 +4,7 @@ import {
   collection, 
   doc, 
   updateDoc, 
+  setDoc,
   addDoc,
   query, 
   where, 
@@ -32,9 +33,11 @@ import {
   Plus,
   Trash2,
   Package,
-  Sparkles
+  Sparkles,
+  Zap
 } from "lucide-react";
 import { Appointment, CustomPrice, TeamMember, Service, ProductSaleItem } from "../types";
+import { isFlashSlotAppointment } from "../utils/flashSlotClient";
 
 interface FinalizeCheckoutModalProps {
   isOpen: boolean;
@@ -634,6 +637,62 @@ export default function FinalizeCheckoutModal({
         // Perform update in Firestore
         await updateDoc(doc(db, "appointments", appointment.id), updatedFields);
 
+        // 3. Schedule "Filtro Verità" (Smart Reputation Shield) via WhatsApp/SMS (+40 min timer)
+        try {
+          const salonObj = salons.find(s => s.id === salonId);
+          fetch("/api/feedback-shield/schedule", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              salonId,
+              salonName: salonObj?.name || "Salone SforbiciaSmart",
+              ownerId: appointment.ownerId || ownerId || "",
+              appointmentId: appointment.id,
+              customerId,
+              customerName: chosenCustomer.name,
+              customerPhone: chosenCustomer.phone,
+              serviceName: serviceNameJoined,
+              staffName: selectedStaffNames.length > 0 ? selectedStaffNames.join(", ") : "Qualsiasi",
+              googleReviewUrl: salonObj?.googleReviewUrl || "",
+              channel: "whatsapp",
+              delayMinutes: 40,
+            }),
+          })
+            .then(res => res.json())
+            .then(async (data) => {
+              if (data?.success && data.id && (appointment.ownerId || ownerId)) {
+                try {
+                  await setDoc(doc(db, "feedback_shield_requests", data.id), {
+                    id: data.id,
+                    salonId,
+                    salonName: salonObj?.name || "Salone SforbiciaSmart",
+                    ownerId: appointment.ownerId || ownerId || "",
+                    appointmentId: appointment.id,
+                    customerId,
+                    customerName: chosenCustomer.name,
+                    customerPhone: chosenCustomer.phone,
+                    serviceName: serviceNameJoined,
+                    staffName: selectedStaffNames.length > 0 ? selectedStaffNames.join(", ") : "Qualsiasi",
+                    googleReviewUrl: salonObj?.googleReviewUrl || "",
+                    status: data.status || "scheduled",
+                    scheduledFor: data.scheduledFor || new Date(Date.now() + 40 * 60 * 1000).toISOString(),
+                    channel: "whatsapp",
+                    token: data.token,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                  }, { merge: true });
+                } catch (e) {
+                  // Ignore
+                }
+              }
+            })
+            .catch((err) => {
+              console.warn("[Filtro Verità] Background scheduling error:", err);
+            });
+        } catch (e) {
+          // Non-blocking
+        }
+
         return updatedFields;
       })();
 
@@ -693,9 +752,17 @@ export default function FinalizeCheckoutModal({
               <FileCheck className="w-5 h-5 text-[#1a3a8f]" />
             </div>
             <div>
-              <span className="text-[9px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-extrabold uppercase tracking-wider">
-                Cassa e Finalizzazione
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-[9px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-extrabold uppercase tracking-wider">
+                  Cassa e Finalizzazione
+                </span>
+                {isFlashSlotAppointment(appointment) && (
+                  <span className="text-[9px] bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.5 rounded-full font-extrabold uppercase tracking-wider flex items-center gap-1">
+                    <Zap className="w-2.5 h-2.5 text-amber-600 fill-amber-500" />
+                    Flash Slot
+                  </span>
+                )}
+              </div>
               <h3 className="font-serif text-lg font-bold text-[#1a2035] leading-tight mt-0.5">
                 Check-out: {appointment.customerName}
               </h3>
@@ -715,6 +782,22 @@ export default function FinalizeCheckoutModal({
             <div className="p-3.5 rounded-xl bg-red-50 border border-red-100 text-red-700 text-xs font-semibold flex items-center gap-2 animate-shake">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <p>{errorMsg}</p>
+            </div>
+          )}
+
+          {isFlashSlotAppointment(appointment) && (
+            <div className="bg-amber-50 border border-amber-200 p-3.5 rounded-2xl flex items-start gap-3 text-xs text-amber-900 shadow-3xs">
+              <div className="w-7 h-7 rounded-lg bg-amber-100 border border-amber-300 flex items-center justify-center shrink-0 mt-0.5">
+                <Zap className="w-4 h-4 text-amber-600 fill-amber-500" />
+              </div>
+              <div className="space-y-0.5">
+                <p className="font-extrabold uppercase tracking-wide text-[10px] text-amber-900">
+                  Cliente Prenotato tramite Magic Link (Flash Slot) ⚡
+                </p>
+                <p className="text-[11px] text-amber-800 font-medium leading-relaxed">
+                  Il prezzo era segnato come <strong>"da definire"</strong>. Seleziona qui sotto i trattamenti effettivamente eseguiti per calcolare il totale e procedere all'incasso.
+                </p>
+              </div>
             </div>
           )}
 

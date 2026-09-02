@@ -16,8 +16,15 @@ import {
   AlertCircle, 
   Loader2,
   Building2,
-  Users
+  Users,
+  Info,
+  FileSpreadsheet,
+  Download,
+  Search,
+  Sparkles,
+  X
 } from "lucide-react";
+import * as XLSX from "xlsx";
 import { Appointment, TeamMember } from "../types";
 
 interface CollaboratorMonthlySummary {
@@ -67,6 +74,64 @@ export default function CommissionsScreen({ setCurrentTab }: CommissionsScreenPr
   const [selectedMonth, setSelectedMonth] = useState<string>(currentYYYYMM());
   const [selectedSalonId, setSelectedSalonId] = useState<string>("all");
   const [expandedStaff, setExpandedStaff] = useState<string | null>(null);
+  const [showGuide, setShowGuide] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
+  // Export to XLSX
+  const handleExportCommissionsXLSX = () => {
+    if (monthlyData.length === 0) return;
+
+    const rows: any[] = [];
+    monthlyData.forEach((staff) => {
+      // Summary row for staff
+      rows.push({
+        "Collaboratore": staff.staffName,
+        "Ruolo": staff.role,
+        "Tipo": "Riepilogo",
+        "Data": "",
+        "Cliente": "",
+        "Elemento / Servizio": `Servizi: ${staff.servicesPerformedCount} | Prodotti: ${staff.productsSoldCount}`,
+        "Importo Incassato (€)": "",
+        "Provvigione (%)": "",
+        "Totale Provvigione (€)": staff.totalCommissions.toFixed(2),
+      });
+
+      // Detailed services
+      staff.servicesDetail.forEach((srv) => {
+        rows.push({
+          "Collaboratore": staff.staffName,
+          "Ruolo": staff.role,
+          "Tipo": "Trattamento",
+          "Data": srv.date,
+          "Cliente": srv.customerName,
+          "Elemento / Servizio": srv.serviceName,
+          "Importo Incassato (€)": srv.price.toFixed(2),
+          "Provvigione (%)": `${srv.pct}%`,
+          "Totale Provvigione (€)": srv.earned.toFixed(2),
+        });
+      });
+
+      // Detailed products
+      staff.productsDetail.forEach((prd) => {
+        rows.push({
+          "Collaboratore": staff.staffName,
+          "Ruolo": staff.role,
+          "Tipo": "Prodotto",
+          "Data": prd.date,
+          "Cliente": prd.customerName,
+          "Elemento / Servizio": `${prd.productName} (x${prd.qty})`,
+          "Importo Incassato (€)": prd.price.toFixed(2),
+          "Provvigione (%)": `${prd.pct}%`,
+          "Totale Provvigione (€)": prd.earned.toFixed(2),
+        });
+      });
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Provvigioni");
+    XLSX.writeFile(workbook, `Provvigioni_${selectedMonth}.xlsx`);
+  };
 
   // Subscribe to Team
   useEffect(() => {
@@ -312,6 +377,16 @@ export default function CommissionsScreen({ setCurrentTab }: CommissionsScreenPr
     return Object.values(summaryMap).sort((a, b) => b.totalCommissions - a.totalCommissions);
   }, [appointments, productSales, team, services, selectedMonth, selectedSalonId, userRole, userSalonIds]);
 
+  // Filter by search
+  const filteredMonthlyData = useMemo(() => {
+    if (!searchQuery.trim()) return monthlyData;
+    const q = searchQuery.toLowerCase().trim();
+    return monthlyData.filter(m => 
+      m.staffName.toLowerCase().includes(q) || 
+      m.role.toLowerCase().includes(q)
+    );
+  }, [monthlyData, searchQuery]);
+
   // Overall Business Totals
   const businessTotals = useMemo(() => {
     return monthlyData.reduce(
@@ -364,35 +439,130 @@ export default function CommissionsScreen({ setCurrentTab }: CommissionsScreenPr
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-pageFade max-w-7xl mx-auto pb-12" id="commissions-screen">
       
-      {/* Intro Header Card */}
-      <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="p-1.5 bg-[#1a3a8f]/10 rounded-lg text-[#1a3a8f]">
-              <Percent className="w-4 h-4" />
-            </span>
-            <span className="text-[10px] bg-indigo-50 text-[#1a3a8f] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
-              Sistema Incentivi e Provvigioni
+      {/* 1. Header con palette originale (#1a2035 e #1a3a8f) in stile Apple */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200/80 pb-5">
+        <div>
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#eef2ff] text-[#1a3a8f] border border-[#1a3a8f]/15 text-xs font-semibold tracking-wide shadow-2xs">
+              <Percent className="w-3.5 h-3.5 text-[#1a3a8f]" />
+              <span>Incentivi & Provvigioni</span>
             </span>
           </div>
-          <h1 className="font-serif text-xl font-bold text-gray-900 md:text-2xl mt-1">
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#1a2035] tracking-tight">
             Percentuali Collaboratori
-          </h1>
-          <p className="text-xs text-gray-400 font-medium">
-            Tieni traccia delle commissioni maturate sui trattamenti eseguiti e sui prodotti venduti al dettaglio.
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl">
+            Monitora le provvigioni maturate dal team sui trattamenti eseguiti in salone e sui prodotti venduti al dettaglio.
           </p>
         </div>
 
-        {/* Date Selector & Sede Selectors */}
-        <div className="flex flex-wrap items-center gap-3">
+        {/* Action Controls Header in stile Apple */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          {/* Pulsante "Come Funziona" */}
+          <button
+            type="button"
+            onClick={() => setShowGuide(!showGuide)}
+            className={`px-4 py-2 rounded-2xl text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-[0.98] cursor-pointer border ${
+              showGuide 
+                ? "bg-[#1a3a8f] text-white border-[#1a3a8f] shadow-xs" 
+                : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50 shadow-2xs"
+            }`}
+            title="Come vengono calcolate e impostate le percentuali"
+          >
+            <Info className="w-3.5 h-3.5" />
+            <span>Come Funziona</span>
+          </button>
+
+          {/* Export Excel */}
+          <button
+            type="button"
+            onClick={handleExportCommissionsXLSX}
+            disabled={monthlyData.length === 0}
+            className="px-4 py-2 rounded-2xl text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-[0.98] cursor-pointer bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 shadow-2xs disabled:opacity-40"
+            title="Esporta il resoconto provvigioni in formato Excel (.xlsx)"
+          >
+            <Download className="w-3.5 h-3.5 text-slate-500" />
+            <span>Esporta XLSX</span>
+          </button>
+        </div>
+      </div>
+
+      {/* 2. Guida Informativa Collapsible in stile Apple */}
+      {showGuide && (
+        <div className="bg-white border border-slate-200/80 rounded-3xl p-5 sm:p-6 shadow-2xs animate-fadeIn space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="space-y-1">
+              <h3 className="text-sm font-bold text-[#1a2035] tracking-tight flex items-center gap-2">
+                <Percent className="w-4 h-4 text-[#1a3a8f]" />
+                Come vengono calcolate le percentuali e le provvigioni
+              </h3>
+              <p className="text-xs text-slate-500 leading-relaxed max-w-2xl">
+                Il sistema calcola automaticamente i compensi in base alle percentuali configurate sul listino servizi e sul magazzino prodotti.
+              </p>
+            </div>
+            {monthlyData.length > 0 && (
+              <button
+                onClick={handleExportCommissionsXLSX}
+                className="px-3.5 py-1.5 bg-[#eef2ff] hover:bg-[#e0e7ff] text-[#1a3a8f] text-xs font-semibold rounded-2xl transition-all active:scale-[0.98] flex items-center gap-1.5 cursor-pointer shrink-0 border border-[#1a3a8f]/10 shadow-2xs"
+              >
+                <Download className="w-3.5 h-3.5" />
+                Scarica Report ({getMonthNameItalian(selectedMonth)})
+              </button>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 pt-2">
+            <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/70 space-y-1">
+              <span className="text-xs font-bold text-[#1a2035] block">1. Servizi & Listino</span>
+              <p className="text-[11px] text-slate-500 leading-relaxed">Imposta la % di provvigione desiderata su ogni singolo servizio dal menù <em>Listino Trattamenti</em>.</p>
+            </div>
+            <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/70 space-y-1">
+              <span className="text-xs font-bold text-[#1a2035] block">2. Magazzino Prodotti</span>
+              <p className="text-[11px] text-slate-500 leading-relaxed">Imposta la % sulle vendite dei prodotti al dettaglio direttamente dal menù <em>Magazzino</em>.</p>
+            </div>
+            <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/70 space-y-1">
+              <span className="text-xs font-bold text-[#1a2035] block">3. Cassa & Check-out</span>
+              <p className="text-[11px] text-slate-500 leading-relaxed">Al saldo dell'appuntamento o vendita, assegna il collaboratore (con divisione automatica se multipli).</p>
+            </div>
+            <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/70 space-y-1">
+              <span className="text-xs font-bold text-[#1a2035] block">4. Storico & Report</span>
+              <p className="text-[11px] text-slate-500 leading-relaxed">Consulta il riepilogo mese per mese, espandi il dettaglio delle prestazioni ed esporta in Excel.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 3. Barra Filtri Apple-Style: Mese di Riferimento, Sede Operativa e Ricerca */}
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-white p-2.5 sm:p-3 rounded-3xl border border-slate-200/80 shadow-2xs">
+        
+        {/* Search input */}
+        <div className="relative flex-1 min-w-[220px]">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            placeholder="Cerca collaboratore per nome o ruolo..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-slate-50/80 hover:bg-slate-100/70 focus:bg-white text-xs pl-10 pr-8 py-2.5 rounded-2xl border border-slate-200/80 focus:border-[#1a3a8f] outline-none text-[#1a2035] font-medium transition"
+          />
+          {searchQuery && (
+            <button 
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+
+        {/* Date Selector & Sede Selectors in capsule Apple style */}
+        <div className="flex flex-wrap items-center gap-2">
           
           {/* Monthly selector */}
-          <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1">
-              <Calendar className="w-3 h-3 text-gray-400" /> Mese di Riferimento
-            </span>
+          <div className="flex items-center gap-2 bg-slate-50/90 hover:bg-slate-100/80 border border-slate-200/80 px-3.5 py-2 rounded-2xl transition shadow-2xs">
+            <Calendar className="w-3.5 h-3.5 text-[#1a3a8f]" />
             <input
               type="month"
               value={selectedMonth}
@@ -400,81 +570,84 @@ export default function CommissionsScreen({ setCurrentTab }: CommissionsScreenPr
                 setSelectedMonth(e.target.value);
                 setExpandedStaff(null);
               }}
-              className="bg-slate-50 border border-gray-200 focus:border-[#1a3a8f] outline-hidden text-xs font-bold text-gray-800 px-3.5 py-2.5 rounded-xl transition-all cursor-pointer shadow-3xs"
+              className="bg-transparent outline-none text-xs font-semibold text-[#1a2035] cursor-pointer"
             />
           </div>
 
           {/* Salon selector */}
-          <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1">
-              <Building2 className="w-3 h-3 text-gray-400" /> Filtra per Sede
-            </span>
-            <select
-              value={selectedSalonId}
-              onChange={(e) => {
-                setSelectedSalonId(e.target.value);
-                setExpandedStaff(null);
-              }}
-              className="bg-slate-50 border border-gray-200 focus:border-[#1a3a8f] outline-hidden text-xs font-bold text-gray-800 px-3.5 py-2.5 rounded-xl transition-all cursor-pointer shadow-3xs"
-            >
-              <option value="all">Tutte le Sedi</option>
-              {allowedSalons.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          {allowedSalons.length > 1 && (
+            <div className="flex items-center gap-2 bg-slate-50/90 hover:bg-slate-100/80 border border-slate-200/80 px-3.5 py-2 rounded-2xl transition shadow-2xs">
+              <Building2 className="w-3.5 h-3.5 text-[#1a3a8f]" />
+              <select
+                value={selectedSalonId}
+                onChange={(e) => {
+                  setSelectedSalonId(e.target.value);
+                  setExpandedStaff(null);
+                }}
+                className="bg-transparent outline-none text-xs font-semibold text-[#1a2035] cursor-pointer"
+              >
+                <option value="all">Tutte le Sedi</option>
+                {allowedSalons.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
         </div>
       </div>
 
-      {/* KPI Bento Grid */}
+      {/* 4. KPI Bento Grid in Apple Style con Brand Colors (#1a2035 & #1a3a8f) */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         
         {/* Total Earned Commissions */}
-        <div className="bg-gradient-to-br from-[#1a3a8f] to-indigo-950 p-5 rounded-2xl text-white shadow-md shadow-blue-900/5 relative overflow-hidden">
-          <div className="absolute right-0 bottom-0 translate-x-2 translate-y-2 opacity-10">
-            <TrendingUp className="w-28 h-28 stroke-[1.5]" />
+        <div className="bg-gradient-to-br from-[#1a3a8f] via-[#163380] to-[#0f2259] p-5 sm:p-6 rounded-3xl text-white shadow-sm shadow-[#1a3a8f]/20 relative overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:shadow-md">
+          <div className="absolute right-0 bottom-0 translate-x-3 translate-y-3 opacity-15 transition-transform duration-500 group-hover:scale-110">
+            <TrendingUp className="w-32 h-32 stroke-[1.2]" />
           </div>
-          <span className="text-[10px] uppercase font-black tracking-widest text-indigo-200 block">
-            Totale Provvigioni Aziendali
-          </span>
-          <h3 className="font-serif text-3xl font-black mt-2">
-            €{businessTotals.grandTotal.toFixed(2)}
-          </h3>
-          <p className="text-[10px] text-indigo-200/80 mt-1 font-medium">
+          <div>
+            <span className="text-[11px] uppercase font-bold tracking-wider text-blue-200/90 block">
+              Totale Provvigioni Aziendali
+            </span>
+            <h3 className="text-3xl sm:text-4xl font-bold tracking-tight mt-2">
+              €{businessTotals.grandTotal.toFixed(2)}
+            </h3>
+          </div>
+          <p className="text-xs text-blue-200/80 mt-4 font-medium flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
             Nel mese di {getMonthNameItalian(selectedMonth)}
           </p>
         </div>
 
         {/* Services Commissions */}
-        <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between">
+        <div className="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200/80 shadow-2xs hover:shadow-xs transition-all duration-200 flex flex-col justify-between">
           <div>
-            <span className="text-[10px] uppercase font-black tracking-widest text-gray-400 block">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
               Provvigioni su Trattamenti
             </span>
-            <h3 className="font-serif text-2xl font-black text-gray-900 mt-2">
+            <h3 className="text-2xl sm:text-3xl font-bold text-[#1a2035] tracking-tight mt-2">
               €{businessTotals.services.toFixed(2)}
             </h3>
           </div>
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100 w-max mt-3">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-[#1a3a8f] bg-[#eef2ff] px-3 py-1.5 rounded-2xl border border-[#1a3a8f]/10 w-max mt-4 shadow-2xs">
             <Scissors className="w-3.5 h-3.5" />
             <span>Quota Servizi</span>
           </div>
         </div>
 
         {/* Product Commissions */}
-        <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between">
+        <div className="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200/80 shadow-2xs hover:shadow-xs transition-all duration-200 flex flex-col justify-between">
           <div>
-            <span className="text-[10px] uppercase font-black tracking-widest text-gray-400 block">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
               Provvigioni su Prodotti
             </span>
-            <h3 className="font-serif text-2xl font-black text-gray-900 mt-2">
+            <h3 className="text-2xl sm:text-3xl font-bold text-[#1a2035] tracking-tight mt-2">
               €{businessTotals.products.toFixed(2)}
             </h3>
           </div>
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100 w-max mt-3">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-2xl border border-emerald-100 w-max mt-4 shadow-2xs">
             <Package className="w-3.5 h-3.5" />
             <span>Quota Vendite</span>
           </div>
@@ -482,43 +655,51 @@ export default function CommissionsScreen({ setCurrentTab }: CommissionsScreenPr
 
       </div>
 
-      {/* Main Table / Collaborator Cards */}
-      <div className="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-xs">
-        <div className="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-          <h3 className="font-serif font-bold text-[#1a2035] text-base flex items-center gap-2">
+      {/* 5. Main List & Collaborator Accordions in Apple Style */}
+      <div className="bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-2xs">
+        <div className="px-6 py-4.5 border-b border-slate-100 flex justify-between items-center bg-slate-50/60 backdrop-blur-sm">
+          <h3 className="text-base font-bold text-[#1a2035] tracking-tight flex items-center gap-2">
             <Users className="w-4 h-4 text-[#1a3a8f]" />
             Riepilogo Compensi di {getMonthNameItalian(selectedMonth)}
           </h3>
-          <span className="text-[10px] bg-slate-200 text-slate-700 font-bold px-2 py-0.5 rounded-full">
-            {monthlyData.length} Collaboratori Attivi
+          <span className="text-xs bg-[#eef2ff] text-[#1a3a8f] border border-[#1a3a8f]/15 font-semibold px-3 py-1 rounded-full shadow-2xs">
+            {filteredMonthlyData.length} Collaboratori {searchQuery ? "Filtrati" : "Attivi"}
           </span>
         </div>
 
-        {monthlyData.length === 0 ? (
-          <div className="p-12 text-center text-gray-400 font-medium space-y-2">
-            <Percent className="w-10 h-10 mx-auto text-gray-300" />
-            <p className="text-sm">Nessuna provvigione registrata in questo mese.</p>
-            <p className="text-xs text-gray-400">Completa dei check-out assegnando i collaboratori per vedere i dati aggiornati.</p>
+        {filteredMonthlyData.length === 0 ? (
+          <div className="p-12 text-center text-slate-400 font-medium space-y-2">
+            <div className="w-14 h-14 rounded-3xl bg-slate-50 border border-slate-100 flex items-center justify-center mx-auto text-slate-300">
+              <Percent className="w-7 h-7" />
+            </div>
+            <p className="text-sm font-semibold text-slate-700 pt-2">
+              {searchQuery ? "Nessun collaboratore corrisponde alla ricerca." : "Nessuna provvigione registrata in questo mese."}
+            </p>
+            <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
+              {searchQuery 
+                ? "Prova a modificare i termini di ricerca." 
+                : "Completa i check-out alla cassa assegnando i collaboratori per visualizzare automaticamente i dati aggiornati."}
+            </p>
           </div>
         ) : (
-          <div className="divide-y divide-gray-100">
-            {monthlyData.map((staff) => {
+          <div className="divide-y divide-slate-100">
+            {filteredMonthlyData.map((staff) => {
               const isExpanded = expandedStaff === staff.staffName;
               return (
-                <div key={staff.staffName} className="transition-all hover:bg-slate-50/20">
+                <div key={staff.staffName} className="transition-colors hover:bg-slate-50/50">
                   
                   {/* Row Header Card */}
                   <div 
                     onClick={() => toggleExpandStaff(staff.staffName)}
-                    className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer select-none"
+                    className="p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer select-none"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-11 h-11 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center text-[#1a3a8f] font-bold text-sm shrink-0">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-12 h-12 rounded-2xl bg-[#eef2ff] border border-[#1a3a8f]/15 flex items-center justify-center text-[#1a3a8f] font-bold text-sm shrink-0 shadow-2xs">
                         {staff.staffName.slice(0, 2).toUpperCase()}
                       </div>
                       <div>
-                        <h4 className="font-bold text-gray-900 text-sm">{staff.staffName}</h4>
-                        <span className="inline-block mt-0.5 px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-wider">
+                        <h4 className="font-bold text-[#1a2035] text-sm tracking-tight">{staff.staffName}</h4>
+                        <span className="inline-block mt-1 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200/80 text-[11px] font-medium">
                           {staff.role}
                         </span>
                       </div>
@@ -528,22 +709,24 @@ export default function CommissionsScreen({ setCurrentTab }: CommissionsScreenPr
                     <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
                       
                       <div className="text-left sm:text-right">
-                        <span className="text-[9px] uppercase font-bold text-gray-400 tracking-wider block">Servizi (x{staff.servicesPerformedCount})</span>
-                        <span className="text-xs font-black text-gray-800">€{staff.serviceCommissions.toFixed(2)}</span>
+                        <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">Trattamenti (x{staff.servicesPerformedCount})</span>
+                        <span className="text-xs font-bold text-[#1a2035]">€{staff.serviceCommissions.toFixed(2)}</span>
                       </div>
 
                       <div className="text-left sm:text-right">
-                        <span className="text-[9px] uppercase font-bold text-gray-400 tracking-wider block">Prodotti (x{staff.productsSoldCount})</span>
-                        <span className="text-xs font-black text-gray-800">€{staff.productCommissions.toFixed(2)}</span>
+                        <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">Prodotti (x{staff.productsSoldCount})</span>
+                        <span className="text-xs font-bold text-[#1a2035]">€{staff.productCommissions.toFixed(2)}</span>
                       </div>
 
-                      <div className="text-left sm:text-right bg-[#1a3a8f]/5 px-3 py-1.5 rounded-xl border border-[#1a3a8f]/10">
-                        <span className="text-[9px] uppercase font-extrabold text-[#1a3a8f] tracking-wider block">Totale Maturato</span>
-                        <span className="text-sm font-black text-[#1a3a8f]">€{staff.totalCommissions.toFixed(2)}</span>
+                      <div className="text-left sm:text-right bg-[#eef2ff] px-4 py-2 rounded-2xl border border-[#1a3a8f]/15 shadow-2xs">
+                        <span className="text-[10px] uppercase font-bold text-[#1a3a8f] tracking-wider block">Totale Maturato</span>
+                        <span className="text-sm font-bold text-[#1a3a8f]">€{staff.totalCommissions.toFixed(2)}</span>
                       </div>
 
-                      <div className="text-gray-400 self-center hidden sm:block">
-                        {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                      <div className="text-slate-400 self-center hidden sm:block pl-2">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${isExpanded ? "bg-[#eef2ff] text-[#1a3a8f]" : "text-slate-400"}`}>
+                          {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                        </div>
                       </div>
 
                     </div>
@@ -551,41 +734,42 @@ export default function CommissionsScreen({ setCurrentTab }: CommissionsScreenPr
 
                   {/* Expanded Transaction Details */}
                   {isExpanded && (
-                    <div className="px-5 pb-5 pt-1 border-t border-dashed border-gray-100 bg-slate-50/50 space-y-4 animate-fadeIn">
+                    <div className="px-5 sm:px-6 pb-6 pt-3 border-t border-slate-100 bg-slate-50/60 space-y-4 animate-fadeIn">
                       
                       {/* Services detail list */}
-                      <div className="space-y-2">
-                        <span className="block text-[10px] font-bold text-[#1a3a8f] uppercase tracking-widest flex items-center gap-1">
-                          <Scissors className="w-3.5 h-3.5 text-[#1a3a8f]" /> Trattamenti eseguiti ({staff.servicesDetail.length})
-                        </span>
+                      <div className="space-y-2.5">
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-[#1a3a8f] uppercase tracking-wider">
+                          <Scissors className="w-3.5 h-3.5" />
+                          <span>Trattamenti eseguiti ({staff.servicesDetail.length})</span>
+                        </div>
                         {staff.servicesDetail.length === 0 ? (
-                          <p className="text-[11px] text-gray-400 font-medium bg-white p-3 rounded-xl border border-gray-100/50">Nessun trattamento eseguito.</p>
+                          <p className="text-xs text-slate-400 font-medium bg-white p-3.5 rounded-2xl border border-slate-200/70">Nessun trattamento eseguito nel mese.</p>
                         ) : (
-                          <div className="bg-white rounded-xl border border-gray-100/60 overflow-hidden shadow-3xs">
+                          <div className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-2xs">
                             <table className="w-full text-left text-xs border-collapse">
                               <thead>
-                                <tr className="bg-slate-50 border-b border-gray-100/60 font-bold text-gray-500 text-[10px] uppercase tracking-wider">
-                                  <th className="py-2.5 px-3">Data</th>
-                                  <th className="py-2.5 px-3">Cliente</th>
-                                  <th className="py-2.5 px-3">Servizio</th>
-                                  <th className="py-2.5 px-3 text-right">Incasso</th>
-                                  <th className="py-2.5 px-3 text-center">Provv %</th>
-                                  <th className="py-2.5 px-3 text-right">Provv €</th>
+                                <tr className="bg-slate-50/80 border-b border-slate-200/80 font-semibold text-slate-500 text-[11px] uppercase tracking-wider">
+                                  <th className="py-3 px-4">Data</th>
+                                  <th className="py-3 px-4">Cliente</th>
+                                  <th className="py-3 px-4">Servizio</th>
+                                  <th className="py-3 px-4 text-right">Incasso</th>
+                                  <th className="py-3 px-4 text-center">Provv %</th>
+                                  <th className="py-3 px-4 text-right">Provv €</th>
                                 </tr>
                               </thead>
-                              <tbody className="divide-y divide-gray-100/60 font-medium text-gray-700">
+                              <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
                                 {staff.servicesDetail.map((item, idx) => (
-                                  <tr key={idx} className="hover:bg-slate-50/30 transition-colors">
-                                    <td className="py-2 px-3 font-semibold text-gray-400">{item.date}</td>
-                                    <td className="py-2 px-3 font-semibold text-gray-900">{item.customerName}</td>
-                                    <td className="py-2 px-3 font-semibold">{item.serviceName}</td>
-                                    <td className="py-2 px-3 text-right text-gray-500 font-mono">€{item.price.toFixed(2)}</td>
-                                    <td className="py-2 px-3 text-center">
-                                      <span className="bg-slate-100 text-slate-700 font-black px-1.5 py-0.5 rounded text-[10px]">
+                                  <tr key={idx} className="hover:bg-slate-50/60 transition-colors">
+                                    <td className="py-2.5 px-4 font-medium text-slate-400">{item.date}</td>
+                                    <td className="py-2.5 px-4 font-semibold text-[#1a2035]">{item.customerName}</td>
+                                    <td className="py-2.5 px-4">{item.serviceName}</td>
+                                    <td className="py-2.5 px-4 text-right text-slate-600 font-mono">€{item.price.toFixed(2)}</td>
+                                    <td className="py-2.5 px-4 text-center">
+                                      <span className="bg-[#eef2ff] text-[#1a3a8f] font-semibold px-2 py-0.5 rounded-full text-[11px] border border-[#1a3a8f]/10">
                                         {item.pct}%
                                       </span>
                                     </td>
-                                    <td className="py-2 px-3 text-right text-[#1a3a8f] font-black font-mono">€{item.earned.toFixed(2)}</td>
+                                    <td className="py-2.5 px-4 text-right text-[#1a3a8f] font-bold font-mono">€{item.earned.toFixed(2)}</td>
                                   </tr>
                                 ))}
                               </tbody>
@@ -595,40 +779,41 @@ export default function CommissionsScreen({ setCurrentTab }: CommissionsScreenPr
                       </div>
 
                       {/* Products detail list */}
-                      <div className="space-y-2">
-                        <span className="block text-[10px] font-bold text-emerald-800 uppercase tracking-widest flex items-center gap-1">
-                          <Package className="w-3.5 h-3.5 text-emerald-600" /> Prodotti venduti al dettaglio ({staff.productsDetail.length})
-                        </span>
+                      <div className="space-y-2.5">
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-800 uppercase tracking-wider">
+                          <Package className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>Prodotti venduti al dettaglio ({staff.productsDetail.length})</span>
+                        </div>
                         {staff.productsDetail.length === 0 ? (
-                          <p className="text-[11px] text-gray-400 font-medium bg-white p-3 rounded-xl border border-gray-100/50">Nessun prodotto venduto.</p>
+                          <p className="text-xs text-slate-400 font-medium bg-white p-3.5 rounded-2xl border border-slate-200/70">Nessun prodotto venduto nel mese.</p>
                         ) : (
-                          <div className="bg-white rounded-xl border border-gray-100/60 overflow-hidden shadow-3xs">
+                          <div className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-2xs">
                             <table className="w-full text-left text-xs border-collapse">
                               <thead>
-                                <tr className="bg-slate-50 border-b border-gray-100/60 font-bold text-gray-500 text-[10px] uppercase tracking-wider">
-                                  <th className="py-2.5 px-3">Data</th>
-                                  <th className="py-2.5 px-3">Cliente</th>
-                                  <th className="py-2.5 px-3">Prodotto</th>
-                                  <th className="py-2.5 px-3 text-center">Quantità</th>
-                                  <th className="py-2.5 px-3 text-right">Prezzo Cad.</th>
-                                  <th className="py-2.5 px-3 text-center">Provv %</th>
-                                  <th className="py-2.5 px-3 text-right">Provv €</th>
+                                <tr className="bg-slate-50/80 border-b border-slate-200/80 font-semibold text-slate-500 text-[11px] uppercase tracking-wider">
+                                  <th className="py-3 px-4">Data</th>
+                                  <th className="py-3 px-4">Cliente</th>
+                                  <th className="py-3 px-4">Prodotto</th>
+                                  <th className="py-3 px-4 text-center">Quantità</th>
+                                  <th className="py-3 px-4 text-right">Prezzo Cad.</th>
+                                  <th className="py-3 px-4 text-center">Provv %</th>
+                                  <th className="py-3 px-4 text-right">Provv €</th>
                                 </tr>
                               </thead>
-                              <tbody className="divide-y divide-gray-100/60 font-medium text-gray-700">
+                              <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
                                 {staff.productsDetail.map((item, idx) => (
-                                  <tr key={idx} className="hover:bg-slate-50/30 transition-colors">
-                                    <td className="py-2 px-3 font-semibold text-gray-400">{item.date}</td>
-                                    <td className="py-2 px-3 font-semibold text-gray-900">{item.customerName}</td>
-                                    <td className="py-2 px-3 font-semibold">{item.productName}</td>
-                                    <td className="py-2 px-3 text-center font-bold text-gray-900">{item.qty}</td>
-                                    <td className="py-2 px-3 text-right text-gray-500 font-mono">€{item.price.toFixed(2)}</td>
-                                    <td className="py-2 px-3 text-center">
-                                      <span className="bg-slate-100 text-slate-700 font-black px-1.5 py-0.5 rounded text-[10px]">
+                                  <tr key={idx} className="hover:bg-slate-50/60 transition-colors">
+                                    <td className="py-2.5 px-4 font-medium text-slate-400">{item.date}</td>
+                                    <td className="py-2.5 px-4 font-semibold text-[#1a2035]">{item.customerName}</td>
+                                    <td className="py-2.5 px-4">{item.productName}</td>
+                                    <td className="py-2.5 px-4 text-center font-bold text-[#1a2035]">{item.qty}</td>
+                                    <td className="py-2.5 px-4 text-right text-slate-600 font-mono">€{item.price.toFixed(2)}</td>
+                                    <td className="py-2.5 px-4 text-center">
+                                      <span className="bg-emerald-50 text-emerald-700 font-semibold px-2 py-0.5 rounded-full text-[11px] border border-emerald-100">
                                         {item.pct}%
                                       </span>
                                     </td>
-                                    <td className="py-2 px-3 text-right text-emerald-700 font-black font-mono">€{item.earned.toFixed(2)}</td>
+                                    <td className="py-2.5 px-4 text-right text-emerald-700 font-bold font-mono">€{item.earned.toFixed(2)}</td>
                                   </tr>
                                 ))}
                               </tbody>

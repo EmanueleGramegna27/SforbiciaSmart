@@ -162,6 +162,7 @@ export default function SalonsScreen() {
   const [phoneBody, setPhoneBody] = useState("");
   const [partitaIva, setPartitaIva] = useState("");
   const [useMainCompanyInfo, setUseMainCompanyInfo] = useState(false);
+  const [googleReviewUrl, setGoogleReviewUrl] = useState("");
   
   // Custom structured hours inputs
   const [openTime, setOpenTime] = useState("09:00");
@@ -224,6 +225,7 @@ export default function SalonsScreen() {
     setPhoneBody("");
     setPartitaIva("");
     setUseMainCompanyInfo(false);
+    setGoogleReviewUrl("");
     setOpenTime("09:00");
     setCloseTime("19:00");
     setSelectedDays(["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"]);
@@ -249,6 +251,7 @@ export default function SalonsScreen() {
     setPhoneBody(parsed.number);
     setPartitaIva(salon.partitaIva || "");
     setUseMainCompanyInfo(salon.useMainCompanyInfo || false);
+    setGoogleReviewUrl(salon.googleReviewUrl || "");
 
     // Parse existing hours
     const parsedHours = parseHoursDetailed(salon.hours);
@@ -312,6 +315,7 @@ export default function SalonsScreen() {
         hours: generatedHours,
         partitaIva: cleanedPiva,
         useMainCompanyInfo,
+        googleReviewUrl: googleReviewUrl.trim(),
         ownerId: user.uid,
         updatedAt: new Date()
       };
@@ -354,11 +358,11 @@ export default function SalonsScreen() {
 
   if (loading) {
     return (
-      <div className="space-y-4">
-        <div className="h-8 w-48 bg-gray-200 rounded animate-pulse" />
+      <div className="space-y-6">
+        <div className="h-9 w-64 bg-slate-200/70 rounded-2xl animate-pulse" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3].map((n) => (
-            <div key={n} className="bg-white border rounded-2xl p-6 h-56 skeleton" />
+            <div key={n} className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-7 h-64 shadow-2xs animate-pulse" />
           ))}
         </div>
       </div>
@@ -368,42 +372,47 @@ export default function SalonsScreen() {
   return (
     <div className="space-y-6 animate-pageFade">
       {/* Header Panel */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="font-serif text-2xl md:text-3xl font-bold tracking-tight text-[#1a2035]">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-2xs">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[#1a3a8f] bg-[#eef2ff] border border-[#1a3a8f]/10 px-2.5 py-0.5 rounded-full shadow-2xs">
+              Struttura & Sedi
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#1a2035]">
             I tuoi Saloni e Barber Shop
           </h1>
-          <p className="text-gray-500 text-sm mt-1">
-            Gestisci le tue sedi fisiche operative, i recapiti di contatto e gli orari di apertura globali.
+          <p className="text-slate-500 text-xs sm:text-sm leading-relaxed max-w-2xl">
+            Gestisci le tue sedi fisiche operative, i recapiti di contatto, la Partita IVA e gli orari di apertura globali.
           </p>
         </div>
         {userRole === "owner" && (
           <button
             onClick={openCreateModal}
-            className="bg-[#1a3a8f] hover:bg-[#152f73] text-white rounded-xl px-5 py-2.5 text-sm font-semibold shadow-md shadow-blue-900/20 flex items-center gap-2 transition-all cursor-pointer shrink-0"
+            className="bg-[#1a3a8f] hover:bg-[#132c6e] active:scale-[0.98] text-white rounded-2xl px-5 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider shadow-2xs flex items-center gap-2 transition-all cursor-pointer shrink-0"
           >
             <Plus className="w-4 h-4" />
-            Aggiungi Sede
+            <span>Aggiungi Sede</span>
           </button>
         )}
       </div>
 
       {/* Salons Grid List */}
       {salons.length === 0 ? (
-        <div className="bg-white border border-gray-100 rounded-3xl p-10 md:p-14 text-center max-w-xl mx-auto shadow-sm mt-8">
-          <div className="w-16 h-16 rounded-2xl bg-[#eef2ff] flex items-center justify-center text-[#1a3a8f] mx-auto mb-6">
+        <div className="bg-white border border-slate-200/80 rounded-3xl p-10 md:p-14 text-center max-w-xl mx-auto shadow-2xs mt-8">
+          <div className="w-16 h-16 rounded-2xl bg-[#eef2ff] border border-[#1a3a8f]/10 flex items-center justify-center text-[#1a3a8f] mx-auto mb-6 shadow-2xs">
             <Store className="w-8 h-8" />
           </div>
-          <h3 className="font-serif text-xl font-bold text-[#1a2035] mb-2">
+          <h3 className="text-xl font-bold text-[#1a2035] mb-2 tracking-tight">
             Nessuna sede configurata
           </h3>
-          <p className="text-gray-500 text-sm mb-6 max-w-xs mx-auto">
+          <p className="text-slate-500 text-xs sm:text-sm mb-6 max-w-xs mx-auto leading-relaxed">
             Inizia aggiungendo il tuo primo salone o barber shop per sbloccare l'agenda e configurare i servizi.
           </p>
           {userRole === "owner" && (
             <button
               onClick={openCreateModal}
-              className="bg-[#1a3a8f] hover:bg-[#152f73] text-white rounded-xl px-5 py-2.5 text-sm font-semibold shadow-md transition-all cursor-pointer"
+              className="bg-[#1a3a8f] hover:bg-[#132c6e] active:scale-[0.98] text-white rounded-2xl px-6 py-3 text-xs font-bold uppercase tracking-wider shadow-2xs transition-all cursor-pointer"
             >
               Configura Primo Salone
             </button>
@@ -414,21 +423,21 @@ export default function SalonsScreen() {
           {salons.map((salon) => (
             <div 
               key={salon.id}
-              className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all relative flex flex-col justify-between group"
+              className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-7 shadow-2xs hover:shadow-xs transition-all relative flex flex-col justify-between group"
             >
               {/* Card Actions */}
               {userRole === "owner" && (
-                <div className="absolute top-4 right-4 flex items-center gap-1 opacity-85 group-hover:opacity-100 transition-opacity">
+                <div className="absolute top-5 right-5 flex items-center gap-1.5 opacity-90 group-hover:opacity-100 transition-opacity">
                   <button
                     onClick={() => openEditModal(salon)}
-                    className="p-1.5 text-gray-400 hover:text-[#1a3a8f] hover:bg-gray-50 rounded-lg transition-all"
+                    className="p-2 text-slate-400 hover:text-[#1a3a8f] hover:bg-[#eef2ff] border border-transparent hover:border-[#1a3a8f]/10 rounded-xl transition-all active:scale-95"
                     title="Modifica Sede"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDeleteClick(salon.id)}
-                    className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                    className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-200 rounded-xl transition-all active:scale-95"
                     title="Elimina Sede"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -438,53 +447,89 @@ export default function SalonsScreen() {
 
               <div>
                 {/* Visual Header */}
-                <div className="flex items-center gap-3.5 mb-5 border-b border-gray-50 pb-4 pr-12">
-                  <div className="w-10 h-10 rounded-xl bg-[#eef2ff] flex items-center justify-center text-[#1a3a8f] shrink-0">
-                    <Store className="w-5 h-5" />
+                <div className="flex items-center gap-3.5 mb-5 border-b border-slate-100 pb-4 pr-16">
+                  <div className="w-12 h-12 rounded-2xl bg-[#eef2ff] border border-[#1a3a8f]/10 flex items-center justify-center text-[#1a3a8f] shrink-0 shadow-2xs">
+                    <Store className="w-6 h-6" />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="font-serif text-lg font-bold text-[#1a2035] truncate">
+                    <h3 className="text-base sm:text-lg font-bold text-[#1a2035] truncate tracking-tight">
                       {salon.name}
                     </h3>
-                    <span className="inline-block mt-0.5 px-2 py-0.5 rounded bg-green-50 text-green-700 border border-green-100 text-[9px] font-bold uppercase tracking-wider">
+                    <span className="inline-flex items-center gap-1 mt-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 text-[9px] font-bold uppercase tracking-wider shadow-2xs">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                       Sede Attiva
                     </span>
                   </div>
                 </div>
 
                 {/* Details list */}
-                <div className="space-y-3.5 text-sm text-gray-600 mb-6">
-                  <div className="flex items-start gap-2.5">
-                    <MapPin className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
-                    <span className="leading-tight">{salon.address || "Nessun indirizzo specificato"}</span>
+                <div className="space-y-3.5 text-xs sm:text-sm text-slate-600 mb-6">
+                  <div className="flex items-start gap-3 bg-slate-50/70 border border-slate-100 rounded-2xl p-3 shadow-2xs">
+                    <MapPin className="w-4 h-4 text-[#1a3a8f] shrink-0 mt-0.5" />
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Indirizzo</span>
+                      <span className="text-xs font-semibold text-[#1a2035] leading-tight block mt-0.5">
+                        {salon.address || "Nessun indirizzo specificato"}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2.5">
-                    <Phone className="w-4 h-4 text-gray-400 shrink-0" />
-                    <span>{salon.phone || "Nessun telefono inserito"}</span>
+
+                  <div className="flex items-center gap-3 bg-slate-50/70 border border-slate-100 rounded-2xl p-3 shadow-2xs">
+                    <Phone className="w-4 h-4 text-[#1a3a8f] shrink-0" />
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Telefono</span>
+                      <span className="text-xs font-semibold text-[#1a2035] font-mono block mt-0.5">
+                        {salon.phone || "Nessun telefono inserito"}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2.5">
-                    <Clock className="w-4 h-4 text-gray-400 shrink-0" />
-                    <span className="font-medium text-gray-700 bg-gray-50/50 px-2 py-0.5 rounded text-xs">
-                      {salon.hours || "Orari non definiti"}
-                    </span>
+
+                  <div className="flex items-center gap-3 bg-slate-50/70 border border-slate-100 rounded-2xl p-3 shadow-2xs">
+                    <Clock className="w-4 h-4 text-[#1a3a8f] shrink-0" />
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Orari Apertura</span>
+                      <span className="text-xs font-semibold text-[#1a2035] block mt-0.5">
+                        {salon.hours || "Orari non definiti"}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2.5">
-                    <FileText className="w-4 h-4 text-gray-400 shrink-0" />
-                    <span className="text-xs text-gray-600">
-                      P.IVA: <span className="font-semibold text-gray-700">{salon.partitaIva || "Non inserita"}</span>
-                      {salon.useMainCompanyInfo && (
-                        <span className="inline-block ml-2 px-1.5 py-0.5 rounded bg-blue-50 text-[#1a3a8f] border border-blue-100 text-[9px] font-bold uppercase tracking-wider">
-                          Dati Principali
-                        </span>
-                      )}
-                    </span>
+
+                  <div className="flex items-start gap-3 bg-slate-50/70 border border-slate-100 rounded-2xl p-3 shadow-2xs">
+                    <FileText className="w-4 h-4 text-[#1a3a8f] shrink-0 mt-0.5" />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-1">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Partita IVA</span>
+                        {salon.useMainCompanyInfo && (
+                          <span className="inline-block px-2 py-0.5 rounded-full bg-[#eef2ff] text-[#1a3a8f] border border-[#1a3a8f]/15 text-[8px] font-bold uppercase tracking-wider">
+                            Dati Principali
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-xs font-bold text-[#1a2035] font-mono block mt-0.5">
+                        {salon.partitaIva || "Non inserita"}
+                      </span>
+                    </div>
                   </div>
+
+                  {salon.googleReviewUrl && (
+                    <div className="bg-indigo-50/40 border border-indigo-100/60 rounded-2xl p-3 text-xs shadow-2xs">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-700 block">
+                        Filtro Verità (Google Reviews)
+                      </span>
+                      <span className="text-[11px] font-medium text-slate-600 truncate block mt-0.5">
+                        Link recensioni collegato ✓
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
 
               {/* Card Footer info */}
-              <div className="pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400">
-                <span>Codice Sede: <span className="font-mono text-[10px]">{salon.id.slice(0, 8)}</span></span>
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+                <span className="text-[11px] font-medium">Codice Sede:</span>
+                <span className="font-mono text-[11px] font-bold text-slate-600 bg-slate-100/80 px-2.5 py-0.5 rounded-full border border-slate-200/60">
+                  #{salon.id.slice(0, 8)}
+                </span>
               </div>
             </div>
           ))}
@@ -494,17 +539,22 @@ export default function SalonsScreen() {
       {/* Modal create/edit */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-16 md:pt-24 overflow-y-auto">
-          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setModalOpen(false)} />
+          <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm shadow-2xl" onClick={() => setModalOpen(false)} />
           
-          <div className="relative bg-white border border-gray-100 w-full max-w-lg rounded-2xl shadow-xl z-10 overflow-hidden animate-fadeIn flex flex-col max-h-[85vh]">
+          <div className="relative bg-white border border-slate-200/80 w-full max-w-lg rounded-3xl shadow-2xl z-10 overflow-hidden animate-fadeIn flex flex-col max-h-[85vh]">
             {/* Header */}
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between shrink-0">
-              <h3 className="font-serif text-xl font-bold text-[#1a2035]">
-                {selectedSalon ? "Modifica Sede Salone" : "Crea Nuova Sede"}
-              </h3>
+            <div className="px-6 sm:px-8 py-5 border-b border-slate-100 flex items-center justify-between shrink-0 bg-slate-50/70">
+              <div>
+                <span className="text-[10px] bg-[#eef2ff] border border-[#1a3a8f]/10 text-[#1a3a8f] px-3 py-1 rounded-full font-bold uppercase tracking-wider select-none shadow-2xs">
+                  {selectedSalon ? "Configurazione Sede" : "Nuova Struttura"}
+                </span>
+                <h3 className="text-xl sm:text-2xl font-bold text-[#1a2035] mt-1 tracking-tight">
+                  {selectedSalon ? "Modifica Sede Salone" : "Crea Nuova Sede"}
+                </h3>
+              </div>
               <button 
                 onClick={() => setModalOpen(false)}
-                className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all"
+                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-all active:scale-95"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -512,16 +562,16 @@ export default function SalonsScreen() {
 
             {/* Error banner inside form */}
             {errorMsg && (
-              <div className="mx-6 mt-4 p-3.5 rounded-xl bg-red-50 border border-red-100 text-red-700 text-xs font-semibold flex items-center gap-2 shrink-0">
-                <AlertCircle className="w-4 h-4 shrink-0" />
+              <div className="mx-6 sm:mx-8 mt-5 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center gap-2.5 shrink-0 shadow-2xs">
+                <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
                 <span>{errorMsg}</span>
               </div>
             )}
 
             {/* Form */}
-            <form onSubmit={handleSave} className="flex-1 overflow-y-auto p-6 space-y-4">
+            <form onSubmit={handleSave} className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-5">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
                   Nome del Salone *
                 </label>
                 <input
@@ -530,28 +580,28 @@ export default function SalonsScreen() {
                   placeholder="Es: Barber Shop Duomo, Acconciature Elena"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-[#1a3a8f] outline-none transition-all placeholder:text-gray-400"
+                  className="w-full bg-slate-50/90 hover:bg-slate-100/70 border border-slate-200/80 rounded-2xl px-4 py-3 text-sm font-medium text-[#1a2035] focus:outline-none focus:ring-2 focus:ring-[#1a3a8f]/15 focus:border-[#1a3a8f] transition-all placeholder:text-slate-400 shadow-2xs"
                 />
               </div>
 
               {/* Checkbox USA i dati */}
-              <div className="flex items-start gap-3 bg-blue-50/20 border border-blue-50 p-4 rounded-xl">
+              <div className="flex items-start gap-3 bg-[#eef2ff]/50 border border-[#1a3a8f]/15 p-4 rounded-2xl shadow-2xs">
                 <input
                   id="useMainCompanyInfo"
                   type="checkbox"
                   checked={useMainCompanyInfo}
                   onChange={(e) => handleUseMainCompanyInfoChange(e.target.checked)}
-                  className="mt-1 w-4 h-4 text-[#1a3a8f] border-gray-300 rounded focus:ring-[#1a3a8f] cursor-pointer"
+                  className="mt-1 w-4 h-4 text-[#1a3a8f] border-slate-300 rounded focus:ring-[#1a3a8f] cursor-pointer"
                 />
-                <label htmlFor="useMainCompanyInfo" className="text-xs text-gray-700 font-medium select-none cursor-pointer leading-tight">
-                  <span className="font-bold text-[#1a3a8f] block mb-0.5">USA i dati della Sede Legale/Partita IVA principale</span>
+                <label htmlFor="useMainCompanyInfo" className="text-xs text-slate-700 font-medium select-none cursor-pointer leading-tight">
+                  <span className="font-bold text-[#1a3a8f] block mb-0.5">USA i dati della Sede Legale / Partita IVA principale</span>
                   Se abilitato, l'indirizzo della sede e la Partita IVA verranno popolati automaticamente utilizzando i dati aziendali principali dell'account.
                 </label>
               </div>
 
               {/* Partita IVA field */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
                   Partita IVA *
                 </label>
                 <input
@@ -564,16 +614,16 @@ export default function SalonsScreen() {
                     const val = e.target.value.replace(/[^0-9]/g, ""); // Allow only digits
                     setPartitaIva(val);
                   }}
-                  className={`w-full border rounded-xl px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 ${
+                  className={`w-full border rounded-2xl px-4 py-3 text-sm font-mono font-medium outline-none transition-all placeholder:text-slate-400 shadow-2xs ${
                     useMainCompanyInfo 
-                      ? "bg-gray-100 border-gray-200 text-gray-500 cursor-not-allowed" 
-                      : "bg-gray-50 border-gray-200 text-gray-900 focus:border-[#1a3a8f]"
+                      ? "bg-slate-100/80 border-slate-200 text-slate-400 cursor-not-allowed" 
+                      : "bg-slate-50/90 hover:bg-slate-100/70 border-slate-200/80 text-[#1a2035] focus:ring-2 focus:ring-[#1a3a8f]/15 focus:border-[#1a3a8f]"
                   }`}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
                   Indirizzo Fisico *
                 </label>
                 <input
@@ -583,23 +633,23 @@ export default function SalonsScreen() {
                   placeholder="Es: Corso Vittorio Emanuele II, 24, Milano"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  className={`w-full border rounded-xl px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 ${
+                  className={`w-full border rounded-2xl px-4 py-3 text-sm font-medium outline-none transition-all placeholder:text-slate-400 shadow-2xs ${
                     useMainCompanyInfo 
-                      ? "bg-gray-100 border-gray-200 text-gray-500 cursor-not-allowed" 
-                      : "bg-gray-50 border-gray-200 text-gray-900 focus:border-[#1a3a8f]"
+                      ? "bg-slate-100/80 border-slate-200 text-slate-400 cursor-not-allowed" 
+                      : "bg-slate-50/90 hover:bg-slate-100/70 border-slate-200/80 text-[#1a2035] focus:ring-2 focus:ring-[#1a3a8f]/15 focus:border-[#1a3a8f]"
                   }`}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
                   Recapito Telefonico
                 </label>
                 <div className="flex gap-2">
                   <select
                     value={phonePrefix}
                     onChange={(e) => setPhonePrefix(e.target.value)}
-                    className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 text-sm focus:border-[#1a3a8f] outline-none transition-all font-medium shrink-0"
+                    className="bg-slate-50/90 hover:bg-slate-100/70 border border-slate-200/80 rounded-2xl px-3.5 py-3 text-xs sm:text-sm font-bold text-[#1a2035] focus:ring-2 focus:ring-[#1a3a8f]/15 focus:border-[#1a3a8f] outline-none transition-all shrink-0 shadow-2xs"
                   >
                     {COUNTRY_PREFIXES.map((pref) => (
                       <option key={pref.code} value={pref.code}>
@@ -617,31 +667,53 @@ export default function SalonsScreen() {
                       const cleaned = e.target.value.replace(/[^0-9]/g, "");
                       setPhoneBody(cleaned);
                     }}
-                    className="flex-1 min-w-0 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-[#1a3a8f] outline-none transition-all placeholder:text-gray-400 font-medium"
+                    className="flex-1 min-w-0 bg-slate-50/90 hover:bg-slate-100/70 border border-slate-200/80 rounded-2xl px-4 py-3 text-sm font-mono font-medium text-[#1a2035] focus:ring-2 focus:ring-[#1a3a8f]/15 focus:border-[#1a3a8f] outline-none transition-all placeholder:text-slate-400 shadow-2xs"
                   />
                 </div>
               </div>
 
+              {/* Google Reviews Link for Filtro Verità */}
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-400">
+                    Link Recensioni Google Maps (Filtro Verità)
+                  </label>
+                  <span className="text-[10px] text-[#1a3a8f] font-bold bg-[#eef2ff] border border-[#1a3a8f]/10 px-2.5 py-0.5 rounded-full shadow-2xs">
+                    Consigliato
+                  </span>
+                </div>
+                <input
+                  type="url"
+                  placeholder="Es: https://g.page/r/YOUR_ID/review oppure link scheda Google"
+                  value={googleReviewUrl}
+                  onChange={(e) => setGoogleReviewUrl(e.target.value)}
+                  className="w-full bg-slate-50/90 hover:bg-slate-100/70 border border-slate-200/80 rounded-2xl px-4 py-3 text-sm font-medium text-[#1a2035] focus:ring-2 focus:ring-[#1a3a8f]/15 focus:border-[#1a3a8f] outline-none transition-all placeholder:text-slate-400 shadow-2xs"
+                />
+                <p className="text-[11px] text-slate-400 mt-1.5 leading-relaxed">
+                  I clienti che selezioneranno "Tutto Perfetto" verranno reindirizzati qui per lasciare 5 stelle su Google.
+                </p>
+              </div>
+
               {/* Real / structured opening and closing hours */}
-              <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 space-y-3.5">
+              <div className="bg-slate-50/80 border border-slate-200/80 rounded-3xl p-5 space-y-4 shadow-2xs">
                 <span className="block text-xs font-bold uppercase tracking-wider text-[#1a3a8f]">
                   Giorni di Apertura e Orario Operativo
                 </span>
                 
                 <div>
-                  <label className="block text-[11px] font-semibold text-gray-500 mb-2">
+                  <label className="block text-[11px] font-semibold text-slate-500 mb-2.5">
                     Seleziona i giorni di apertura (spunta per abilitare):
                   </label>
-                  <div className="grid grid-cols-4 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     {DAYS_OF_WEEK.map((day) => {
                       const isChecked = selectedDays.includes(day);
                       return (
                         <label 
                           key={day}
-                          className={`flex items-center gap-1.5 p-2 rounded-xl border text-xs font-semibold cursor-pointer transition-all select-none ${
+                          className={`flex items-center gap-2 p-2.5 rounded-2xl border text-xs font-bold cursor-pointer transition-all select-none shadow-2xs active:scale-95 ${
                             isChecked 
-                              ? "bg-blue-50/50 border-blue-200 text-[#1a3a8f]" 
-                              : "bg-white border-gray-200 text-gray-500 hover:bg-gray-50"
+                              ? "bg-[#eef2ff] border-[#1a3a8f]/30 text-[#1a3a8f]" 
+                              : "bg-white border-slate-200/80 text-slate-500 hover:bg-slate-50"
                           }`}
                         >
                           <input 
@@ -656,8 +728,8 @@ export default function SalonsScreen() {
                             }}
                             className="sr-only"
                           />
-                          <div className={`w-4 h-4 rounded flex items-center justify-center border transition-all shrink-0 ${
-                            isChecked ? "bg-[#1a3a8f] border-[#1a3a8f] text-white" : "border-gray-300 bg-white"
+                          <div className={`w-4 h-4 rounded-lg flex items-center justify-center border transition-all shrink-0 ${
+                            isChecked ? "bg-[#1a3a8f] border-[#1a3a8f] text-white" : "border-slate-300 bg-white"
                           }`}>
                             {isChecked && (
                               <svg className="w-2.5 h-2.5 fill-current" viewBox="0 0 20 20">
@@ -665,7 +737,7 @@ export default function SalonsScreen() {
                               </svg>
                             )}
                           </div>
-                          <span>{DAY_ABBREVIATIONS[day] || day.slice(0, 3)}</span>
+                          <span className="truncate">{DAY_ABBREVIATIONS[day] || day.slice(0, 3)}</span>
                         </label>
                       );
                     })}
@@ -674,7 +746,7 @@ export default function SalonsScreen() {
 
                 <div className="grid grid-cols-2 gap-3 pt-1">
                   <div>
-                    <label className="block text-[11px] font-semibold text-gray-500 mb-1">
+                    <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">
                       Ora Apertura *
                     </label>
                     <input
@@ -682,11 +754,11 @@ export default function SalonsScreen() {
                       required
                       value={openTime}
                       onChange={(e) => setOpenTime(e.target.value)}
-                      className="w-full bg-white border border-gray-200 rounded-xl px-3.5 py-2 text-xs font-semibold text-gray-700 outline-none focus:border-[#1a3a8f] transition-all"
+                      className="w-full bg-white border border-slate-200/80 rounded-2xl px-3.5 py-2.5 text-xs font-mono font-bold text-[#1a2035] outline-none focus:ring-2 focus:ring-[#1a3a8f]/15 focus:border-[#1a3a8f] transition-all shadow-2xs"
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-semibold text-gray-500 mb-1">
+                    <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">
                       Ora Chiusura *
                     </label>
                     <input
@@ -694,25 +766,25 @@ export default function SalonsScreen() {
                       required
                       value={closeTime}
                       onChange={(e) => setCloseTime(e.target.value)}
-                      className="w-full bg-white border border-gray-200 rounded-xl px-3.5 py-2 text-xs font-semibold text-gray-700 outline-none focus:border-[#1a3a8f] transition-all"
+                      className="w-full bg-white border border-slate-200/80 rounded-2xl px-3.5 py-2.5 text-xs font-mono font-bold text-[#1a2035] outline-none focus:ring-2 focus:ring-[#1a3a8f]/15 focus:border-[#1a3a8f] transition-all shadow-2xs"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Actions Footer */}
-              <div className="pt-4 border-t border-gray-100 flex items-center justify-end gap-3 mt-6">
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-3 mt-6">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 border rounded-xl text-xs font-semibold text-gray-500 bg-white hover:bg-gray-50 transition-all cursor-pointer"
+                  className="px-5 py-3 border border-slate-200/80 rounded-2xl text-xs font-bold uppercase tracking-wider text-slate-700 bg-slate-100 hover:bg-slate-200 transition-all cursor-pointer active:scale-95 shadow-2xs"
                 >
                   Annulla
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="bg-[#1a3a8f] hover:bg-[#152f73] text-white rounded-xl px-5 py-2 text-xs font-semibold shadow-md flex items-center gap-1.5 transition-all cursor-pointer"
+                  className="bg-[#1a3a8f] hover:bg-[#132c6e] disabled:opacity-50 text-white rounded-2xl px-6 py-3 text-xs font-bold uppercase tracking-wider shadow-2xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
                 >
                   {saving ? (
                     <>
@@ -732,33 +804,33 @@ export default function SalonsScreen() {
       {/* Delete Confirmation Modal */}
       {deleteConfirmSalonId && (
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-16 md:pt-24 overflow-y-auto">
-          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setDeleteConfirmSalonId(null)} />
+          <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm shadow-2xl" onClick={() => setDeleteConfirmSalonId(null)} />
           
-          <div className="relative bg-white border border-gray-100 w-full max-w-md rounded-2xl shadow-xl z-10 overflow-hidden animate-fadeIn p-6">
-            <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-red-600 mb-4">
+          <div className="relative bg-white border border-slate-200/80 w-full max-w-md rounded-3xl shadow-2xl z-10 overflow-hidden animate-fadeIn p-6 sm:p-7">
+            <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center mb-4 shadow-2xs">
               <AlertCircle className="w-6 h-6" />
             </div>
             
-            <h3 className="font-serif text-lg font-bold text-[#1a2035] mb-2">
+            <h3 className="text-lg font-bold text-[#1a2035] mb-2 tracking-tight">
               Sei sicuro di voler eliminare questa sede?
             </h3>
             
-            <p className="text-gray-500 text-xs leading-relaxed mb-6">
-              Questa azione è del tutto irreversibile. Allineamenti storici rimarranno ma i futuri appuntamenti in questa sede potrebbero risentirne o disassociare dati correlati.
+            <p className="text-slate-500 text-xs leading-relaxed mb-6">
+              Questa azione è del tutto irreversibile. Gli allineamenti storici rimarranno ma i futuri appuntamenti in questa sede potrebbero risentirne o disassociare dati correlati.
             </p>
             
             <div className="flex items-center justify-end gap-3">
               <button
                 type="button"
                 onClick={() => setDeleteConfirmSalonId(null)}
-                className="px-4 py-2 border rounded-xl text-xs font-semibold text-gray-500 bg-white hover:bg-gray-50 transition-all cursor-pointer"
+                className="px-5 py-2.5 border border-slate-200/80 rounded-2xl text-xs font-bold uppercase tracking-wider text-slate-700 bg-slate-100 hover:bg-slate-200 transition-all cursor-pointer active:scale-95 shadow-2xs"
               >
                 Annulla
               </button>
               <button
                 type="button"
                 onClick={confirmDelete}
-                className="bg-red-600 hover:bg-red-700 text-white rounded-xl px-4 py-2 text-xs font-semibold shadow-md transition-all cursor-pointer"
+                className="bg-rose-600 hover:bg-rose-700 active:scale-95 text-white rounded-2xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider shadow-2xs transition-all cursor-pointer"
               >
                 Sì, Elimina Sede
               </button>

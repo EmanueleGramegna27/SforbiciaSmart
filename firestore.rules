@@ -18,14 +18,19 @@ service cloud.firestore {
 
     // Returns true if the request is from the owner or a validated team member of that owner
     function isAuthorizedOwner(ownerId) {
-      return ownerId == request.auth.uid || 
+      return request.auth != null && (
+             ownerId == request.auth.uid || 
              (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
               get(/databases/$(database)/documents/users/$(request.auth.uid)).data.tenant_id == ownerId) ||
              (exists(/databases/$(database)/documents/team/$(request.auth.uid)) &&
               get(/databases/$(database)/documents/team/$(request.auth.uid)).data.ownerId == ownerId) ||
-             (request.auth != null && 'token' in request.auth && 'email' in request.auth.token && request.auth.token.email != null &&
+             ('token' in request.auth && 'email' in request.auth.token && request.auth.token.email != null &&
               exists(/databases/$(database)/documents/team/$(request.auth.token.email)) &&
-              get(/databases/$(database)/documents/team/$(request.auth.token.email)).data.ownerId == ownerId);
+              get(/databases/$(database)/documents/team/$(request.auth.token.email)).data.ownerId == ownerId) ||
+             ('token' in request.auth && 'email' in request.auth.token && request.auth.token.email != null &&
+              exists(/databases/$(database)/documents/team/$(request.auth.token.email.lower())) &&
+              get(/databases/$(database)/documents/team/$(request.auth.token.email.lower())).data.ownerId == ownerId)
+      );
     }
 
     // --- ENTITY SCHEMA VALIDATION HELPERS ---
@@ -36,6 +41,7 @@ service cloud.firestore {
              data.hours is string && data.hours.size() <= 128 &&
              (!('partitaIva' in data) || (data.partitaIva is string && data.partitaIva.size() <= 64)) &&
              (!('useMainCompanyInfo' in data) || data.useMainCompanyInfo is bool) &&
+             (!('googleReviewUrl' in data) || (data.googleReviewUrl is string && data.googleReviewUrl.size() <= 512)) &&
              (!('sedeLegale' in data) || (data.sedeLegale is string && data.sedeLegale.size() <= 256)) &&
              isAuthorizedOwner(data.ownerId);
     }
@@ -85,6 +91,8 @@ service cloud.firestore {
              (!('email' in data) || (data.email is string && data.email.size() <= 128)) &&
              data.salonId is string &&
              (!('notes' in data) || (data.notes is string && data.notes.size() <= 1000)) &&
+             (!('isTestData' in data) || data.isTestData is bool) &&
+             (!('createdAt' in data) || data.createdAt is string) &&
              isAuthorizedOwner(data.ownerId);
     }
 
@@ -101,7 +109,14 @@ service cloud.firestore {
              data.price is number && data.price >= 0 &&
              data.status in ['confirmed', 'pending', 'cancelled', 'completed'] &&
              (!('createdAt' in data) || data.createdAt is string) &&
-             isAuthorizedOwner(data.ownerId);
+             (!('isTestData' in data) || data.isTestData is bool) &&
+             (!('isFlashSlot' in data) || data.isFlashSlot is bool) &&
+             (!('source' in data) || (data.source is string && data.source.size() <= 64)) &&
+             (!('flashSlotId' in data) || (data.flashSlotId is string && data.flashSlotId.size() <= 128)) &&
+             (!('customerPhone' in data) || (data.customerPhone is string && data.customerPhone.size() <= 32)) &&
+             (!('notes' in data) || (data.notes is string && data.notes.size() <= 1000)) &&
+             data.ownerId is string &&
+             (isAuthorizedOwner(data.ownerId) || (data.notes is string && data.notes.matches('.*Flash Slot.*')));
     }
 
     function isValidCustomPrice(data) {
@@ -226,7 +241,10 @@ service cloud.firestore {
 
     match /appointments/{appointmentId} {
       allow read, list: if isSignedIn() && isAuthorizedOwner(resource.data.ownerId);
-      allow create: if isSignedIn() && isValidId(appointmentId) && isValidAppointment(request.resource.data);
+      allow create: if isValidId(appointmentId) && isValidAppointment(request.resource.data) && (
+        (isSignedIn() && isAuthorizedOwner(request.resource.data.ownerId)) ||
+        (request.resource.data.notes is string && request.resource.data.notes.matches('.*Flash Slot.*'))
+      );
       allow update: if isSignedIn() && isValidId(appointmentId) && isValidAppointment(request.resource.data) && isAuthorizedOwner(resource.data.ownerId);
       allow delete: if isSignedIn() && isValidId(appointmentId) && isAuthorizedOwner(resource.data.ownerId);
     }
@@ -254,19 +272,32 @@ service cloud.firestore {
 
     match /team/{memberId} {
       allow read: if isSignedIn() && (
+        resource == null ||
         memberId == request.auth.uid ||
         memberId == request.auth.token.email ||
-        (resource != null && (
-          isAuthorizedOwner(resource.data.ownerId) ||
-          resource.data.email == request.auth.token.email ||
-          resource.data.uid == request.auth.uid
-        ))
+        (request.auth.token.email != null && (
+          memberId == request.auth.token.email.lower() ||
+          memberId == request.auth.token.email.replace("@gmail.com", "@gmal.com").lower() ||
+          memberId == request.auth.token.email.replace("@gmal.com", "@gmail.com").lower()
+        )) ||
+        isAuthorizedOwner(resource.data.ownerId) ||
+        resource.data.email == request.auth.token.email ||
+        (request.auth.token.email != null && (
+          resource.data.email == request.auth.token.email.lower() ||
+          resource.data.email == request.auth.token.email.replace("@gmail.com", "@gmal.com").lower() ||
+          resource.data.email == request.auth.token.email.replace("@gmal.com", "@gmail.com").lower()
+        )) ||
+        resource.data.uid == request.auth.uid
       );
       allow list: if isSignedIn() && (
         isAuthorizedOwner(resource.data.ownerId) ||
         resource.data.email == request.auth.token.email ||
-        (request.auth.token.email != null && resource.data.email == request.auth.token.email.replace("@gmail.com", "@gmal.com")) ||
-        (request.auth.token.email != null && resource.data.email == request.auth.token.email.replace("@gmal.com", "@gmail.com"))
+        (request.auth.token.email != null && (
+          resource.data.email == request.auth.token.email.lower() ||
+          resource.data.email == request.auth.token.email.replace("@gmail.com", "@gmal.com").lower() ||
+          resource.data.email == request.auth.token.email.replace("@gmal.com", "@gmail.com").lower()
+        )) ||
+        resource.data.uid == request.auth.uid
       );
       allow create: if isSignedIn() && isValidId(memberId) && (
         memberId == request.auth.uid ||
@@ -304,6 +335,43 @@ service cloud.firestore {
       allow read, list: if isSignedIn() && (resource == null || !('ownerId' in resource.data) || resource.data.ownerId == request.auth.uid || isAuthorizedOwner(resource.data.ownerId));
       allow create: if isSignedIn() && isValidId(campaignId) && isValidCampaign(request.resource.data);
       allow update, delete: if isSignedIn() && isValidId(campaignId) && (resource == null || !('ownerId' in resource.data) || resource.data.ownerId == request.auth.uid || isAuthorizedOwner(resource.data.ownerId));
+    }
+
+    match /flash_slots/{slotId} {
+      allow read: if true;
+      allow list: if isSignedIn() && (resource == null || !('ownerId' in resource.data) || resource.data.ownerId == request.auth.uid || isAuthorizedOwner(resource.data.ownerId));
+      allow create: if isSignedIn() && isValidId(slotId) && isAuthorizedOwner(request.resource.data.ownerId);
+      allow update: if isValidId(slotId) && (
+        (isSignedIn() && (resource == null || !('ownerId' in resource.data) || resource.data.ownerId == request.auth.uid || isAuthorizedOwner(resource.data.ownerId))) ||
+        (resource.data.status == 'open' && request.resource.data.status == 'claimed')
+      );
+      allow delete: if isSignedIn() && isValidId(slotId) && isAuthorizedOwner(resource.data.ownerId);
+    }
+
+    match /feedback_shield_requests/{reqId} {
+      allow read: if true;
+      allow list: if isSignedIn() && (resource == null || !('ownerId' in resource.data) || resource.data.ownerId == request.auth.uid || isAuthorizedOwner(resource.data.ownerId));
+      allow create: if isSignedIn() && isValidId(reqId) && isAuthorizedOwner(request.resource.data.ownerId);
+      allow update: if isValidId(reqId) && (
+        (isSignedIn() && (resource == null || !('ownerId' in resource.data) || resource.data.ownerId == request.auth.uid || isAuthorizedOwner(resource.data.ownerId))) ||
+        true // Allow client submission through magic link token
+      );
+      allow delete: if isSignedIn() && isValidId(reqId) && isAuthorizedOwner(resource.data.ownerId);
+    }
+
+    match /google_business_profiles/{salonId} {
+      allow read, list: if isSignedIn();
+      allow create, update, delete: if isSignedIn();
+    }
+
+    match /google_business_connections/{salonId} {
+      allow read, list: if isSignedIn();
+      allow create, update, delete: if isSignedIn();
+    }
+
+    match /google_maps_photo_queue/{queueId} {
+      allow read, list: if isSignedIn();
+      allow create, update, delete: if isSignedIn();
     }
 
   }

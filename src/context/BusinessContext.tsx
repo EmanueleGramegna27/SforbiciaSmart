@@ -152,32 +152,29 @@ export function BusinessProvider({ children }: { children: React.ReactNode }) {
       docByUid = snap.exists() ? snap.data() : null;
       updateState();
     }, (err) => {
-      console.error("Error listening to UID doc:", err);
       docByUid = null;
       updateState();
     });
 
-    // 2. Listen to doc by exact Email (which is the document ID)
+    // 2. Listen to doc by exact Email (lowercase and standard)
     let unsubEmailDoc = () => {};
     if (emailKey) {
       unsubEmailDoc = onSnapshot(doc(db, "team", emailKey), (snap) => {
         docByEmail = snap.exists() ? snap.data() : null;
         updateState();
       }, (err) => {
-        console.error("Error listening to Email doc:", err);
         docByEmail = null;
         updateState();
       });
     }
 
-    // 3. Listen to doc by Alt Email (which is the document ID)
+    // 3. Listen to doc by Alt Email if applicable
     let unsubAltEmailDoc = () => {};
-    if (altEmailKey) {
+    if (altEmailKey && altEmailKey !== emailKey) {
       unsubAltEmailDoc = onSnapshot(doc(db, "team", altEmailKey), (snap) => {
         docByAltEmail = snap.exists() ? snap.data() : null;
         updateState();
       }, (err) => {
-        console.error("Error listening to Alt Email doc:", err);
         docByAltEmail = null;
         updateState();
       });
@@ -191,21 +188,19 @@ export function BusinessProvider({ children }: { children: React.ReactNode }) {
         docByEmailQuery = !snap.empty ? snap.docs[0].data() : null;
         updateState();
       }, (err) => {
-        console.error("Error listening to Email query:", err);
         docByEmailQuery = null;
         updateState();
       });
     }
 
-    // 5. Query fallback for Alt Email (if the existing doc has a random auto-ID and has the typo email)
+    // 5. Query fallback for Alt Email
     let unsubAltEmailQuery = () => {};
-    if (altEmailKey) {
+    if (altEmailKey && altEmailKey !== emailKey) {
       const q = query(collection(db, "team"), where("email", "==", altEmailKey));
       unsubAltEmailQuery = onSnapshot(q, (snap) => {
         docByAltEmailQuery = !snap.empty ? snap.docs[0].data() : null;
         updateState();
       }, (err) => {
-        console.error("Error listening to Alt Email query:", err);
         docByAltEmailQuery = null;
         updateState();
       });

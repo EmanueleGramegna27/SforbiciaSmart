@@ -712,8 +712,8 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
   if (loading) {
     return (
       <div className="space-y-4">
-        <div className="h-8 w-48 bg-gray-200 rounded animate-pulse" />
-        <div className="bg-white border rounded-2xl p-6 h-96 skeleton" />
+        <div className="h-8 w-48 bg-slate-200 rounded-2xl animate-pulse" />
+        <div className="bg-white border border-slate-200/80 rounded-3xl p-6 h-96 skeleton" />
       </div>
     );
   }
@@ -724,32 +724,32 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
       {/* Header Panel */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="font-serif text-2xl md:text-3xl font-bold tracking-tight text-[#1a2035]">
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-[#1a2035]">
             Anagrafica Clienti e Schede Tecniche
           </h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <p className="text-slate-500 text-sm mt-1">
             Visualizza e gestisci le schede dei clienti raggruppate per sede, importa listini, ed assegna prezzi speciali dedicati.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+        <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
           {/* Dynamic Monthly Report Limit Indicator */}
           {!loadingReportCount && (
-            <div className={`px-3 py-2 rounded-xl border flex items-center gap-2.5 shadow-sm font-medium transition-all ${
+            <div className={`px-3.5 py-2 rounded-2xl border flex items-center gap-2.5 shadow-2xs font-medium transition-all ${
               businessSettings?.userPlan === "solo_pro" && monthlyReportCount >= 3
-                ? "bg-rose-50 border-rose-200 text-rose-800"
-                : "bg-indigo-50/50 border-indigo-100/60 text-[#1a3a8f]"
+                ? "bg-rose-50/80 border-rose-200 text-rose-800"
+                : "bg-[#eef2ff] border-[#1a3a8f]/15 text-[#1a3a8f]"
             }`}>
-              <FileSpreadsheet className={`w-4 h-4 shrink-0 ${businessSettings?.userPlan === "solo_pro" && monthlyReportCount >= 3 ? "text-rose-500 animate-pulse" : "text-indigo-500"}`} />
+              <FileSpreadsheet className={`w-4 h-4 shrink-0 ${businessSettings?.userPlan === "solo_pro" && monthlyReportCount >= 3 ? "text-rose-500 animate-pulse" : "text-[#1a3a8f]"}`} />
               <div className="text-left leading-tight">
-                <span className="block text-[9px] font-bold uppercase tracking-wider text-gray-400">Report Mensili</span>
-                <span className="text-[11px] font-semibold">
+                <span className="block text-[9px] font-bold uppercase tracking-wider text-slate-400">Report Mensili</span>
+                <span className="text-xs font-semibold">
                   {businessSettings?.userPlan === "solo_pro" ? (
                     <span>
-                      {monthlyReportCount} / 3 <span className="text-[9px] font-normal text-gray-500">({Math.max(0, 3 - monthlyReportCount)} rimasti)</span>
+                      {monthlyReportCount} / 3 <span className="text-[10px] font-normal text-slate-500">({Math.max(0, 3 - monthlyReportCount)} rimasti)</span>
                     </span>
                   ) : (
                     <span>
-                      {monthlyReportCount} / ∞ <span className="text-[9px] font-normal text-emerald-600">(Illimitati)</span>
+                      {monthlyReportCount} / ∞ <span className="text-[10px] font-medium text-emerald-600">(Illimitati)</span>
                     </span>
                   )}
                 </span>
@@ -761,7 +761,7 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
           <button
             onClick={handleExportXLSX}
             disabled={customers.length === 0}
-            className="flex-1 sm:flex-none border border-gray-200 bg-[#eef2ff] hover:bg-slate-50 text-[#1a3a8f] border-[#1a3a8f]/20 rounded-xl px-4 py-2.5 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer transition-all disabled:opacity-50"
+            className="flex-1 sm:flex-none border border-slate-200/80 bg-[#eef2ff] hover:bg-[#e0e7ff] text-[#1a3a8f] rounded-2xl px-4 py-2.5 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.98] shadow-2xs disabled:opacity-50"
             title={selectedCount > 0 ? `Esporta ${selectedCount} clienti selezionati in .XLSX` : "Esporta tutti i clienti in .XLSX"}
           >
             <Download className="w-4 h-4" />
@@ -769,7 +769,7 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
           </button>
           
           {/* Import element */}
-          <label className="flex-1 sm:flex-none border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 rounded-xl px-4 py-2.5 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer transition-all text-center">
+          <label className="flex-1 sm:flex-none border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-700 rounded-2xl px-4 py-2.5 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.98] shadow-2xs text-center">
             <Upload className="w-4 h-4" />
             <span>Importa Excel</span>
             <input 
@@ -782,7 +782,7 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
 
           <button
             onClick={openCreateModal}
-            className="flex-1 sm:flex-none bg-[#1a3a8f] hover:bg-[#152f73] text-white rounded-xl px-5 py-2.5 text-sm font-semibold shadow-md flex items-center justify-center gap-2 transition-all cursor-pointer"
+            className="flex-1 sm:flex-none bg-[#1a3a8f] hover:bg-[#152f73] text-white rounded-2xl px-5 py-2.5 text-xs font-semibold shadow-sm shadow-[#1a3a8f]/20 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             Nuovo Cliente
@@ -792,8 +792,8 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
 
       {/* Alert if Monthly Report Limit is Reached */}
       {!loadingReportCount && businessSettings?.userPlan === "solo_pro" && monthlyReportCount >= 3 && (
-        <div className="bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl p-4 flex items-start gap-3.5 shadow-sm animate-fadeIn">
-          <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+        <div className="bg-amber-50/90 border border-amber-200/80 text-amber-900 rounded-3xl p-4.5 flex items-start gap-3.5 shadow-2xs animate-fadeIn">
+          <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
           <div className="space-y-1">
             <h4 className="text-xs font-bold uppercase tracking-wider text-amber-800">Limite Report Mensili Raggiunto</h4>
             <p className="text-xs text-amber-700 leading-relaxed">
@@ -806,52 +806,52 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
 
       {/* Help block explaining customer Excel import structure */}
       {showImportGuide && (
-        <div className="bg-gradient-to-r from-slate-50 to-indigo-50/30 border border-slate-200/80 rounded-2xl p-5 shadow-sm relative animate-fadeIn overflow-hidden">
+        <div className="bg-slate-50/90 border border-slate-200/80 rounded-3xl p-5 md:p-6 shadow-2xs relative animate-fadeIn overflow-hidden backdrop-blur-xs">
           <button 
             onClick={() => setShowImportGuide(false)}
-            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-slate-100/80 transition-all cursor-pointer"
+            className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1.5 rounded-2xl hover:bg-slate-200/60 transition-all active:scale-95 cursor-pointer"
             title="Nascondi Guida"
           >
             <X className="w-4 h-4" />
           </button>
           
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="space-y-3 max-w-4xl">
+            <div className="space-y-3.5 max-w-4xl">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#1a3a8f]/10 text-[#1a3a8f] flex items-center justify-center font-bold">
+                <div className="w-9 h-9 rounded-2xl bg-[#eef2ff] text-[#1a3a8f] border border-[#1a3a8f]/10 flex items-center justify-center font-bold shadow-2xs">
                   <FileSpreadsheet className="w-5 h-5" />
                 </div>
-                <h3 className="font-serif text-base font-bold text-[#1a2035]">
+                <h3 className="text-base font-bold text-[#1a2035] tracking-tight">
                   Guida alla compilazione del file per l'importazione
                 </h3>
               </div>
               
-              <p className="text-gray-500 text-xs leading-relaxed">
-                Per caricare massivamente la tua lista dei clienti, puoi preparare un foglio di calcolo (<span className="font-semibold text-gray-700">XLS, XLSX o CSV</span>). Se nel file inserisci una <span className="font-semibold text-[#1a3a8f]">Sede Associata non ancora presente</span> sul portale, il sistema provvederà a <span className="underline font-semibold text-[#1a3a8f]">crearla automaticamente senza creare duplicati</span>!
+              <p className="text-slate-500 text-xs leading-relaxed">
+                Per caricare massivamente la tua lista dei clienti, puoi preparare un foglio di calcolo (<span className="font-semibold text-slate-700">XLS, XLSX o CSV</span>). Se nel file inserisci una <span className="font-semibold text-[#1a3a8f]">Sede Associata non ancora presente</span> sul portale, il sistema provvederà a <span className="underline font-semibold text-[#1a3a8f]">crearla automaticamente senza creare duplicati</span>!
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-1">
-                <div className="bg-white border border-slate-200/60 rounded-xl p-3">
-                  <span className="block text-xs font-bold text-gray-800 mb-0.5">Nome / Cognome</span>
-                  <p className="text-[11px] text-gray-500 leading-normal">
+                <div className="bg-white border border-slate-200/70 rounded-2xl p-3.5 shadow-2xs">
+                  <span className="block text-xs font-bold text-slate-800 mb-1">Nome / Cognome</span>
+                  <p className="text-[11px] text-slate-500 leading-relaxed">
                     <span className="text-red-500 font-bold">* Richiesto</span>. Nome completo del cliente o della ditta (es: <span className="italic">Alessia Romano</span>).
                   </p>
                 </div>
                 
-                <div className="bg-white border border-slate-200/60 rounded-xl p-3">
-                  <span className="block text-xs font-bold text-gray-800 mb-0.5">Telefono / Email</span>
-                  <p className="text-[11px] text-gray-500 leading-normal">
+                <div className="bg-white border border-slate-200/70 rounded-2xl p-3.5 shadow-2xs">
+                  <span className="block text-xs font-bold text-slate-800 mb-1">Telefono / Email</span>
+                  <p className="text-[11px] text-slate-500 leading-relaxed">
                     Recapito cliente. In mancanza di Telefono verrà inizializzato come <span className="italic">"0000000"</span>.
                   </p>
                 </div>
 
-                <div className="bg-white border border-slate-200/60 rounded-xl p-3 col-span-1 sm:col-span-2 md:col-span-1">
-                  <span className="block text-xs font-bold text-[#1a3a8f] mb-0.5 flex items-center justify-between">
+                <div className="bg-white border border-slate-200/70 rounded-2xl p-3.5 col-span-1 sm:col-span-2 md:col-span-1 shadow-2xs">
+                  <span className="block text-xs font-bold text-[#1a3a8f] mb-1 flex items-center justify-between">
                     <span>Sede Associata</span>
-                    <span className="text-[9px] bg-[#1a3a8f]/10 text-[#1a3a8f] px-1.5 py-0.5 rounded-full font-bold">Auto-creazione</span>
+                    <span className="text-[9px] bg-[#eef2ff] text-[#1a3a8f] border border-[#1a3a8f]/10 px-2 py-0.5 rounded-full font-bold">Auto-creazione</span>
                   </span>
-                  <p className="text-[11px] text-gray-500 leading-normal">
-                    Se indicata, collega il cliente. Se non è presente nel database, <span className="font-semibold text-[#1a3a8f]">la creiamo all'istante</span> senza duplicazioni!
+                  <p className="text-[11px] text-slate-500 leading-relaxed">
+                    Se indicata, collega il cliente. Se non presente, <span className="font-semibold text-[#1a3a8f]">la creiamo all'istante</span> senza duplicazioni!
                   </p>
                 </div>
               </div>
@@ -860,12 +860,12 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
             <div className="shrink-0 flex flex-col gap-1.5 justify-center">
               <button
                 onClick={handleDownloadTemplate}
-                className="bg-[#1a3a8f] hover:bg-[#152f73] text-white rounded-xl px-4 py-2.5 text-xs font-semibold shadow-md flex items-center justify-center gap-2 transition-all cursor-pointer whitespace-nowrap"
+                className="bg-[#1a3a8f] hover:bg-[#152f73] text-white rounded-2xl px-4 py-2.5 text-xs font-semibold shadow-sm shadow-[#1a3a8f]/20 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer whitespace-nowrap"
               >
                 <Download className="w-4 h-4 shrink-0" />
                 Scarica Modello Excel
               </button>
-              <span className="text-[10px] text-gray-400 font-medium text-center">
+              <span className="text-[10px] text-slate-400 font-medium text-center">
                 Modello precompilato di esempio
               </span>
             </div>
@@ -878,13 +878,13 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
         
         {/* Bulk Selection control bar for Exporting */}
         {customers.length > 0 && (
-          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
-            <div className="flex items-center gap-2.5 text-xs font-semibold text-gray-700">
-              <div className="bg-[#1a3a8f] text-white px-2.5 py-1 rounded-lg text-[11px] font-bold">
+          <div className="bg-slate-50/90 border border-slate-200/80 rounded-3xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs backdrop-blur-xs">
+            <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-700">
+              <div className="bg-[#1a3a8f] text-white px-3 py-1 rounded-full text-[11px] font-bold shadow-2xs">
                 {selectedCount} su {customers.length} selezionati
               </div>
-              <span className="text-gray-300">|</span>
-              <span className="text-gray-500 font-medium text-[11px]">
+              <span className="text-slate-300">|</span>
+              <span className="text-slate-500 font-medium text-[11px]">
                 {selectedCount > 0 
                   ? "Esporta scaricherà solo i clienti spuntati" 
                   : "Spunta i clienti desiderati oppure esporta l'intera lista"}
@@ -894,7 +894,7 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
               <button
                 type="button"
                 onClick={handleSelectAll}
-                className="text-[11px] bg-white hover:bg-gray-100 border border-gray-255 text-[#1a2035] font-bold px-3 py-1.5 rounded-lg transition-all cursor-pointer shadow-sm select-none"
+                className="text-[11px] bg-white hover:bg-slate-50 border border-slate-200/80 text-[#1a2035] font-bold px-3.5 py-1.5 rounded-2xl transition-all active:scale-[0.98] cursor-pointer shadow-2xs select-none"
               >
                 {selectedCount === customers.length ? "Deseleziona Tutti" : "Seleziona Tutti"}
               </button>
@@ -902,7 +902,7 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
                 <button
                   type="button"
                   onClick={handleDeselectAll}
-                  className="text-[11px] bg-red-50 hover:bg-red-100 text-red-700 font-bold px-3 py-1.5 rounded-lg transition-all cursor-pointer"
+                  className="text-[11px] bg-red-50 hover:bg-red-100 text-red-700 font-bold px-3.5 py-1.5 rounded-2xl border border-red-200/80 transition-all active:scale-[0.98] cursor-pointer shadow-2xs"
                 >
                   Azzera Selezione
                 </button>
@@ -912,11 +912,11 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
         )}
         
         {salons.length === 0 && (
-          <div className="p-4 rounded-2xl bg-amber-50 border border-amber-100 text-amber-800 text-xs font-semibold flex items-start gap-2.5">
-            <AlertCircle className="w-5 h-5 shrink-0 text-amber-500" />
+          <div className="p-4.5 rounded-3xl bg-amber-50/90 border border-amber-200/80 text-amber-800 text-xs font-semibold flex items-start gap-3 shadow-2xs">
+            <AlertCircle className="w-5 h-5 shrink-0 text-amber-600" />
             <div>
               <p className="font-bold">Nessun salone disponibile!</p>
-              <p className="font-medium mt-0.5 text-amber-900/80">
+              <p className="font-medium mt-0.5 text-amber-900/80 leading-relaxed">
                 Crea almeno un salone per visualizzare e raggruppare i clienti in modo corretto.
               </p>
             </div>
@@ -930,21 +930,23 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
           return (
             <div 
               key={salon.id}
-              className="bg-white border border-gray-150 rounded-2xl shadow-sm overflow-hidden"
+              className="bg-white border border-slate-200/80 rounded-3xl shadow-2xs overflow-hidden"
             >
               {/* Accordion Trigger Header */}
               <div
                 onClick={() => toggleAccordion(salon.id)}
-                className="w-full bg-gray-50/50 hover:bg-gray-50 px-6 py-4 flex items-center justify-between font-serif text-base font-bold text-[#1a2035] transition-all border-b border-gray-100 text-left cursor-pointer select-none"
+                className="w-full bg-slate-50/80 hover:bg-slate-100/70 px-6 py-4.5 flex items-center justify-between text-base font-bold text-[#1a2035] tracking-tight transition-all border-b border-slate-100 text-left cursor-pointer select-none backdrop-blur-xs"
               >
                 <div className="flex items-center gap-3">
-                  <Store className="w-5 h-5 text-[#1a3a8f]" />
+                  <div className="w-8 h-8 rounded-xl bg-[#eef2ff] text-[#1a3a8f] border border-[#1a3a8f]/10 flex items-center justify-center shadow-2xs">
+                    <Store className="w-4 h-4" />
+                  </div>
                   <span>{salon.name}</span>
-                  <span className="text-xs font-sans text-gray-400 bg-white border border-gray-200/60 rounded-full px-2.5 py-0.5 leading-none font-bold">
+                  <span className="text-xs text-slate-500 bg-white border border-slate-200/70 rounded-full px-2.5 py-0.5 leading-none font-semibold shadow-2xs">
                     {list.length} {list.length === 1 ? "cliente" : "clienti"}
                   </span>
                 </div>
-                <div className="flex items-center gap-3.5">
+                <div className="flex items-center gap-3">
                   {list.length > 0 && (
                     <button
                       type="button"
@@ -952,20 +954,20 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
                         e.stopPropagation();
                         handleSelectAllInSalon(salon.id);
                       }}
-                      className="text-[11px] font-sans bg-[#1a3a8f]/10 text-[#1a3a8f] hover:bg-[#1a3a8f]/20 font-bold px-2.5 py-1 rounded-lg transition-all cursor-pointer whitespace-nowrap"
+                      className="text-[11px] bg-[#eef2ff] text-[#1a3a8f] border border-[#1a3a8f]/15 hover:bg-[#e0e7ff] font-bold px-3 py-1 rounded-xl transition-all active:scale-95 cursor-pointer whitespace-nowrap shadow-2xs"
                     >
                       {isAllInSalonSelected(salon.id) ? "Deseleziona Negozio" : "Seleziona Tutti"}
                     </button>
                   )}
-                  {isOpen ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
+                  {isOpen ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
                 </div>
               </div>
 
               {/* Collapsible item list */}
               {isOpen && (
-                <div className="divide-y divide-gray-50 animate-fadeIn">
+                <div className="divide-y divide-slate-100 animate-fadeIn">
                   {list.length === 0 ? (
-                    <div className="p-6 text-center text-xs text-gray-400 italic">
+                    <div className="p-8 text-center text-xs text-slate-400 font-medium">
                       Nessun cliente registrato a questa sede. Clicca su "Nuovo Cliente" per aggiungerne uno.
                     </div>
                   ) : (
@@ -978,8 +980,8 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
                             setActiveCustDetailsId(cust.id);
                             setShowTechSheetModal(true);
                           }}
-                          className={`p-4 px-6 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-slate-50/75 cursor-pointer duration-75 text-sm gap-4 ${
-                            activeCustDetailsId === cust.id && (showTechSheetModal || showCustomPricesModal) ? "bg-[#eef2ff]/50 border-l-4 border-l-[#1a3a8f]" : ""
+                          className={`p-4 px-6 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-slate-50/70 cursor-pointer duration-75 text-sm gap-4 transition-colors ${
+                            activeCustDetailsId === cust.id && (showTechSheetModal || showCustomPricesModal) ? "bg-[#eef2ff]/40 border-l-4 border-l-[#1a3a8f]" : ""
                           }`}
                         >
                           <div className="min-w-0 flex items-center gap-3">
@@ -994,25 +996,25 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
                                 }));
                               }}
                               onClick={(e) => e.stopPropagation()}
-                              className="w-4 h-4 rounded text-[#1a3a8f] border-gray-300 focus:ring-[#1a3a8f] cursor-pointer accent-[#1a3a8f] shrink-0"
+                              className="w-4 h-4 rounded text-[#1a3a8f] border-slate-300 focus:ring-[#1a3a8f] cursor-pointer accent-[#1a3a8f] shrink-0"
                             />
-                            <div className="w-9 h-9 rounded-full bg-indigo-50 flex items-center justify-center text-[#1a3a8f] font-bold text-xs shrink-0 select-none">
+                            <div className="w-10 h-10 rounded-2xl bg-[#eef2ff] text-[#1a3a8f] border border-[#1a3a8f]/10 flex items-center justify-center font-bold text-xs shrink-0 select-none shadow-2xs">
                               {cust.name.slice(0, 2).toUpperCase()}
                             </div>
                             <div className="min-w-0 flex-1">
                               <div className="flex flex-wrap items-center gap-2">
-                                <h4 className="font-semibold text-gray-900 truncate">
+                                <h4 className="font-bold text-[#1a2035] text-sm tracking-tight truncate">
                                   {cust.name}
                                 </h4>
                                 {count > 0 && (
-                                  <span className="inline-flex items-center gap-1 bg-amber-50 border border-amber-200 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full shadow-3xs" title={`${count} tariffe speciali attive`}>
-                                    <Coins className="w-3 h-3 text-amber-500 shrink-0" />
+                                  <span className="inline-flex items-center gap-1 bg-amber-50 border border-amber-200/80 text-amber-800 text-[10px] font-semibold px-2.5 py-0.5 rounded-full shadow-2xs" title={`${count} tariffe speciali attive`}>
+                                    <Coins className="w-3 h-3 text-amber-600 shrink-0" />
                                     <span>{count} {count === 1 ? "Tariffa Spec." : "Tariffe Spec."}</span>
                                   </span>
                                 )}
                               </div>
-                              <p className="text-xs text-gray-500 font-medium flex items-center gap-1.5 mt-0.5">
-                                <Phone className="w-3 h-3 text-gray-400" />
+                              <p className="text-xs text-slate-500 font-medium flex items-center gap-1.5 mt-0.5">
+                                <Phone className="w-3 h-3 text-slate-400" />
                                 {cust.phone || "---"}
                               </p>
                             </div>
@@ -1020,7 +1022,7 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
 
                           <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap shrink-0 ml-7 sm:ml-0">
                             {cust.email && (
-                              <span className="hidden md:inline text-xs text-gray-400 font-medium truncate max-w-[140px] mr-1.5">
+                              <span className="hidden md:inline text-xs text-slate-400 font-medium truncate max-w-[140px] mr-1.5">
                                 {cust.email}
                               </span>
                             )}
@@ -1031,7 +1033,7 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
                                 setActiveCustDetailsId(cust.id);
                                 setShowTechSheetModal(true);
                               }}
-                              className="p-1 px-3 py-1.5 border border-indigo-200/60 hover:border-indigo-300 bg-[#eef2ff] hover:bg-indigo-100/60 text-[#1a3a8f] rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 shadow-sm text-xs font-bold"
+                              className="p-1 px-3 py-1.5 border border-[#1a3a8f]/15 bg-[#eef2ff] hover:bg-[#e0e7ff] text-[#1a3a8f] rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 shadow-2xs text-xs font-semibold active:scale-95"
                               title="Apri immediatamente la scheda tecnica"
                             >
                               <FileText className="w-3.5 h-3.5" />
@@ -1044,28 +1046,28 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
                                 setActiveCustDetailsId(cust.id);
                                 setShowCustomPricesModal(true);
                               }}
-                              className="p-1 px-3 py-1.5 border border-amber-200/60 hover:border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 shadow-sm text-xs font-bold"
+                              className="p-1 px-3 py-1.5 border border-amber-200/80 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 shadow-2xs text-xs font-semibold active:scale-95"
                               title="Gestisci tariffe speciali dedicate"
                             >
-                              <Coins className="w-3.5 h-3.5 text-amber-500" />
+                              <Coins className="w-3.5 h-3.5 text-amber-600" />
                               <span>Tariffe</span>
                             </button>
                             <button
                               type="button"
                               onClick={(e) => openEditModal(cust, e)}
-                              className="p-1 px-3 py-1.5 border border-gray-200 hover:border-gray-300 bg-white hover:bg-slate-50 text-gray-700 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1 shrink-0 shadow-sm text-xs font-semibold"
+                              className="p-1 px-3 py-1.5 border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-700 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 shadow-2xs text-xs font-semibold active:scale-95"
                               title="Modifica Anagrafica"
                             >
-                              <Edit2 className="w-3.5 h-3.5 text-gray-500" />
+                              <Edit2 className="w-3.5 h-3.5 text-slate-500" />
                               <span>Modifica</span>
                             </button>
                             <button
                               type="button"
                               onClick={(e) => handleDeleteCust(cust, e)}
-                              className="p-1 px-3 py-1.5 border border-red-100 hover:border-red-200 bg-white hover:bg-red-50 text-red-600 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1 shrink-0 shadow-sm text-xs font-semibold"
+                              className="p-1 px-2.5 py-1.5 border border-red-200/60 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1 shrink-0 shadow-2xs text-xs font-semibold active:scale-95"
                               title="Elimina definitivo"
                             >
-                              <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                              <Trash2 className="w-3.5 h-3.5 text-red-600" />
                               <span>Elimina</span>
                             </button>
                           </div>
@@ -1081,36 +1083,38 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
 
         {/* Unassociated Customers if any exist */}
         {groupedCustomers["unassociated"]?.length > 0 && (
-          <div className="bg-white border border-gray-150 rounded-2xl shadow-sm overflow-hidden">
+          <div className="bg-white border border-slate-200/80 rounded-3xl shadow-2xs overflow-hidden">
             <div
               onClick={() => toggleAccordion("unassociated")}
-              className="w-full bg-yellow-50/20 hover:bg-yellow-100/10 px-6 py-4 flex items-center justify-between font-serif text-base font-bold text-[#1a2035] border-b border-gray-100 cursor-pointer select-none"
+              className="w-full bg-amber-50/40 hover:bg-amber-50/70 px-6 py-4.5 flex items-center justify-between text-base font-bold text-[#1a2035] tracking-tight border-b border-slate-100 cursor-pointer select-none backdrop-blur-xs"
             >
               <div className="flex items-center gap-3">
-                <span className="shrink-0 w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" />
-                <Users className="w-5 h-5 text-gray-400" />
+                <span className="shrink-0 w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
+                <div className="w-8 h-8 rounded-xl bg-amber-100/70 text-amber-800 border border-amber-200/60 flex items-center justify-center shadow-2xs">
+                  <Users className="w-4 h-4 text-amber-700" />
+                </div>
                 <span>Senza Sede Specificata</span>
-                <span className="text-xs font-sans text-gray-400 bg-white border border-gray-200/60 rounded-full px-2.5 py-0.5 leading-none font-bold">
+                <span className="text-xs text-slate-500 bg-white border border-slate-200/70 rounded-full px-2.5 py-0.5 leading-none font-semibold shadow-2xs">
                   {groupedCustomers["unassociated"].length}
                 </span>
               </div>
-              <div className="flex items-center gap-3.5">
+              <div className="flex items-center gap-3">
                 <button
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleSelectAllInSalon("unassociated");
                   }}
-                  className="text-[11px] font-sans bg-gray-500/10 text-gray-700 hover:bg-gray-500/20 font-bold px-2.5 py-1 rounded-lg transition-all cursor-pointer whitespace-nowrap"
+                  className="text-[11px] bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200/80 font-bold px-3 py-1 rounded-xl transition-all active:scale-95 cursor-pointer whitespace-nowrap shadow-2xs"
                 >
                   {isAllInSalonSelected("unassociated") ? "Deseleziona Negozio" : "Seleziona Tutti"}
                 </button>
-                {openAccordionIds["unassociated"] ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
+                {openAccordionIds["unassociated"] ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
               </div>
             </div>
 
             {openAccordionIds["unassociated"] && (
-              <div className="divide-y divide-gray-50 animate-fadeIn">
+              <div className="divide-y divide-slate-100 animate-fadeIn">
                 {groupedCustomers["unassociated"].map((cust) => {
                   const count = customPrices.filter(cp => cp.customerId === cust.id).length;
                   return (
@@ -1120,8 +1124,8 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
                         setActiveCustDetailsId(cust.id);
                         setShowTechSheetModal(true);
                       }}
-                      className={`p-4 px-6 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-slate-50/75 cursor-pointer duration-75 text-sm gap-4 ${
-                        activeCustDetailsId === cust.id && (showTechSheetModal || showCustomPricesModal) ? "bg-[#eef2ff]/50 border-l-4 border-l-[#1a3a8f]" : ""
+                      className={`p-4 px-6 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-slate-50/70 cursor-pointer duration-75 text-sm gap-4 transition-colors ${
+                        activeCustDetailsId === cust.id && (showTechSheetModal || showCustomPricesModal) ? "bg-[#eef2ff]/40 border-l-4 border-l-[#1a3a8f]" : ""
                       }`}
                     >
                       <div className="min-w-0 flex items-center gap-3">
@@ -1135,25 +1139,25 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
                             }));
                           }}
                           onClick={(e) => e.stopPropagation()}
-                          className="w-4 h-4 rounded text-[#1a3a8f] border-gray-300 focus:ring-[#1a3a8f] cursor-pointer accent-[#1a3a8f] shrink-0"
+                          className="w-4 h-4 rounded text-[#1a3a8f] border-slate-300 focus:ring-[#1a3a8f] cursor-pointer accent-[#1a3a8f] shrink-0"
                         />
-                        <div className="w-9 h-9 rounded-full bg-neutral-100 flex items-center justify-center text-gray-500 font-bold text-xs shrink-0 select-none">
+                        <div className="w-10 h-10 rounded-2xl bg-slate-100 border border-slate-200 text-slate-600 flex items-center justify-center font-bold text-xs shrink-0 select-none shadow-2xs">
                           {cust.name.slice(0, 2).toUpperCase()}
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="flex flex-wrap items-center gap-2">
-                            <h4 className="font-semibold text-gray-900 truncate">
+                            <h4 className="font-bold text-[#1a2035] text-sm tracking-tight truncate">
                               {cust.name}
                             </h4>
                             {count > 0 && (
-                              <span className="inline-flex items-center gap-1 bg-amber-50 border border-amber-200 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full shadow-3xs" title={`${count} tariffe speciali attive`}>
-                                <Coins className="w-3 h-3 text-amber-500 shrink-0" />
+                              <span className="inline-flex items-center gap-1 bg-amber-50 border border-amber-200/80 text-amber-800 text-[10px] font-semibold px-2.5 py-0.5 rounded-full shadow-2xs" title={`${count} tariffe speciali attive`}>
+                                <Coins className="w-3 h-3 text-amber-600 shrink-0" />
                                 <span>{count} {count === 1 ? "Tariffa Spec." : "Tariffe Spec."}</span>
                               </span>
                             )}
                           </div>
-                          <p className="text-xs text-gray-500 font-medium flex items-center gap-1.5 mt-0.5">
-                            <Phone className="w-3 h-3 text-gray-400" />
+                          <p className="text-xs text-slate-500 font-medium flex items-center gap-1.5 mt-0.5">
+                            <Phone className="w-3 h-3 text-slate-400" />
                             {cust.phone || "---"}
                           </p>
                         </div>
@@ -1166,7 +1170,7 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
                             setActiveCustDetailsId(cust.id);
                             setShowTechSheetModal(true);
                           }}
-                          className="p-1 px-3 py-1.5 border border-indigo-200/60 hover:border-indigo-300 bg-[#eef2ff] hover:bg-indigo-100/60 text-[#1a3a8f] rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 shadow-sm text-xs font-bold"
+                          className="p-1 px-3 py-1.5 border border-[#1a3a8f]/15 bg-[#eef2ff] hover:bg-[#e0e7ff] text-[#1a3a8f] rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 shadow-2xs text-xs font-semibold active:scale-95"
                           title="Apri immediatamente la scheda tecnica"
                         >
                           <FileText className="w-3.5 h-3.5" />
@@ -1179,28 +1183,28 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
                             setActiveCustDetailsId(cust.id);
                             setShowCustomPricesModal(true);
                           }}
-                          className="p-1 px-3 py-1.5 border border-amber-200/60 hover:border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 shadow-sm text-xs font-bold"
+                          className="p-1 px-3 py-1.5 border border-amber-200/80 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 shadow-2xs text-xs font-semibold active:scale-95"
                           title="Gestisci tariffe speciali dedicate"
                         >
-                          <Coins className="w-3.5 h-3.5 text-amber-500" />
+                          <Coins className="w-3.5 h-3.5 text-amber-600" />
                           <span>Tariffe</span>
                         </button>
                         <button
                           type="button"
                           onClick={(e) => openEditModal(cust, e)}
-                          className="p-1 px-3 py-1.5 border border-gray-200 hover:border-gray-300 bg-white hover:bg-slate-50 text-gray-700 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1 shrink-0 shadow-sm text-xs font-semibold"
+                          className="p-1 px-3 py-1.5 border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-700 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 shadow-2xs text-xs font-semibold active:scale-95"
                           title="Modifica Anagrafica"
                         >
-                          <Edit2 className="w-3.5 h-3.5 text-gray-500" />
+                          <Edit2 className="w-3.5 h-3.5 text-slate-500" />
                           <span>Modifica</span>
                         </button>
                         <button
                           type="button"
                           onClick={(e) => handleDeleteCust(cust, e)}
-                          className="p-1 px-3 py-1.5 border border-red-100 hover:border-red-200 bg-white hover:bg-red-50 text-red-600 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1 shrink-0 shadow-sm text-xs font-semibold"
+                          className="p-1 px-2.5 py-1.5 border border-red-200/60 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1 shrink-0 shadow-2xs text-xs font-semibold active:scale-95"
                           title="Elimina definitivo"
                         >
-                          <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                          <Trash2 className="w-3.5 h-3.5 text-red-600" />
                           <span>Elimina</span>
                         </button>
                       </div>
@@ -1214,20 +1218,25 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
 
       </div>
 
-      {/* Customer Create/Edit Modal */}
+      {/* Customer Create/Edit Modal in Stile Apple */}
       {custModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-16 md:pt-24 overflow-y-auto">
-          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setCustModalOpen(false)} />
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-12 md:pt-20 overflow-y-auto">
+          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs" onClick={() => setCustModalOpen(false)} />
           
-          <div className="relative bg-white border border-gray-100 w-full max-w-lg rounded-2xl shadow-xl z-10 overflow-hidden flex flex-col max-h-[85vh] animate-fadeIn">
+          <div className="relative bg-white border border-slate-200/80 w-full max-w-lg rounded-3xl shadow-2xl z-10 overflow-hidden flex flex-col max-h-[85vh] animate-fadeIn">
             {/* Header */}
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between shrink-0">
-              <h3 className="font-serif text-xl font-bold text-[#1a2035]">
-                {selectedCust ? "Modifica Scheda Cliente" : "Crea Nuova Anagrafica Cliente"}
-              </h3>
+            <div className="px-6 py-4.5 border-b border-slate-100 flex items-center justify-between shrink-0 bg-slate-50/80 backdrop-blur-xs">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#1a3a8f] block">
+                  {selectedCust ? "Aggiornamento Anagrafica" : "Nuovo Cliente"}
+                </span>
+                <h3 className="text-xl font-bold text-[#1a2035] tracking-tight">
+                  {selectedCust ? "Modifica Scheda Cliente" : "Crea Nuova Anagrafica Cliente"}
+                </h3>
+              </div>
               <button 
                 onClick={() => setCustModalOpen(false)}
-                className="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-all cursor-pointer"
+                className="p-2 text-slate-400 hover:bg-slate-200/60 hover:text-slate-700 rounded-2xl transition-all active:scale-95 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1235,7 +1244,7 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
 
             {/* Error display */}
             {errorMsgCust && (
-              <div className="mx-6 mt-4 p-3.5 rounded-xl bg-red-50 border border-red-100 text-red-700 text-xs font-semibold flex items-center gap-2 shrink-0">
+              <div className="mx-6 mt-4 p-3.5 rounded-2xl bg-red-50 border border-red-200/80 text-red-700 text-xs font-semibold flex items-center gap-2 shrink-0">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{errorMsgCust}</span>
               </div>
@@ -1244,7 +1253,7 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
             {/* Form */}
             <form onSubmit={handleSaveCust} className="p-6 space-y-4 overflow-y-auto flex-1">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
                   Cognome e Nome *
                 </label>
                 <input
@@ -1253,20 +1262,20 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
                   placeholder="Es: Gramegna Emanuele"
                   value={custName}
                   onChange={(e) => setCustName(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-[#1a3a8f] outline-none transition-all placeholder:text-gray-400 font-medium"
+                  className="w-full bg-slate-50/80 border border-slate-200/80 rounded-2xl px-4 py-2.5 text-sm focus:border-[#1a3a8f] focus:bg-white outline-none transition-all placeholder:text-slate-400 font-medium text-[#1a2035]"
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
                      Recapito Cellulare *
                   </label>
                   <div className="flex gap-2">
                     <select
                       value={custPhonePrefix}
                       onChange={(e) => setCustPhonePrefix(e.target.value)}
-                      className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 text-sm focus:border-[#1a3a8f] outline-none transition-all font-medium shrink-0"
+                      className="bg-slate-50/80 border border-slate-200/80 rounded-2xl px-3 py-2.5 text-sm focus:border-[#1a3a8f] focus:bg-white outline-none transition-all font-medium text-[#1a2035] shrink-0 cursor-pointer"
                     >
                       {COUNTRY_PREFIXES.map((pref) => (
                         <option key={pref.code} value={pref.code}>
@@ -1285,12 +1294,12 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
                         const cleaned = e.target.value.replace(/[^0-9]/g, "");
                         setCustPhoneBody(cleaned);
                       }}
-                      className="flex-1 min-w-0 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-[#1a3a8f] outline-none transition-all placeholder:text-gray-400 font-medium"
+                      className="flex-1 min-w-0 bg-slate-50/80 border border-slate-200/80 rounded-2xl px-4 py-2.5 text-sm focus:border-[#1a3a8f] focus:bg-white outline-none transition-all placeholder:text-slate-400 font-medium text-[#1a2035]"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
                     Indirizzo Email
                   </label>
                   <input
@@ -1298,22 +1307,20 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
                     placeholder="Es: client@example.com"
                     value={custEmail}
                     onChange={(e) => setCustEmail(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-[#1a3a8f] outline-none transition-all placeholder:text-gray-400 font-medium"
+                    className="w-full bg-slate-50/80 border border-slate-200/80 rounded-2xl px-4 py-2.5 text-sm focus:border-[#1a3a8f] focus:bg-white outline-none transition-all placeholder:text-slate-400 font-medium text-[#1a2035]"
                   />
                 </div>
               </div>
 
-
-
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
                   Sede Preferenziale di Riferimento *
                 </label>
                 <select
                   required
                   value={custSalonId}
                   onChange={(e) => setCustSalonId(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-[#1a3a8f] outline-none transition-all font-medium"
+                  className="w-full bg-slate-50/80 border border-slate-200/80 rounded-2xl px-4 py-2.5 text-sm focus:border-[#1a3a8f] focus:bg-white outline-none transition-all font-medium text-[#1a2035] cursor-pointer"
                 >
                   <option value="" disabled>Seleziona sede</option>
                   {salons.map(s => (
@@ -1330,7 +1337,7 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
                   Note Tecniche, Formula Colore e Storico Capello
                 </label>
                 <textarea
@@ -1338,23 +1345,23 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
                   value={custNotes}
                   onChange={(e) => setCustNotes(e.target.value)}
                   rows={3}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-[#1a3a8f] outline-none transition-all placeholder:text-gray-400 font-medium"
+                  className="w-full bg-slate-50/80 border border-slate-200/80 rounded-2xl px-4 py-2.5 text-sm focus:border-[#1a3a8f] focus:bg-white outline-none transition-all placeholder:text-slate-400 font-medium text-[#1a2035]"
                 />
               </div>
 
               {/* Actions */}
-              <div className="pt-4 border-t border-gray-100 flex items-center justify-end gap-3 mt-6">
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-3 mt-6">
                 <button
                   type="button"
                   onClick={() => setCustModalOpen(false)}
-                  className="px-4 py-2 border rounded-xl text-xs font-semibold text-gray-500 bg-white hover:bg-gray-50 cursor-pointer"
+                  className="bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl px-5 py-2.5 text-xs font-semibold transition-all active:scale-[0.98] cursor-pointer"
                 >
                   Annulla
                 </button>
                 <button
                   type="submit"
                   disabled={savingCust || salons.length === 0}
-                  className="bg-[#1a3a8f] hover:bg-[#152f73] disabled:opacity-50 text-white rounded-xl px-5 py-2 text-xs font-semibold shadow-md flex items-center gap-1.5 cursor-pointer"
+                  className="bg-[#1a3a8f] hover:bg-[#152f73] disabled:opacity-50 text-white rounded-2xl px-6 py-2.5 text-xs font-semibold shadow-sm shadow-[#1a3a8f]/20 flex items-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
                 >
                   {savingCust ? (
                     <>
@@ -1371,25 +1378,25 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
         </div>
       )}
 
-      {/* Scheda Tecnica Overlay Modal */}
+      {/* Scheda Tecnica Overlay Modal in Stile Apple */}
       {showTechSheetModal && activeCustomer && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-16 md:pt-24 overflow-y-auto">
-          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm shadow-2xl" onClick={() => setShowTechSheetModal(false)} />
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-12 md:pt-20 overflow-y-auto">
+          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs" onClick={() => setShowTechSheetModal(false)} />
           
-          <div className="relative bg-white border border-gray-100 w-full max-w-2xl rounded-3xl shadow-2xl z-10 overflow-hidden flex flex-col max-h-[85vh] animate-fadeIn">
+          <div className="relative bg-white border border-slate-200/80 w-full max-w-2xl rounded-3xl shadow-2xl z-10 overflow-hidden flex flex-col max-h-[85vh] animate-fadeIn">
             {/* Header */}
-            <div className="px-8 py-5 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-slate-50 to-indigo-50/20">
+            <div className="px-6 py-4.5 md:px-8 md:py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80 backdrop-blur-xs">
               <div>
-                <span className="text-[10px] bg-[#1a3a8f]/10 text-[#1a3a8f] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider select-none">
+                <span className="text-[10px] bg-[#eef2ff] text-[#1a3a8f] border border-[#1a3a8f]/10 px-3 py-1 rounded-full font-bold uppercase tracking-wider select-none shadow-2xs">
                   Scheda Tecnica Cliente
                 </span>
-                <h3 className="font-serif text-2xl font-bold text-[#1a2035] mt-1.5 leading-tight">
+                <h3 className="text-2xl font-bold text-[#1a2035] tracking-tight mt-1.5 leading-tight">
                   {activeCustomer.name}
                 </h3>
               </div>
               <button 
                 onClick={() => setShowTechSheetModal(false)}
-                className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-all cursor-pointer"
+                className="p-2 text-slate-400 hover:bg-slate-200/60 hover:text-slate-700 rounded-2xl transition-all active:scale-95 cursor-pointer"
                 title="Chiudi Scheda"
               >
                 <X className="w-5 h-5" />
@@ -1397,25 +1404,23 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
             </div>
 
             {/* Scrollable Content */}
-            <div className="overflow-y-auto p-8 space-y-6">
+            <div className="overflow-y-auto p-6 md:p-8 space-y-6">
               
-
-
               {/* Formula & Tech Notes Panel with High Contrast and Copy/Quick Save */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5 font-sans">
+                  <label className="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-2">
                     <FileText className="w-4 h-4 text-[#1a3a8f]" />
                     Note Tecniche, Formule Capelli & Storico
                   </label>
                   {activeCustomer.notes && (
                     <button
                       onClick={() => handleCopyNotes(activeCustomer.notes || "")}
-                      className="text-[11px] font-bold text-[#1a3a8f] hover:text-[#152f73] flex items-center gap-1 cursor-pointer select-none bg-[#1a3a8f]/5 px-2.5 py-1 rounded-lg"
+                      className="text-[11px] font-bold text-[#1a3a8f] hover:text-[#152f73] flex items-center gap-1.5 cursor-pointer select-none bg-[#eef2ff] border border-[#1a3a8f]/10 px-3 py-1 rounded-full transition-all active:scale-95 shadow-2xs"
                     >
                       {copiedNotes ? (
                         <>
-                          <Check className="w-3.5 h-3.5 text-green-600" />
+                          <Check className="w-3.5 h-3.5 text-emerald-600" />
                           Nota Copiata!
                         </>
                       ) : (
@@ -1428,7 +1433,7 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
                   )}
                 </div>
 
-                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-md text-slate-100">
+                <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-md text-slate-100">
                   {activeCustomer.notes ? (
                     <p className="text-sm whitespace-pre-wrap font-mono leading-relaxed select-text font-medium text-slate-100">
                       {activeCustomer.notes}
@@ -1442,15 +1447,15 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
               </div>
 
               {/* Reference to Custom Prices */}
-              <div className="pt-4 border-t border-gray-100">
-                <div className="bg-gradient-to-r from-amber-50/40 to-indigo-50/10 border border-amber-100/40 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-3xs">
+              <div className="pt-4 border-t border-slate-100">
+                <div className="bg-amber-50/60 border border-amber-200/70 rounded-3xl p-4.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-amber-50 border border-amber-100/60 flex items-center justify-center text-amber-600 shrink-0">
-                      <Coins className="w-4 h-4" />
+                    <div className="w-10 h-10 rounded-2xl bg-amber-100 text-amber-800 border border-amber-200/80 flex items-center justify-center shrink-0 shadow-2xs">
+                      <Coins className="w-5 h-5" />
                     </div>
                     <div className="text-left">
-                      <p className="text-xs font-bold text-gray-800">Tariffe Speciali Personalizzate</p>
-                      <p className="text-[10px] text-gray-500 mt-0.5">Le tariffe concordate e i listini speciali dedicati sono stati separati per una gestione più pulita.</p>
+                      <p className="text-xs font-bold text-slate-800">Tariffe Speciali Personalizzate</p>
+                      <p className="text-[11px] text-slate-500 mt-0.5">Le tariffe concordate e i listini speciali dedicati sono gestibili in modo rapido e indipendente.</p>
                     </div>
                   </div>
                   <button
@@ -1459,7 +1464,7 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
                       setShowTechSheetModal(false);
                       setShowCustomPricesModal(true);
                     }}
-                    className="bg-amber-500 hover:bg-amber-600 text-white rounded-xl px-3.5 py-2 text-[11px] font-bold cursor-pointer transition-all shrink-0 flex items-center gap-1.5 shadow-sm"
+                    className="bg-amber-600 hover:bg-amber-700 text-white rounded-2xl px-4 py-2 text-xs font-semibold cursor-pointer transition-all active:scale-[0.98] shrink-0 flex items-center gap-1.5 shadow-2xs"
                   >
                     <Coins className="w-3.5 h-3.5" />
                     Gestisci Tariffe
@@ -1470,21 +1475,21 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
             </div>
 
             {/* Footer with edit trigger and close */}
-            <div className="px-8 py-5 border-t border-gray-150 flex items-center justify-between bg-slate-50">
+            <div className="px-6 py-4.5 md:px-8 md:py-5 border-t border-slate-100 flex items-center justify-between bg-slate-50/80 backdrop-blur-xs">
               <button
                 onClick={(e) => {
                   setShowTechSheetModal(false);
                   openEditModal(activeCustomer, e);
                 }}
-                className="bg-white hover:bg-slate-100 border text-gray-700 border-gray-200 rounded-lg px-4 py-2.5 text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all shadow-sm"
+                className="bg-white hover:bg-slate-100 border text-slate-700 border-slate-200 rounded-2xl px-4 py-2.5 text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-all active:scale-[0.98] shadow-2xs"
               >
-                <Edit2 className="w-3.5 h-3.5 text-gray-500" />
+                <Edit2 className="w-3.5 h-3.5 text-slate-500" />
                 Modifica Anagrafica e Note
               </button>
               
               <button
                 onClick={() => setShowTechSheetModal(false)}
-                className="bg-[#1a3a8f] hover:bg-[#152f73] text-white rounded-lg px-6 py-2.5 text-xs font-bold cursor-pointer transition-all shadow-md"
+                className="bg-[#1a3a8f] hover:bg-[#152f73] text-white rounded-2xl px-6 py-2.5 text-xs font-semibold cursor-pointer transition-all active:scale-[0.98] shadow-sm shadow-[#1a3a8f]/20"
               >
                 Chiudi
               </button>
@@ -1493,30 +1498,30 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
         </div>
       )}
 
-      {/* Tariffe Speciali Dedicated Modal */}
+      {/* Tariffe Speciali Dedicated Modal in Stile Apple */}
       {showCustomPricesModal && activeCustomer && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-16 md:pt-24 overflow-y-auto">
-          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm shadow-2xl" onClick={() => setShowCustomPricesModal(false)} />
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-12 md:pt-20 overflow-y-auto">
+          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs" onClick={() => setShowCustomPricesModal(false)} />
           
-          <div className="relative bg-white border border-gray-100 w-full max-w-xl rounded-3xl shadow-2xl z-10 overflow-hidden flex flex-col max-h-[85vh] animate-fadeIn">
+          <div className="relative bg-white border border-slate-200/80 w-full max-w-xl rounded-3xl shadow-2xl z-10 overflow-hidden flex flex-col max-h-[85vh] animate-fadeIn">
             {/* Header */}
-            <div className="px-8 py-5 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-amber-50/50 to-indigo-50/10">
+            <div className="px-6 py-4.5 md:px-8 md:py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80 backdrop-blur-xs">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-amber-50 border border-amber-100/80 flex items-center justify-center text-amber-600">
+                <div className="w-10 h-10 rounded-2xl bg-amber-100 text-amber-800 border border-amber-200/80 flex items-center justify-center shadow-2xs">
                   <Coins className="w-5 h-5" />
                 </div>
                 <div>
-                  <span className="text-[10px] bg-amber-100 text-amber-900 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider select-none">
+                  <span className="text-[10px] bg-amber-100 text-amber-900 px-3 py-0.5 rounded-full font-bold uppercase tracking-wider select-none border border-amber-200/80 shadow-2xs">
                     Tariffe Speciali Cliente
                   </span>
-                  <h3 className="font-serif text-xl font-bold text-[#1a2035] mt-1 leading-tight">
+                  <h3 className="text-xl font-bold text-[#1a2035] tracking-tight mt-1 leading-tight">
                     {activeCustomer.name}
                   </h3>
                 </div>
               </div>
               <button 
                 onClick={() => setShowCustomPricesModal(false)}
-                className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-all cursor-pointer"
+                className="p-2 text-slate-400 hover:bg-slate-200/60 hover:text-slate-700 rounded-2xl transition-all active:scale-95 cursor-pointer"
                 title="Chiudi Tariffe"
               >
                 <X className="w-5 h-5" />
@@ -1524,33 +1529,29 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
             </div>
 
             {/* Scrollable Content */}
-            <div className="overflow-y-auto p-8 space-y-6">
+            <div className="overflow-y-auto p-6 md:p-8 space-y-6">
               
               <div className="space-y-4">
                 <div>
-                  <p className="text-xs text-gray-500 leading-relaxed">
+                  <p className="text-xs text-slate-500 leading-relaxed">
                     Qui puoi definire un prezzo speciale personalizzato (ribassato o maggiorato) su servizi specifici per questo cliente. Durante la prenotazione o il pagamento in cassa, verrà applicata automaticamente questa tariffa concordata anziché quella del listino standard.
                   </p>
                 </div>
 
                 {businessSettings?.userPlan === "solo_pro" ? (
-                  <div className="bg-slate-50 border border-slate-100 rounded-3xl p-6 text-center shadow-sm space-y-4 relative overflow-hidden">
-                    {/* Glowing background highlights */}
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-amber-200/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
-                    <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-indigo-200/5 rounded-full blur-2xl"></div>
-
-                    <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 mx-auto">
+                  <div className="bg-slate-50/90 border border-slate-200/80 rounded-3xl p-6 text-center shadow-2xs space-y-4 relative overflow-hidden">
+                    <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200/80 flex items-center justify-center text-amber-600 mx-auto shadow-2xs">
                       <Lock className="w-6 h-6" />
                     </div>
 
                     <div className="space-y-2">
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 text-[9px] font-bold uppercase tracking-wider border border-amber-200">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-800 text-[10px] font-bold uppercase tracking-wider border border-amber-200">
                         Disponibile nel piano Network
                       </span>
-                      <h4 className="font-serif text-lg font-bold text-[#1a2035]">
+                      <h4 className="text-lg font-bold text-[#1a2035] tracking-tight">
                         Funzionalità Bloccata
                       </h4>
-                      <p className="text-gray-500 text-xs max-w-sm mx-auto leading-relaxed">
+                      <p className="text-slate-500 text-xs max-w-sm mx-auto leading-relaxed">
                         Il tuo piano attuale (<strong>Solo Pro</strong>) non include l'associazione di tariffe speciali o listini prezzi dedicati per i clienti.
                       </p>
                     </div>
@@ -1562,7 +1563,7 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
                           setShowCustomPricesModal(false);
                           setCurrentTab("account_info");
                         }}
-                        className="bg-[#1a3a8f] hover:bg-[#152f73] text-white text-xs font-bold px-4 py-2 rounded-xl shadow-sm transition-all inline-flex items-center gap-1 cursor-pointer"
+                        className="bg-[#1a3a8f] hover:bg-[#152f73] text-white text-xs font-semibold px-5 py-2.5 rounded-2xl shadow-sm shadow-[#1a3a8f]/20 transition-all active:scale-[0.98] inline-flex items-center gap-1.5 cursor-pointer"
                       >
                         Sblocca ora <ArrowRight className="w-3.5 h-3.5" />
                       </button>
@@ -1572,16 +1573,16 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
                   <>
                     {/* Subform to add custom price */}
                     {services.length === 0 ? (
-                      <p className="text-xs text-red-400 italic">Crea almeno un trattamento nei servizi per sbloccare i prezzi speciali.</p>
+                      <p className="text-xs text-red-500 italic">Crea almeno un trattamento nei servizi per sbloccare i prezzi speciali.</p>
                     ) : (
-                      <form onSubmit={handleAddCustomPrice} className="grid grid-cols-1 sm:grid-cols-12 gap-3 bg-slate-50 border border-slate-150 p-4 rounded-2xl">
+                      <form onSubmit={handleAddCustomPrice} className="grid grid-cols-1 sm:grid-cols-12 gap-3 bg-slate-50/80 border border-slate-200/80 p-4.5 rounded-3xl shadow-2xs">
                         <div className="sm:col-span-6">
-                          <label className="block text-[10px] uppercase font-bold text-gray-400 mb-1 font-semibold">Trattamento</label>
+                          <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1.5">Trattamento</label>
                           <select
                             required
                             value={customPriceServiceId}
                             onChange={(e) => setCustomPriceServiceId(e.target.value)}
-                            className="w-full bg-white border border-gray-200 rounded-lg p-2 text-xs focus:border-[#1a3a8f] outline-none font-medium text-gray-750"
+                            className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs focus:border-[#1a3a8f] outline-none font-medium text-[#1a2035] cursor-pointer"
                           >
                             <option value="" disabled>Seleziona Trattamento</option>
                             {services.map(s => (
@@ -1592,9 +1593,9 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
                           </select>
                         </div>
                         <div className="sm:col-span-4">
-                          <label className="block text-[10px] uppercase font-bold text-gray-400 mb-1 font-semibold">Prezzo Dedicato</label>
+                          <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1.5">Prezzo Dedicato</label>
                           <div className="relative">
-                            <span className="absolute inset-y-0 left-0 pl-2.5 flex items-center text-gray-400 text-xs font-semibold">€</span>
+                            <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-xs font-semibold">€</span>
                             <input
                               type="number"
                               step="0.01"
@@ -1602,7 +1603,7 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
                               placeholder="0.00"
                               value={customPriceValue}
                               onChange={(e) => setCustomPriceValue(e.target.value)}
-                              className="w-full bg-white border border-gray-200 rounded-lg pl-6 pr-2 py-2 text-xs focus:border-[#1a3a8f] outline-none font-semibold text-gray-805"
+                              className="w-full bg-white border border-slate-200 rounded-xl pl-7 pr-3 py-2 text-xs focus:border-[#1a3a8f] outline-none font-semibold text-[#1a2035] font-mono"
                             />
                           </div>
                         </div>
@@ -1610,7 +1611,7 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
                           <button
                             type="submit"
                             disabled={savingCustomPrice}
-                            className="w-full bg-[#1a3a8f] hover:bg-[#152f73] text-white p-2 text-xs rounded-lg cursor-pointer flex items-center justify-center font-bold h-[34px] shadow-sm select-none"
+                            className="w-full bg-[#1a3a8f] hover:bg-[#152f73] text-white py-2 text-xs rounded-xl cursor-pointer flex items-center justify-center font-semibold h-[34px] shadow-2xs active:scale-95 transition-all select-none"
                             title="Associa o Modifica Tariffa Totale"
                           >
                             {savingCustomPrice ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Associa"}
@@ -1620,30 +1621,30 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
                     )}
 
                     {activeCustPrices.length === 0 ? (
-                      <p className="text-xs text-gray-400 italic bg-gray-50/50 border border-gray-100 rounded-xl p-4 text-center">
+                      <p className="text-xs text-slate-400 italic bg-slate-50/60 border border-slate-200/60 rounded-2xl p-4 text-center">
                         Nessuna tariffa speciale è attualmente associata a questo cliente. I trattamenti seguono il prezzo standard del listino.
                       </p>
                     ) : (
                       <div className="space-y-2">
-                        <h4 className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Tariffe Attive ({activeCustPrices.length})</h4>
+                        <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Tariffe Attive ({activeCustPrices.length})</h4>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           {activeCustPrices.map((cp) => (
                             <div 
                               key={cp.id}
-                              className="bg-amber-50/40 border border-amber-100/50 rounded-2xl p-3 flex items-center justify-between text-xs font-semibold hover:bg-amber-50 duration-75"
+                              className="bg-amber-50/60 border border-amber-200/70 rounded-2xl p-3.5 flex items-center justify-between text-xs font-semibold hover:bg-amber-50 duration-75 shadow-2xs"
                             >
                               <div className="min-w-0 pr-2">
-                                <p className="text-gray-800 truncate font-semibold" title={cp.serviceName}>{cp.serviceName}</p>
-                                <p className="text-[10px] text-gray-500 font-medium">Prezzo personalizzato</p>
+                                <p className="text-slate-800 truncate font-semibold" title={cp.serviceName}>{cp.serviceName}</p>
+                                <p className="text-[10px] text-slate-500 font-medium">Prezzo personalizzato</p>
                               </div>
                               <div className="flex items-center gap-2">
-                                <span className="text-xs font-bold text-amber-800 bg-amber-100 px-2.5 py-1 rounded-lg border border-amber-100 font-mono">
+                                <span className="text-xs font-bold text-amber-800 bg-amber-100 px-2.5 py-1 rounded-xl border border-amber-200/80 font-mono shadow-2xs">
                                   €{cp.price?.toFixed(2)}
                                 </span>
                                 <button
                                   type="button"
                                   onClick={() => handleDeleteCustomPrice(cp.id)}
-                                  className="p-1.5 text-gray border border-transparent hover:border-red-105 rounded-lg hover:bg-white text-red-500 transition-all cursor-pointer"
+                                  className="p-1.5 text-slate-400 hover:text-red-600 rounded-xl hover:bg-red-50 transition-all cursor-pointer active:scale-95"
                                   title="Elimina Tariffa Dedicata"
                                 >
                                   <Trash2 className="w-4 h-4" />
@@ -1661,10 +1662,10 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
             </div>
 
             {/* Footer */}
-            <div className="px-8 py-5 border-t border-gray-150 flex items-center justify-end bg-slate-50">
+            <div className="px-6 py-4.5 md:px-8 md:py-5 border-t border-slate-100 flex items-center justify-end bg-slate-50/80 backdrop-blur-xs">
               <button
                 onClick={() => setShowCustomPricesModal(false)}
-                className="bg-[#1a3a8f] hover:bg-[#152f73] text-white rounded-xl px-6 py-2.5 text-xs font-bold cursor-pointer transition-all shadow-md"
+                className="bg-[#1a3a8f] hover:bg-[#152f73] text-white rounded-2xl px-6 py-2.5 text-xs font-semibold cursor-pointer transition-all active:scale-[0.98] shadow-sm shadow-[#1a3a8f]/20"
               >
                 Chiudi
               </button>
@@ -1673,37 +1674,37 @@ export default function CustomersScreen({ setCurrentTab }: CustomersScreenProps 
         </div>
       )}
 
-      {/* Deletion Confirmation Modal */}
+      {/* Deletion Confirmation Modal in Stile Apple */}
       {custToDelete && (
         <div className="fixed inset-0 z-[100] flex items-start justify-center p-4 pt-16 md:pt-24 overflow-y-auto">
-          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setCustToDelete(null)} />
-          <div className="relative bg-white border border-gray-150 w-full max-w-md rounded-2xl shadow-xl z-10 p-6 animate-fadeIn">
+          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs" onClick={() => setCustToDelete(null)} />
+          <div className="relative bg-white border border-slate-200/80 w-full max-w-md rounded-3xl shadow-2xl z-10 p-6 animate-fadeIn">
             <div className="flex items-start gap-4">
-              <div className="p-3 bg-red-50 text-red-650 rounded-xl shrink-0">
-                <AlertCircle className="w-6 h-6 text-red-600" />
+              <div className="p-3 bg-red-50 text-red-600 rounded-2xl shrink-0 border border-red-200/60 shadow-2xs">
+                <AlertCircle className="w-6 h-6" />
               </div>
               <div className="min-w-0">
-                <h3 className="font-serif text-lg font-bold text-[#1a2035]">
+                <h3 className="text-lg font-bold text-[#1a2035] tracking-tight">
                   Elimina Anagrafica Cliente
                 </h3>
-                <p className="text-gray-500 text-xs mt-1.5 leading-relaxed font-medium">
+                <p className="text-slate-500 text-xs mt-1.5 leading-relaxed font-medium">
                   Sei sicuro di voler eliminare definitivamente l'anagrafica di <strong>{custToDelete.name}</strong>?
                   Questa operazione cancellerà tutte le sue note tecniche, formule colore e listini personalizzati. L'azione è irreversibile.
                 </p>
               </div>
             </div>
-            <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-gray-100">
+            <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-slate-100">
               <button
                 type="button"
                 onClick={() => setCustToDelete(null)}
-                className="px-4 py-2 border border-gray-200 rounded-xl text-xs font-semibold text-gray-500 bg-white hover:bg-gray-50 cursor-pointer"
+                className="px-5 py-2.5 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-600 bg-white hover:bg-slate-50 transition-all active:scale-[0.98] cursor-pointer shadow-2xs"
               >
                 Annulla
               </button>
               <button
                 type="button"
                 onClick={executeDeleteCust}
-                className="bg-red-600 hover:bg-red-700 text-white rounded-xl px-5 py-2 text-xs font-semibold shadow-md cursor-pointer flex items-center gap-1.5"
+                className="bg-red-600 hover:bg-red-700 text-white rounded-2xl px-5 py-2.5 text-xs font-semibold shadow-sm shadow-red-600/20 cursor-pointer flex items-center gap-2 transition-all active:scale-[0.98]"
               >
                 {deletingCust ? (
                   <>

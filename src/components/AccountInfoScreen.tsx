@@ -986,36 +986,51 @@ export default function AccountInfoScreen() {
   const pecIsEnteringValid = pec.trim().length > 0 ? isValidEmail(pec.trim()) : null;
 
   return (
-    <div className="space-y-6 animate-pageFade w-full max-w-6xl mx-auto">
-      {/* Page Title & Subtitle */}
-      <div>
-        <h1 className="font-serif text-2xl md:text-3xl font-bold tracking-tight text-[#1a2035]">
-          {userRole === "receptionist" ? "Impostazioni Profilo Collaboratore" : "Impostazioni Account & Fatturazione SaaS"}
-        </h1>
-        <p className="text-gray-500 text-sm mt-1">
-          {userRole === "receptionist" 
-            ? "Gestisci le informazioni personali del tuo profilo e controlla le tue sedi operative."
-            : "Gestisci le informazioni del tuo profilo, i dati fiscali aziendali italiani e controlla lo stato dell'abbonamento attivo."}
-        </p>
+    <div className="space-y-6 animate-pageFade w-full max-w-6xl mx-auto pb-12">
+      {/* Apple Style Top Header Banner */}
+      <div className="bg-white/80 backdrop-blur-md border border-slate-200/80 rounded-3xl p-6 sm:p-7 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-1.5 min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-[#1a3a8f] bg-[#eef2ff] border border-[#1a3a8f]/15 px-2.5 py-0.5 rounded-full shadow-2xs">
+              {userRole === "receptionist" ? "Profilo Operativo" : "Configurazione Aziendale & Billing"}
+            </span>
+          </div>
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-[#1a2035]">
+            {userRole === "receptionist" ? "Impostazioni Profilo Collaboratore" : "Impostazioni Account & Fatturazione SaaS"}
+          </h1>
+          <p className="text-slate-500 text-xs sm:text-sm">
+            {userRole === "receptionist" 
+              ? "Gestisci le informazioni personali del tuo profilo e controlla le tue sedi operative."
+              : "Gestisci le informazioni del tuo profilo, i dati fiscali aziendali italiani e controlla lo stato dell'abbonamento attivo."}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 self-start md:self-center shrink-0">
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 text-xs font-bold shadow-2xs">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            Account Verificato
+          </span>
+        </div>
       </div>
 
-      {/* Tabs Navigation Header */}
-      <div className="flex border-b border-gray-100 gap-2 overflow-x-auto pb-px">
+      {/* iOS Segmented Pill Tabs Navigation */}
+      <div className="bg-slate-100/90 p-1.5 rounded-2xl border border-slate-200/60 shadow-2xs flex flex-wrap sm:flex-nowrap gap-1">
         <button
           onClick={() => {
             setActiveTab("profilo");
             setErrorMsg("");
             setSuccessMsg("");
           }}
-          className={`flex items-center gap-2 py-3 px-4 text-sm font-semibold border-b-2 transition-all shrink-0 cursor-pointer ${
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 text-xs sm:text-sm font-bold rounded-xl transition-all cursor-pointer select-none active:scale-[0.98] ${
             activeTab === "profilo"
-              ? "border-[#1a3a8f] text-[#1a3a8f]"
-              : "border-transparent text-gray-500 hover:text-gray-800"
+              ? "bg-white text-[#1a3a8f] shadow-2xs border border-[#1a3a8f]/10"
+              : "text-slate-500 hover:text-slate-800 hover:bg-white/50"
           }`}
         >
           <User className="w-4 h-4" />
-          Profilo Personale
+          <span>Profilo Personale</span>
         </button>
+
         {userRole !== "receptionist" && (
           <button
             onClick={() => {
@@ -1023,16 +1038,17 @@ export default function AccountInfoScreen() {
               setErrorMsg("");
               setSuccessMsg("");
             }}
-            className={`flex items-center gap-2 py-3 px-4 text-sm font-semibold border-b-2 transition-all shrink-0 cursor-pointer ${
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 text-xs sm:text-sm font-bold rounded-xl transition-all cursor-pointer select-none active:scale-[0.98] ${
               activeTab === "fatturazione"
-                ? "border-[#1a3a8f] text-[#1a3a8f]"
-                : "border-transparent text-gray-500 hover:text-gray-800"
+                ? "bg-white text-[#1a3a8f] shadow-2xs border border-[#1a3a8f]/10"
+                : "text-slate-500 hover:text-slate-800 hover:bg-white/50"
             }`}
           >
             <Building2 className="w-4 h-4" />
-            Dati di Fatturazione
+            <span>Dati Fatturazione</span>
           </button>
         )}
+
         {userRole !== "receptionist" && (
           <button
             onClick={() => {
@@ -1040,16 +1056,17 @@ export default function AccountInfoScreen() {
               setErrorMsg("");
               setSuccessMsg("");
             }}
-            className={`flex items-center gap-2 py-3 px-4 text-sm font-semibold border-b-2 transition-all shrink-0 cursor-pointer ${
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 text-xs sm:text-sm font-bold rounded-xl transition-all cursor-pointer select-none active:scale-[0.98] ${
               activeTab === "abbonamento"
-                ? "border-[#1a3a8f] text-[#1a3a8f]"
-                : "border-transparent text-gray-500 hover:text-gray-800"
+                ? "bg-white text-[#1a3a8f] shadow-2xs border border-[#1a3a8f]/10"
+                : "text-slate-500 hover:text-slate-800 hover:bg-white/50"
             }`}
           >
             <CreditCard className="w-4 h-4" />
-            Abbonamento SaaS
+            <span>Abbonamento SaaS</span>
           </button>
         )}
+
         {userRole !== "receptionist" && (
           <button
             onClick={() => {
@@ -1057,14 +1074,14 @@ export default function AccountInfoScreen() {
               setErrorMsg("");
               setSuccessMsg("");
             }}
-            className={`flex items-center gap-2 py-3 px-4 text-sm font-semibold border-b-2 transition-all shrink-0 cursor-pointer ${
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 text-xs sm:text-sm font-bold rounded-xl transition-all cursor-pointer select-none active:scale-[0.98] ${
               activeTab === "email"
-                ? "border-[#1a3a8f] text-[#1a3a8f]"
-                : "border-transparent text-gray-500 hover:text-gray-800"
+                ? "bg-white text-[#1a3a8f] shadow-2xs border border-[#1a3a8f]/10"
+                : "text-slate-500 hover:text-slate-800 hover:bg-white/50"
             }`}
           >
             <Mail className="w-4 h-4" />
-            Configurazione Email
+            <span>Configurazione Email</span>
           </button>
         )}
       </div>
@@ -1073,15 +1090,15 @@ export default function AccountInfoScreen() {
       {(errorMsg || successMsg) && (
         <div className="space-y-2">
           {errorMsg && (
-            <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-red-700 text-xs font-semibold flex items-center gap-2.5">
-              <AlertCircle className="w-4.5 h-4.5 shrink-0 text-red-600" />
+            <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200/80 text-rose-700 text-xs font-bold flex items-center gap-2.5 shadow-2xs animate-fadeIn">
+              <AlertCircle className="w-4.5 h-4.5 shrink-0 text-rose-600" />
               <span>{errorMsg}</span>
             </div>
           )}
 
           {successMsg && (
-            <div className="p-4 rounded-xl bg-green-50 border border-green-100 text-green-700 text-xs font-semibold flex items-center gap-2.5">
-              <CheckCircle className="w-4.5 h-4.5 shrink-0 text-green-600" />
+            <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs font-bold flex items-center gap-2.5 shadow-2xs animate-fadeIn">
+              <CheckCircle className="w-4.5 h-4.5 shrink-0 text-emerald-600" />
               <span>{successMsg}</span>
             </div>
           )}
@@ -1093,69 +1110,69 @@ export default function AccountInfoScreen() {
         
         {/* Left Column - Card Profile Overview (Common to all tabs) */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm flex flex-col items-center text-center">
-            {/* Avatar Circle */}
-            <div className="w-20 h-20 rounded-full bg-[#eef2ff] border-2 border-blue-100 flex items-center justify-center text-[#1a3a8f] font-semibold text-2xl shadow-sm mb-4">
+          <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-7 shadow-2xs flex flex-col items-center text-center">
+            {/* Avatar Circle in Apple Rounded Style */}
+            <div className="w-20 h-20 rounded-3xl bg-[#eef2ff] border border-[#1a3a8f]/15 flex items-center justify-center text-[#1a3a8f] font-bold text-2xl shadow-2xs mb-4">
               {ownerNome ? ownerNome.slice(0, 2).toUpperCase() : user?.email?.slice(0, 2).toUpperCase()}
             </div>
 
-            <h3 className="text-lg font-bold text-[#1a2035] break-all max-w-full">
+            <h3 className="text-lg font-bold text-[#1a2035] break-all max-w-full tracking-tight">
               {ownerNome || "Utente SforbiciaSmart"}
             </h3>
 
             {userRole === "owner" ? (
-              <span className="inline-block mt-2 px-3 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-100 text-xs font-bold uppercase tracking-wider">
+              <span className="inline-block mt-2 px-3 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200/80 text-[10px] font-bold uppercase tracking-wider shadow-2xs">
                 Proprietario (Owner)
               </span>
             ) : (
-              <span className="inline-block mt-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100 text-xs font-bold uppercase tracking-wider">
+              <span className="inline-block mt-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/80 text-[10px] font-bold uppercase tracking-wider shadow-2xs">
                 Receptionist / Staff
               </span>
             )}
 
-            <div className="w-full border-t border-gray-100 my-5" />
+            <div className="w-full border-t border-slate-100 my-5" />
 
             {/* Quick Stats list */}
-            <div className="w-full space-y-3 text-left text-xs">
-              <div className="flex justify-between py-1 border-b border-gray-50">
-                <span className="text-gray-400 font-medium">Stato Account:</span>
-                <span className="font-bold text-green-600 flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-green-500 inline-block animate-pulse"></span>
+            <div className="w-full space-y-2.5 text-left text-xs">
+              <div className="flex justify-between items-center py-1 border-b border-slate-100">
+                <span className="text-slate-400 font-medium">Stato Account:</span>
+                <span className="font-bold text-emerald-600 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
                   Attivo
                 </span>
               </div>
-              <div className="flex justify-between py-1 border-b border-gray-50">
-                <span className="text-gray-400 font-medium">Saloni Gestiti:</span>
-                <span className="font-bold text-gray-800">{salons.length}</span>
+              <div className="flex justify-between items-center py-1 border-b border-slate-100">
+                <span className="text-slate-400 font-medium">Saloni Gestiti:</span>
+                <span className="font-bold text-[#1a2035]">{salons.length}</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-gray-50">
-                <span className="text-gray-400 font-medium">Piano Attivo:</span>
+              <div className="flex justify-between items-center py-1 border-b border-slate-100">
+                <span className="text-slate-400 font-medium">Piano Attivo:</span>
                 <span className="font-bold text-[#1a3a8f]">{PLAN_LIMITS[userPlan]?.name || "Nessuno"}</span>
               </div>
               {user?.metadata?.creationTime && (
-                <div className="flex justify-between py-1">
-                  <span className="text-gray-400 font-medium">Membro dal:</span>
-                  <span className="font-semibold text-gray-700">{formatDate(user.metadata.creationTime)}</span>
+                <div className="flex justify-between items-center py-1">
+                  <span className="text-slate-400 font-medium">Membro dal:</span>
+                  <span className="font-semibold text-slate-700">{formatDate(user.metadata.creationTime)}</span>
                 </div>
               )}
             </div>
           </div>
 
           {/* Sedi operative card */}
-          <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4 flex items-center gap-2">
+          <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-7 shadow-2xs">
+            <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
               <Building className="w-4 h-4 text-[#1a3a8f]" />
               Sedi Saloni ({salons.length})
             </h4>
 
             {salons.length === 0 ? (
-              <p className="text-xs text-gray-400 italic">Nessun salone presente nell'account.</p>
+              <p className="text-xs text-slate-400 italic">Nessun salone presente nell'account.</p>
             ) : (
-              <div className="space-y-3 max-h-48 overflow-y-auto pr-1">
+              <div className="space-y-2.5 max-h-52 overflow-y-auto pr-1">
                 {salons.map((salon) => (
-                  <div key={salon.id} className="p-2.5 bg-gray-50 rounded-xl border border-gray-100 flex flex-col gap-0.5">
-                    <span className="text-xs font-bold text-gray-800 truncate">{salon.name}</span>
-                    <span className="text-[10px] text-gray-500 truncate">{salon.address}</span>
+                  <div key={salon.id} className="p-3 bg-slate-50/80 rounded-2xl border border-slate-200/60 flex flex-col gap-0.5 shadow-2xs">
+                    <span className="text-xs font-bold text-[#1a2035] truncate">{salon.name}</span>
+                    <span className="text-[10px] text-slate-400 truncate">{salon.address}</span>
                   </div>
                 ))}
               </div>
@@ -1169,14 +1186,14 @@ export default function AccountInfoScreen() {
           {/* TAB 1: PROFILO PERSONALE */}
           {activeTab === "profilo" && (
             <div className="space-y-6">
-              <div className="bg-white border border-gray-100 rounded-2xl p-6 md:p-8 shadow-sm">
-                <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-6">
-                <h3 className="font-serif text-lg font-bold text-[#1a2035] flex items-center gap-2.5">
+              <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-2xs">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                <h3 className="text-lg font-bold text-[#1a2035] flex items-center gap-2.5 tracking-tight">
                   <User className="w-5 h-5 text-[#1a3a8f]" />
                   Informazioni del Profilo
                 </h3>
                 {userRole !== "owner" && (
-                  <span className="flex items-center gap-1.5 text-xs text-gray-400 bg-gray-50 border border-gray-100 px-2.5 py-1 rounded-full">
+                  <span className="flex items-center gap-1.5 text-xs text-slate-400 bg-slate-50 border border-slate-200/80 px-3 py-1 rounded-full font-bold">
                     <Lock className="w-3 h-3" /> Sola Lettura
                   </span>
                 )}
@@ -1186,7 +1203,7 @@ export default function AccountInfoScreen() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Nome Completo */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
                       Nome e Cognome *
                     </label>
                     <input
@@ -1196,13 +1213,13 @@ export default function AccountInfoScreen() {
                       disabled={userRole !== "owner"}
                       value={ownerNome}
                       onChange={(e) => setOwnerNome(e.target.value)}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-[#1a3a8f] outline-none transition-all placeholder:text-gray-400 text-gray-900 font-medium disabled:bg-gray-100 disabled:cursor-not-allowed"
+                      className="w-full bg-slate-50/80 border border-slate-200/80 rounded-2xl px-4 py-3 text-sm focus:bg-white focus:border-[#1a3a8f] outline-none transition-all placeholder:text-slate-400 text-slate-900 font-medium disabled:bg-slate-100 disabled:cursor-not-allowed shadow-2xs"
                     />
                   </div>
 
                   {/* Telefono */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
                       Numero di Telefono
                     </label>
                     <div className="flex gap-2">
@@ -1210,7 +1227,7 @@ export default function AccountInfoScreen() {
                         disabled={userRole !== "owner"}
                         value={ownerPhonePrefix}
                         onChange={(e) => setOwnerPhonePrefix(e.target.value)}
-                        className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 text-sm focus:border-[#1a3a8f] outline-none transition-all font-medium shrink-0 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                        className="bg-slate-50/80 border border-slate-200/80 rounded-2xl px-3 py-3 text-sm focus:bg-white focus:border-[#1a3a8f] outline-none transition-all font-medium shrink-0 disabled:bg-slate-100 disabled:cursor-not-allowed shadow-2xs"
                       >
                         {COUNTRY_PREFIXES.map((pref) => (
                           <option key={pref.code} value={pref.code}>
@@ -1229,14 +1246,14 @@ export default function AccountInfoScreen() {
                           const cleaned = e.target.value.replace(/[^0-9]/g, "");
                           setOwnerPhoneBody(cleaned);
                         }}
-                        className="flex-1 min-w-0 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-[#1a3a8f] outline-none transition-all placeholder:text-gray-400 text-gray-900 font-medium disabled:bg-gray-100 disabled:cursor-not-allowed"
+                        className="flex-1 min-w-0 bg-slate-50/80 border border-slate-200/80 rounded-2xl px-4 py-3 text-sm focus:bg-white focus:border-[#1a3a8f] outline-none transition-all placeholder:text-slate-400 text-slate-900 font-medium disabled:bg-slate-100 disabled:cursor-not-allowed shadow-2xs"
                       />
                     </div>
                   </div>
 
                   {/* Email (Disabilitata) */}
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
                       Indirizzo Email (Protetto)
                     </label>
                     <div className="relative">
@@ -1244,25 +1261,25 @@ export default function AccountInfoScreen() {
                         type="email"
                         disabled
                         value={user?.email || ""}
-                        className="w-full bg-gray-100 border border-gray-200 text-gray-500 rounded-xl pl-4 pr-10 py-3 text-sm outline-none cursor-not-allowed font-medium"
+                        className="w-full bg-slate-100/90 border border-slate-200/80 text-slate-500 rounded-2xl pl-4 pr-10 py-3 text-sm outline-none cursor-not-allowed font-medium shadow-2xs"
                       />
-                      <div className="absolute inset-y-0 right-3 flex items-center text-gray-400">
+                      <div className="absolute inset-y-0 right-3.5 flex items-center text-slate-400">
                         <Lock className="w-4 h-4" />
                       </div>
                     </div>
-                    <p className="text-gray-400 text-[11px] mt-1.5">
+                    <p className="text-slate-400 text-[11px] mt-1.5">
                       L'indirizzo email è protetto ed è collegato alle tue credenziali di autenticazione protetta Firebase.
                     </p>
                   </div>
                 </div>
 
-                <div className="border-t border-gray-100 pt-6 space-y-4">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">
+                <div className="border-t border-slate-100 pt-6 space-y-4">
+                  <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
                     Dettagli Tecnici Account & Multi-Tenant
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                    <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
-                      <span className="text-gray-400 font-medium block mb-0.5">Codice Negozio (Tenant ID)</span>
+                    <div className="p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200/70 shadow-2xs">
+                      <span className="text-slate-400 font-medium block mb-1">Codice Negozio (Tenant ID)</span>
                       <div className="flex items-center justify-between gap-2">
                         <code className="font-mono text-[#1a3a8f] font-bold select-all break-all">{ownerId}</code>
                         <button 
@@ -1271,30 +1288,30 @@ export default function AccountInfoScreen() {
                             navigator.clipboard.writeText(ownerId || "");
                             alert("Codice Negozio copiato negli appunti! Condividilo con i collaboratori in fase di registrazione.");
                           }}
-                          className="text-[10px] text-[#1a3a8f] bg-blue-50 hover:bg-blue-100 px-2 py-1 rounded font-bold cursor-pointer transition-all"
+                          className="text-[10px] text-[#1a3a8f] bg-[#eef2ff] hover:bg-[#e0e7ff] px-2.5 py-1 rounded-xl font-bold cursor-pointer transition-all active:scale-95 shadow-2xs"
                         >
                           Copia
                         </button>
                       </div>
                     </div>
-                    <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
-                      <span className="text-gray-400 font-medium block mb-0.5">UID Account</span>
-                      <code className="font-mono text-gray-700">{user?.uid}</code>
+                    <div className="p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200/70 shadow-2xs">
+                      <span className="text-slate-400 font-medium block mb-1">UID Account</span>
+                      <code className="font-mono text-slate-700 break-all">{user?.uid}</code>
                     </div>
-                    <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
-                      <span className="text-gray-400 font-medium block mb-0.5">Metodo Autenticazione</span>
-                      <span className="font-semibold text-gray-700">Firebase Auth (Email/Password)</span>
+                    <div className="p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200/70 shadow-2xs md:col-span-2">
+                      <span className="text-slate-400 font-medium block mb-1">Metodo Autenticazione</span>
+                      <span className="font-semibold text-slate-800">Firebase Auth (Email/Password)</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Form Actions (Only if Owner) */}
                 {userRole === "owner" && (
-                  <div className="pt-4 border-t border-gray-100 flex justify-end">
+                  <div className="pt-4 border-t border-slate-100 flex justify-end">
                     <button
                       type="submit"
                       disabled={saving}
-                      className="bg-[#1a3a8f] hover:bg-[#152f73] text-white rounded-xl px-6 py-3 text-sm font-semibold shadow-md shadow-blue-900/10 flex items-center gap-2 transition-all cursor-pointer"
+                      className="bg-[#1a3a8f] hover:bg-[#132c6e] active:scale-[0.98] text-white rounded-2xl px-6 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider shadow-2xs flex items-center gap-2 transition-all cursor-pointer"
                     >
                       {saving ? (
                         <>
@@ -1314,9 +1331,9 @@ export default function AccountInfoScreen() {
             </div>
 
             {/* PASSWORD CHANGE SECTION */}
-            <div className="bg-white border border-gray-100 rounded-2xl p-6 md:p-8 shadow-sm">
-              <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-6">
-                <h3 className="font-serif text-lg font-bold text-[#1a2035] flex items-center gap-2.5">
+            <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-2xs">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                <h3 className="text-lg font-bold text-[#1a2035] flex items-center gap-2.5 tracking-tight">
                   <Lock className="w-5 h-5 text-[#1a3a8f]" />
                   Sicurezza & Cambio Password
                 </h3>
@@ -1324,15 +1341,15 @@ export default function AccountInfoScreen() {
 
               <form onSubmit={handlePasswordChange} className="space-y-4">
                 {passwordChangeSuccess && (
-                  <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-800 text-xs font-semibold flex items-center gap-2 animate-fadeIn">
+                  <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs font-bold flex items-center gap-2 shadow-2xs animate-fadeIn">
                     <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
                     <span>{passwordChangeSuccess}</span>
                   </div>
                 )}
 
                 {passwordChangeError && (
-                  <div className="p-3 rounded-xl bg-red-50 border border-red-100 text-red-800 text-xs font-semibold flex items-center gap-2 animate-fadeIn">
-                    <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
+                  <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200/80 text-rose-800 text-xs font-bold flex items-center gap-2 shadow-2xs animate-fadeIn">
+                    <AlertCircle className="w-4 h-4 text-rose-500 shrink-0" />
                     <span>{passwordChangeError}</span>
                   </div>
                 )}
@@ -1340,7 +1357,7 @@ export default function AccountInfoScreen() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Current Password */}
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
                       Password Attuale *
                     </label>
                     <div className="relative">
@@ -1349,20 +1366,20 @@ export default function AccountInfoScreen() {
                         placeholder="Inserisci la password attuale (richiesta per conferma sicurezza)"
                         value={currentPasswordForChange}
                         onChange={(e) => setCurrentPasswordForChange(e.target.value)}
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-4 pr-10 py-3 text-sm outline-none focus:border-[#1a3a8f] font-medium"
+                        className="w-full bg-slate-50/80 border border-slate-200/80 rounded-2xl pl-4 pr-10 py-3 text-sm outline-none focus:bg-white focus:border-[#1a3a8f] font-medium shadow-2xs transition-all"
                       />
-                      <div className="absolute inset-y-0 right-3 flex items-center text-gray-400">
+                      <div className="absolute inset-y-0 right-3.5 flex items-center text-slate-400">
                         <Lock className="w-4 h-4" />
                       </div>
                     </div>
-                    <p className="text-gray-400 text-[10px] mt-1">
+                    <p className="text-slate-400 text-[11px] mt-1.5">
                       Per cambiare la password, Firebase richiede di confermare la tua identità reinserendo la tua password attuale.
                     </p>
                   </div>
 
                   {/* New Password */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
                       Nuova Password *
                     </label>
                     <div className="relative">
@@ -1372,9 +1389,9 @@ export default function AccountInfoScreen() {
                         placeholder="Minimo 6 caratteri"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-4 pr-10 py-3 text-sm outline-none focus:border-[#1a3a8f] font-medium"
+                        className="w-full bg-slate-50/80 border border-slate-200/80 rounded-2xl pl-4 pr-10 py-3 text-sm outline-none focus:bg-white focus:border-[#1a3a8f] font-medium shadow-2xs transition-all"
                       />
-                      <div className="absolute inset-y-0 right-3 flex items-center text-gray-400">
+                      <div className="absolute inset-y-0 right-3.5 flex items-center text-slate-400">
                         <Lock className="w-4 h-4" />
                       </div>
                     </div>
@@ -1382,7 +1399,7 @@ export default function AccountInfoScreen() {
 
                   {/* Confirm New Password */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
                       Conferma Nuova Password *
                     </label>
                     <div className="relative">
@@ -1392,20 +1409,20 @@ export default function AccountInfoScreen() {
                         placeholder="Ripeti la nuova password"
                         value={confirmNewPassword}
                         onChange={(e) => setConfirmNewPassword(e.target.value)}
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-4 pr-10 py-3 text-sm outline-none focus:border-[#1a3a8f] font-medium"
+                        className="w-full bg-slate-50/80 border border-slate-200/80 rounded-2xl pl-4 pr-10 py-3 text-sm outline-none focus:bg-white focus:border-[#1a3a8f] font-medium shadow-2xs transition-all"
                       />
-                      <div className="absolute inset-y-0 right-3 flex items-center text-gray-400">
+                      <div className="absolute inset-y-0 right-3.5 flex items-center text-slate-400">
                         <Lock className="w-4 h-4" />
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-gray-100 flex justify-end">
+                <div className="pt-4 border-t border-slate-100 flex justify-end">
                   <button
                     type="submit"
                     disabled={passwordChangeLoading}
-                    className="bg-[#1a3a8f] hover:bg-[#152f73] text-white rounded-xl px-6 py-2.5 text-xs font-semibold shadow-md shadow-blue-900/10 flex items-center gap-2 transition-all cursor-pointer"
+                    className="bg-[#1a3a8f] hover:bg-[#132c6e] active:scale-[0.98] text-white rounded-2xl px-6 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider shadow-2xs flex items-center gap-2 transition-all cursor-pointer"
                   >
                     {passwordChangeLoading ? (
                       <>
@@ -1425,28 +1442,28 @@ export default function AccountInfoScreen() {
 
             {/* GDPR ACCOUNT DELETION SECTION */}
             {userRole === "owner" && (
-              <div className="bg-white border border-red-100 rounded-2xl p-6 md:p-8 shadow-sm">
-                <div className="flex items-center justify-between border-b border-red-50 pb-4 mb-6">
-                  <h3 className="font-serif text-lg font-bold text-red-700 flex items-center gap-2.5">
-                    <Trash2 className="w-5 h-5 text-red-600" />
+              <div className="bg-white border border-rose-100 rounded-3xl p-6 sm:p-8 shadow-2xs space-y-6">
+                <div className="flex items-center justify-between border-b border-rose-100 pb-4">
+                  <h3 className="text-lg font-bold text-rose-700 flex items-center gap-2.5 tracking-tight">
+                    <Trash2 className="w-5 h-5 text-rose-600" />
                     Eliminazione Account & Diritto all'Oblio (GDPR)
                   </h3>
-                  <span className="flex items-center gap-1 text-xs text-red-600 bg-red-50 px-2.5 py-1 rounded-full font-semibold">
+                  <span className="flex items-center gap-1 text-[10px] text-rose-700 bg-rose-50 border border-rose-200/80 px-3 py-1 rounded-full font-bold uppercase tracking-wider shadow-2xs">
                     Azione Irreversibile
                   </span>
                 </div>
 
                 <div className="space-y-4">
-                  <p className="text-sm text-gray-600 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                     In adempimento all'<strong>Articolo 17 del Regolamento UE 2016/679 (GDPR)</strong> sul <em>Diritto all'Oblio</em>, puoi richiedere l'eliminazione completa, automatica e permanente di tutti i tuoi dati e della tua identità digitale.
                   </p>
 
-                  <div className="bg-red-50/50 border border-red-100 rounded-xl p-4 text-xs text-red-800 space-y-2">
-                    <p className="font-bold uppercase tracking-wider text-[10px] text-red-600 flex items-center gap-1.5">
-                      <AlertCircle className="w-4 h-4 shrink-0" />
+                  <div className="bg-rose-50/60 border border-rose-200/70 rounded-2xl p-4 text-xs text-rose-900 space-y-2 shadow-2xs">
+                    <p className="font-bold uppercase tracking-wider text-[10px] text-rose-700 flex items-center gap-1.5">
+                      <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
                       Cosa succede quando elimini l'account?
                     </p>
-                    <ul className="list-disc list-inside space-y-1 pl-1 text-red-700">
+                    <ul className="list-disc list-inside space-y-1 pl-1 text-rose-800">
                       <li>La configurazione di tutti i tuoi saloni verrà rimossa in modo definitivo.</li>
                       <li>Tutti i collaboratori, agenda, appuntamenti e prestazioni verranno eliminati in modo irreversibile.</li>
                       <li>La lista clienti, magazzino prodotti, report storici e percentuali saranno distrutti.</li>
@@ -1456,12 +1473,12 @@ export default function AccountInfoScreen() {
                   </div>
 
                   {/* STRUMENTI DI TEST GDPR (SVILUPPO) */}
-                  <div className="bg-[#f0f9ff] border border-blue-100 rounded-xl p-4 space-y-3">
-                    <p className="font-bold uppercase tracking-wider text-[10px] text-blue-700 flex items-center gap-1.5">
-                      <Sparkles className="w-4 h-4 shrink-0 text-blue-500 animate-pulse" />
+                  <div className="bg-[#eef2ff] border border-[#1a3a8f]/15 rounded-2xl p-4 space-y-3 shadow-2xs">
+                    <p className="font-bold uppercase tracking-wider text-[10px] text-[#1a3a8f] flex items-center gap-1.5">
+                      <Sparkles className="w-4 h-4 shrink-0 text-[#1a3a8f] animate-pulse" />
                       Strumento di Test & Verifica GDPR (Consigliato per Sviluppatori)
                     </p>
-                    <p className="text-xs text-blue-800 leading-normal">
+                    <p className="text-xs text-slate-700 leading-normal">
                       Per evitare di creare manualmente saloni, staff, clienti, listini e appuntamenti da capo (che richiede molto tempo), puoi usare questo simulatore per popolare istantaneamente il database con record collegati al tuo account. Successivamente potrai premere il pulsante rosso di eliminazione per verificare che vengano distrutti istantaneamente.
                     </p>
                     <div className="flex flex-wrap items-center gap-3">
@@ -1469,7 +1486,7 @@ export default function AccountInfoScreen() {
                         type="button"
                         disabled={seedingLoading}
                         onClick={handleGenerateTestData}
-                        className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-xl px-4 py-2.5 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                        className="bg-[#1a3a8f] hover:bg-[#132c6e] active:scale-[0.98] disabled:opacity-50 text-white rounded-2xl px-4 py-2.5 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
                       >
                         {seedingLoading ? (
                           <>
@@ -1485,14 +1502,14 @@ export default function AccountInfoScreen() {
                       </button>
 
                       {seedingSuccess && (
-                        <span className="text-xs text-emerald-700 font-bold flex items-center gap-1 animate-fadeIn bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100">
-                          <Check className="w-3.5 h-3.5" /> Dati generati! Verifica ora su Firestore o nell'agenda.
+                        <span className="text-xs text-emerald-800 font-bold flex items-center gap-1 animate-fadeIn bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-200 shadow-2xs">
+                          <Check className="w-3.5 h-3.5 text-emerald-600" /> Dati generati! Verifica ora su Firestore o nell'agenda.
                         </span>
                       )}
 
                       {seedingError && (
-                        <span className="text-xs text-red-700 font-semibold flex items-center gap-1 animate-fadeIn">
-                          <AlertCircle className="w-3.5 h-3.5 text-red-500" /> {seedingError}
+                        <span className="text-xs text-rose-700 font-bold flex items-center gap-1 animate-fadeIn bg-rose-50 px-3 py-1 rounded-xl border border-rose-200 shadow-2xs">
+                          <AlertCircle className="w-3.5 h-3.5 text-rose-500" /> {seedingError}
                         </span>
                       )}
                     </div>
@@ -1500,21 +1517,21 @@ export default function AccountInfoScreen() {
 
                   <div className="space-y-4 pt-2">
                     <div className="space-y-2">
-                      <label className="block text-xs font-bold uppercase tracking-wider text-gray-500">
-                        Per confermare, digita <span className="font-mono text-red-600 font-extrabold select-all">ELIMINA DEFINITIVAMENTE</span> nel campo sottostante:
+                      <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                        Per confermare, digita <span className="font-mono text-rose-600 font-extrabold select-all">ELIMINA DEFINITIVAMENTE</span> nel campo sottostante:
                       </label>
                       <input
                         type="text"
                         placeholder="Digita la frase di sicurezza per sbloccare"
                         value={deleteConfirmText}
                         onChange={(e) => setDeleteConfirmText(e.target.value)}
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-red-500 outline-none transition-all placeholder:text-gray-400 text-gray-900 font-medium font-mono"
+                        className="w-full bg-slate-50/80 border border-slate-200/80 rounded-2xl px-4 py-3 text-sm focus:bg-white focus:border-rose-500 outline-none transition-all placeholder:text-slate-400 text-slate-900 font-medium font-mono shadow-2xs"
                       />
                     </div>
 
                     {deleteError && (
-                      <div className="p-3 rounded-xl bg-red-50 border border-red-100 text-red-800 text-xs font-semibold flex items-center gap-2 animate-fadeIn">
-                        <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
+                      <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200/80 text-rose-800 text-xs font-bold flex items-center gap-2 shadow-2xs animate-fadeIn">
+                        <AlertCircle className="w-4 h-4 text-rose-500 shrink-0" />
                         <span>{deleteError}</span>
                       </div>
                     )}
@@ -1524,7 +1541,7 @@ export default function AccountInfoScreen() {
                         type="button"
                         onClick={() => setShowDeleteConfirmModal(true)}
                         disabled={deleteConfirmText !== "ELIMINA DEFINITIVAMENTE" || deletingAccount}
-                        className="bg-red-600 hover:bg-red-700 disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-200 disabled:cursor-not-allowed text-white border border-transparent rounded-xl px-6 py-3 text-sm font-semibold shadow-md shadow-red-950/10 flex items-center gap-2 transition-all cursor-pointer"
+                        className="bg-rose-600 hover:bg-rose-700 active:scale-[0.98] disabled:bg-slate-100 disabled:text-slate-400 disabled:border-slate-200 disabled:cursor-not-allowed text-white rounded-2xl px-6 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider shadow-2xs flex items-center gap-2 transition-all cursor-pointer"
                       >
                         <Trash2 className="w-4 h-4" />
                         Elimina Tutto in Sicurezza (GDPR)
@@ -1540,14 +1557,14 @@ export default function AccountInfoScreen() {
 
           {/* TAB 2: DATI DI FATTURAZIONE */}
           {activeTab === "fatturazione" && userRole !== "receptionist" && (
-            <div className="bg-white border border-gray-100 rounded-2xl p-6 md:p-8 shadow-sm">
-              <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-6">
-                <h3 className="font-serif text-lg font-bold text-[#1a2035] flex items-center gap-2.5">
+            <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-2xs">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                <h3 className="text-lg font-bold text-[#1a2035] flex items-center gap-2.5 tracking-tight">
                   <Building2 className="w-5 h-5 text-[#1a3a8f]" />
                   Fatturazione Elettronica Italiana
                 </h3>
                 {userRole !== "owner" && (
-                  <span className="flex items-center gap-1.5 text-xs text-gray-400 bg-gray-50 border border-gray-100 px-2.5 py-1 rounded-full">
+                  <span className="flex items-center gap-1.5 text-xs text-slate-400 bg-slate-50 border border-slate-200/80 px-3 py-1 rounded-full font-bold">
                     <Lock className="w-3 h-3" /> Sola Lettura
                   </span>
                 )}
@@ -1557,7 +1574,7 @@ export default function AccountInfoScreen() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Ragione Sociale */}
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
                       Ragione Sociale Azienda *
                     </label>
                     <input
@@ -1567,13 +1584,13 @@ export default function AccountInfoScreen() {
                       disabled={userRole !== "owner"}
                       value={ragioneSociale}
                       onChange={(e) => setRagioneSociale(e.target.value)}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-[#1a3a8f] outline-none transition-all placeholder:text-gray-400 text-gray-900 font-medium disabled:bg-gray-100 disabled:cursor-not-allowed"
+                      className="w-full bg-slate-50/80 border border-slate-200/80 rounded-2xl px-4 py-3 text-sm focus:bg-white focus:border-[#1a3a8f] outline-none transition-all placeholder:text-slate-400 text-slate-900 font-medium disabled:bg-slate-100 disabled:cursor-not-allowed shadow-2xs"
                     />
                   </div>
 
                   {/* Partita IVA */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
                       Partita IVA *
                     </label>
                     <div className="relative">
@@ -1588,20 +1605,20 @@ export default function AccountInfoScreen() {
                           const val = e.target.value.replace(/[^0-9]/g, ""); // Digits only
                           setPartitaIva(val);
                         }}
-                        className={`w-full bg-gray-50 border rounded-xl pl-4 pr-10 py-3 text-sm outline-none transition-all placeholder:text-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed font-medium ${
+                        className={`w-full bg-slate-50/80 border rounded-2xl pl-4 pr-10 py-3 text-sm outline-none transition-all placeholder:text-slate-400 disabled:bg-slate-100 disabled:cursor-not-allowed font-medium shadow-2xs ${
                           pivaIsEnteringValid === true
-                            ? "border-green-300 focus:border-green-500 bg-green-50/10"
+                            ? "border-emerald-300 focus:border-emerald-500 bg-emerald-50/20"
                             : pivaIsEnteringValid === false
-                            ? "border-red-200 focus:border-red-400"
-                            : "border-gray-200 focus:border-[#1a3a8f]"
+                            ? "border-rose-200 focus:border-rose-400"
+                            : "border-slate-200/80 focus:border-[#1a3a8f] focus:bg-white"
                         }`}
                       />
                       <div className="absolute inset-y-0 right-3 flex items-center">
                         {pivaIsEnteringValid === true && (
-                          <CheckCircle className="w-5 h-5 text-green-500" />
+                          <CheckCircle className="w-5 h-5 text-emerald-500" />
                         )}
                         {pivaIsEnteringValid === false && partitaIva.length > 0 && (
-                          <span className="text-[10px] text-red-500 font-bold bg-red-50 px-1.5 py-0.5 rounded border border-red-100">
+                          <span className="text-[10px] text-rose-500 font-bold bg-rose-50 px-2 py-0.5 rounded-lg border border-rose-100">
                             Non valida
                           </span>
                         )}
@@ -1611,7 +1628,7 @@ export default function AccountInfoScreen() {
 
                   {/* Codice Fiscale */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
                       Codice Fiscale *
                     </label>
                     <div className="relative">
@@ -1624,20 +1641,20 @@ export default function AccountInfoScreen() {
                         onChange={(e) => {
                           setCodiceFiscale(e.target.value.replace(/\s+/g, "").toUpperCase());
                         }}
-                        className={`w-full bg-gray-50 border rounded-xl pl-4 pr-10 py-3 text-sm outline-none transition-all placeholder:text-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed font-medium uppercase ${
+                        className={`w-full bg-slate-50/80 border rounded-2xl pl-4 pr-10 py-3 text-sm outline-none transition-all placeholder:text-slate-400 disabled:bg-slate-100 disabled:cursor-not-allowed font-medium uppercase shadow-2xs ${
                           cfIsEnteringValid === true
-                            ? "border-green-300 focus:border-green-500 bg-green-50/10"
+                            ? "border-emerald-300 focus:border-emerald-500 bg-emerald-50/20"
                             : cfIsEnteringValid === false && codiceFiscale.length > 0
-                            ? "border-red-200 focus:border-red-400"
-                            : "border-gray-200 focus:border-[#1a3a8f]"
+                            ? "border-rose-200 focus:border-rose-400"
+                            : "border-slate-200/80 focus:border-[#1a3a8f] focus:bg-white"
                         }`}
                       />
                       <div className="absolute inset-y-0 right-3 flex items-center">
                         {cfIsEnteringValid === true && (
-                          <CheckCircle className="w-5 h-5 text-green-500" />
+                          <CheckCircle className="w-5 h-5 text-emerald-500" />
                         )}
                         {cfIsEnteringValid === false && codiceFiscale.length > 0 && (
-                          <span className="text-[10px] text-red-500 font-bold bg-red-50 px-1.5 py-0.5 rounded border border-red-100">
+                          <span className="text-[10px] text-rose-500 font-bold bg-rose-50 px-2 py-0.5 rounded-lg border border-rose-100">
                             Non valido
                           </span>
                         )}
@@ -1647,7 +1664,7 @@ export default function AccountInfoScreen() {
 
                   {/* Via e Numero Civico */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
                       Indirizzo (Via e Civico) *
                     </label>
                     <input
@@ -1657,13 +1674,13 @@ export default function AccountInfoScreen() {
                       disabled={userRole !== "owner"}
                       value={via}
                       onChange={(e) => setVia(e.target.value)}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-[#1a3a8f] outline-none transition-all placeholder:text-gray-400 text-gray-900 font-medium disabled:bg-gray-100 disabled:cursor-not-allowed"
+                      className="w-full bg-slate-50/80 border border-slate-200/80 rounded-2xl px-4 py-3 text-sm focus:bg-white focus:border-[#1a3a8f] outline-none transition-all placeholder:text-slate-400 text-slate-900 font-medium disabled:bg-slate-100 disabled:cursor-not-allowed shadow-2xs"
                     />
                   </div>
 
                   {/* Città */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
                       Città *
                     </label>
                     <input
@@ -1673,13 +1690,13 @@ export default function AccountInfoScreen() {
                       disabled={userRole !== "owner"}
                       value={citta}
                       onChange={(e) => setCitta(e.target.value)}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-[#1a3a8f] outline-none transition-all placeholder:text-gray-400 text-gray-900 font-medium disabled:bg-gray-100 disabled:cursor-not-allowed"
+                      className="w-full bg-slate-50/80 border border-slate-200/80 rounded-2xl px-4 py-3 text-sm focus:bg-white focus:border-[#1a3a8f] outline-none transition-all placeholder:text-slate-400 text-slate-900 font-medium disabled:bg-slate-100 disabled:cursor-not-allowed shadow-2xs"
                     />
                   </div>
 
                   {/* CAP */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
                       CUP / CAP *
                     </label>
                     <input
@@ -1693,19 +1710,19 @@ export default function AccountInfoScreen() {
                         const val = e.target.value.replace(/[^0-9]/g, ""); // digits only
                         setCap(val);
                       }}
-                      className={`w-full bg-gray-50 border rounded-xl px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed font-medium ${
+                      className={`w-full bg-slate-50/80 border rounded-2xl px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 disabled:bg-slate-100 disabled:cursor-not-allowed font-medium shadow-2xs ${
                         capIsEnteringValid === true
-                          ? "border-green-300 focus:border-green-500 bg-green-50/10"
+                          ? "border-emerald-300 focus:border-emerald-500 bg-emerald-50/20"
                           : capIsEnteringValid === false
-                          ? "border-red-200 focus:border-red-400"
-                          : "border-gray-200 focus:border-[#1a3a8f]"
+                          ? "border-rose-200 focus:border-rose-400"
+                          : "border-slate-200/80 focus:border-[#1a3a8f] focus:bg-white"
                       }`}
                     />
                   </div>
 
                   {/* Provincia */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
                       Provincia (Sigla PR) *
                     </label>
                     <input
@@ -1716,13 +1733,13 @@ export default function AccountInfoScreen() {
                       disabled={userRole !== "owner"}
                       value={provincia}
                       onChange={(e) => setProvincia(e.target.value.toUpperCase())}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-[#1a3a8f] outline-none transition-all placeholder:text-gray-400 text-gray-900 font-medium disabled:bg-gray-100 disabled:cursor-not-allowed"
+                      className="w-full bg-slate-50/80 border border-slate-200/80 rounded-2xl px-4 py-3 text-sm focus:bg-white focus:border-[#1a3a8f] outline-none transition-all placeholder:text-slate-400 text-slate-900 font-medium disabled:bg-slate-100 disabled:cursor-not-allowed shadow-2xs"
                     />
                   </div>
 
                   {/* Codice Destinatario (SDI) */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
                       Codice Destinatario SDI
                     </label>
                     <input
@@ -1732,22 +1749,22 @@ export default function AccountInfoScreen() {
                       disabled={userRole !== "owner"}
                       value={sdi}
                       onChange={(e) => setSdi(e.target.value)}
-                      className={`w-full bg-gray-50 border rounded-xl px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed font-mono ${
+                      className={`w-full bg-slate-50/80 border rounded-2xl px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 disabled:bg-slate-100 disabled:cursor-not-allowed font-mono shadow-2xs ${
                         sdiIsEnteringValid === true
-                          ? "border-green-300 focus:border-green-500 bg-green-50/10"
+                          ? "border-emerald-300 focus:border-emerald-500 bg-emerald-50/20"
                           : sdiIsEnteringValid === false
-                          ? "border-red-200 focus:border-red-400"
-                          : "border-gray-200 focus:border-[#1a3a8f]"
+                          ? "border-rose-200 focus:border-rose-400"
+                          : "border-slate-200/80 focus:border-[#1a3a8f] focus:bg-white"
                       }`}
                     />
-                    <p className="text-gray-400 text-[10px] mt-1">
+                    <p className="text-slate-400 text-[11px] mt-1">
                       Lascia vuoto o inserisci 7 caratteri alfanumerici.
                     </p>
                   </div>
 
                   {/* PEC */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
                       PEC (Posta Elettronica Certificata)
                     </label>
                     <input
@@ -1756,32 +1773,32 @@ export default function AccountInfoScreen() {
                       disabled={userRole !== "owner"}
                       value={pec}
                       onChange={(e) => setPec(e.target.value)}
-                      className={`w-full bg-gray-50 border rounded-xl px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed font-medium ${
+                      className={`w-full bg-slate-50/80 border rounded-2xl px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 disabled:bg-slate-100 disabled:cursor-not-allowed font-medium shadow-2xs ${
                         pecIsEnteringValid === true
-                          ? "border-green-300 focus:border-green-500 bg-green-50/10"
+                          ? "border-emerald-300 focus:border-emerald-500 bg-emerald-50/20"
                           : pecIsEnteringValid === false
-                          ? "border-red-200 focus:border-red-400"
-                          : "border-gray-200 focus:border-[#1a3a8f]"
+                          ? "border-rose-200 focus:border-rose-400"
+                          : "border-slate-200/80 focus:border-[#1a3a8f] focus:bg-white"
                       }`}
                     />
                   </div>
                 </div>
 
-                <div className="bg-[#f8fafc] border border-gray-100 rounded-xl p-4 flex gap-3 text-xs text-gray-600">
+                <div className="bg-[#eef2ff] border border-[#1a3a8f]/15 rounded-2xl p-4 flex gap-3 text-xs text-slate-600 shadow-2xs">
                   <Building className="w-5 h-5 text-[#1a3a8f] shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-bold text-gray-800 block mb-0.5">Impatto sulla fatturazione</span>
+                    <span className="font-bold text-[#1a2035] block mb-0.5">Impatto sulla fatturazione</span>
                     I dati salvati in questa scheda costituiscono la sede fiscale principale dell'azienda. Saranno usati come indirizzo di fatturazione predefinito per il pagamento del canone SaaS di SforbiciaSmart e possono essere applicati istantaneamente ai singoli saloni.
                   </div>
                 </div>
 
                 {/* Form Actions (Only if Owner) */}
                 {userRole === "owner" && (
-                  <div className="pt-4 border-t border-gray-100 flex justify-end">
+                  <div className="pt-4 border-t border-slate-100 flex justify-end">
                     <button
                       type="submit"
                       disabled={saving}
-                      className="bg-[#1a3a8f] hover:bg-[#152f73] text-white rounded-xl px-6 py-3 text-sm font-semibold shadow-md shadow-blue-900/10 flex items-center gap-2 transition-all cursor-pointer"
+                      className="bg-[#1a3a8f] hover:bg-[#132c6e] active:scale-[0.98] text-white rounded-2xl px-6 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider shadow-2xs flex items-center gap-2 transition-all cursor-pointer"
                     >
                       {saving ? (
                         <>
@@ -1803,32 +1820,32 @@ export default function AccountInfoScreen() {
 
           {/* TAB 3: ABBONAMENTO SAAS */}
           {activeTab === "abbonamento" && userRole !== "receptionist" && (
-            <div className="bg-white border border-gray-100 rounded-2xl p-6 md:p-8 shadow-sm space-y-8">
+            <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-2xs space-y-8">
               
               {/* Header section with active badge */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-gray-100 pb-5">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-100 pb-5">
                 <div>
-                  <h3 className="font-serif text-lg font-bold text-[#1a2035] flex items-center gap-2.5">
+                  <h3 className="text-lg font-bold text-[#1a2035] flex items-center gap-2.5 tracking-tight">
                     <CreditCard className="w-5 h-5 text-[#1a3a8f]" />
                     Gestione Abbonamento SaaS
                   </h3>
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-slate-400 mt-1">
                     Visualizza il tuo piano attivo, i limiti di utilizzo e aggiorna il tuo abbonamento.
                   </p>
                 </div>
                 <div className="self-start sm:self-center flex items-center gap-2">
                   {userPlan === "unlimited" ? (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-bold uppercase tracking-wider shadow-sm animate-pulse">
+                    <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-bold uppercase tracking-wider shadow-2xs animate-pulse">
                       <Sparkles className="w-3 h-3 text-indigo-500 shrink-0" />
                       VIP Accesso Illimitato
                     </span>
                   ) : userPlan === "none" || subscriptionStatus === "trialing" ? (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold uppercase tracking-wider shadow-sm animate-pulse">
+                    <span className="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold uppercase tracking-wider shadow-2xs animate-pulse">
                       Periodo di Prova
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-50 border border-green-200 text-green-700 text-xs font-bold uppercase tracking-wider shadow-sm">
-                      <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                    <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold uppercase tracking-wider shadow-2xs">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                       Abbonamento Attivo
                     </span>
                   )}
@@ -1837,7 +1854,7 @@ export default function AccountInfoScreen() {
 
               {/* Free Trial Banner if trialing */}
               {userPlan !== "unlimited" && (userPlan === "none" || subscriptionStatus === "trialing") && trialEndDate && (
-                <div className="bg-amber-50/50 border border-amber-100 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="bg-amber-50/60 border border-amber-200/80 rounded-3xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-2xs">
                   <div className="flex gap-3">
                     <Calendar className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                     <div>
@@ -1848,18 +1865,18 @@ export default function AccountInfoScreen() {
                       </p>
                     </div>
                   </div>
-                  <div className="bg-amber-100/60 border border-amber-200 px-4 py-2 rounded-xl text-center shrink-0 w-full sm:w-auto">
+                  <div className="bg-amber-100/80 border border-amber-200 px-4 py-2 rounded-2xl text-center shrink-0 w-full sm:w-auto shadow-2xs">
                     <span className="block text-xl font-bold text-amber-900 leading-none">
                       {Math.max(0, Math.ceil((new Date(trialEndDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))}
                     </span>
-                    <span className="text-[10px] font-bold uppercase text-amber-800">giorni rimasti</span>
+                    <span className="text-[10px] font-bold uppercase text-amber-800 tracking-wider">giorni rimasti</span>
                   </div>
                 </div>
               )}
 
               {/* Mobile warning banner */}
               {detectIsMobileApp() && (
-                <div className="bg-amber-50 border border-amber-200 p-5 rounded-2xl text-xs text-amber-850 leading-relaxed font-semibold space-y-1 shadow-sm">
+                <div className="bg-amber-50 border border-amber-200 p-5 rounded-3xl text-xs text-amber-850 leading-relaxed font-semibold space-y-1 shadow-2xs">
                   <p className="text-sm font-bold text-amber-950 flex items-center gap-1.5">
                     <span>⚠️</span> Pagamenti e cambi piano disabilitati su Mobile App
                   </p>
@@ -1868,40 +1885,40 @@ export default function AccountInfoScreen() {
               )}
 
               {/* Stripe.js Troubleshooting Guide */}
-              <div className="bg-blue-50 border border-blue-200 p-5 rounded-2xl text-xs text-blue-900 leading-relaxed space-y-3.5 shadow-sm">
+              <div className="bg-[#eef2ff] border border-[#1a3a8f]/15 p-5 rounded-3xl text-xs text-[#1a3a8f] leading-relaxed space-y-3.5 shadow-2xs">
                 <div className="flex items-center justify-between cursor-pointer select-none" onClick={() => setShowStripeGuide(!showStripeGuide)}>
-                  <p className="text-sm font-bold text-blue-950 flex items-center gap-2">
+                  <p className="text-sm font-bold text-[#1a2035] flex items-center gap-2">
                     <span className="text-base">💡</span> Risoluzione errori di pagamento Stripe (es: "Invalid API Key")
                   </p>
-                  <span className="text-xs font-bold text-blue-700 hover:text-blue-900 transition-colors">
+                  <span className="text-xs font-bold text-[#1a3a8f] hover:text-[#132c6e] transition-colors">
                     {showStripeGuide ? "Nascondi Guida ▲" : "Mostra Guida ▼"}
                   </span>
                 </div>
                 
                 {showStripeGuide && (
-                  <div className="space-y-3.5 pt-2.5 border-t border-blue-200/60 animate-fadeIn text-blue-800">
+                  <div className="space-y-3.5 pt-2.5 border-t border-[#1a3a8f]/10 animate-fadeIn text-slate-700">
                     <p>
                       Se riscontri problemi con il pagamento Stripe Checkout, verifica i seguenti punti:
                     </p>
                     
                     <div className="space-y-3 pl-1">
                       <div className="space-y-1">
-                        <span className="font-bold text-blue-950 block">1. Corrispondenza chiavi Sandbox vs Produzione</span>
-                        <p className="pl-3.5 border-l-2 border-blue-300">
+                        <span className="font-bold text-[#1a2035] block">1. Corrispondenza chiavi Sandbox vs Produzione</span>
+                        <p className="pl-3.5 border-l-2 border-[#1a3a8f]/30">
                           Non puoi combinare chiavi API segrete di test (<code>sk_test_...</code>) con chiavi pubbliche reali (<code>pk_live_...</code>). Entrambe le chiavi devono appartenere allo stesso ambiente.
                         </p>
                       </div>
 
                       <div className="space-y-1">
-                        <span className="font-bold text-blue-950 block">2. Configurazione dei Webhook</span>
-                        <p className="pl-3.5 border-l-2 border-blue-300">
-                          Per ricevere gli aggiornamenti automatici degli abbonamenti su Firestore in produzione, devi configurare l'endpoint webhook di Stripe che punta a: <code className="bg-blue-100 px-1.5 py-0.5 rounded font-mono font-semibold">{window.location.origin}/api/stripe/webhook</code>.
+                        <span className="font-bold text-[#1a2035] block">2. Configurazione dei Webhook</span>
+                        <p className="pl-3.5 border-l-2 border-[#1a3a8f]/30">
+                          Per ricevere gli aggiornamenti automatici degli abbonamenti su Firestore in produzione, devi configurare l'endpoint webhook di Stripe che punta a: <code className="bg-white px-2 py-0.5 rounded-lg border border-slate-200 font-mono font-bold text-[#1a3a8f]">{window.location.origin}/api/stripe/webhook</code>.
                         </p>
                       </div>
 
                       <div className="space-y-1">
-                        <span className="font-bold text-blue-950 block">3. Simulatore Sandbox di Cortesia</span>
-                        <p className="pl-3.5 border-l-2 border-blue-300">
+                        <span className="font-bold text-[#1a2035] block">3. Simulatore Sandbox di Cortesia</span>
+                        <p className="pl-3.5 border-l-2 border-[#1a3a8f]/30">
                           Se non hai ancora configurato chiavi reali, l'applicazione si avvierà in modalità **Stripe Sandbox Simulator**, permettendoti di testare l'intera esperienza di acquisto e attivazione in modo totalmente sicuro e gratuito!
                         </p>
                       </div>
@@ -1911,9 +1928,9 @@ export default function AccountInfoScreen() {
               </div>
 
               {/* Custom Stripe Integration Keys Setup */}
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 space-y-5 shadow-sm">
+              <div className="bg-slate-50/80 border border-slate-200/80 rounded-3xl p-6 space-y-5 shadow-2xs">
                 <div>
-                  <h4 className="font-sans font-bold text-slate-900 text-sm flex items-center gap-2">
+                  <h4 className="font-bold text-[#1a2035] text-sm flex items-center gap-2 tracking-tight">
                     <span className="text-base">⚙️</span>
                     Integrazione Stripe Personalizzata (Segreti & Chiavi API)
                   </h4>
@@ -1925,12 +1942,12 @@ export default function AccountInfoScreen() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Stripe Secret API Key */}
                   <div className="space-y-1.5">
-                    <label className="block text-xs font-semibold text-slate-700">
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500">
                       Stripe Secret Key (inizia con sk_live_ o sk_test_)
                     </label>
                     <input
                       type="password"
-                      className="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#1a3a8f]/20 font-mono"
+                      className="w-full text-xs px-4 py-2.5 rounded-2xl border border-slate-200 bg-white focus:outline-none focus:border-[#1a3a8f] font-mono shadow-2xs transition-all"
                       placeholder="Esempio: sk_live_... o sk_test_..."
                       value={stripeApiKey}
                       onChange={(e) => setStripeApiKey(e.target.value)}
@@ -1942,12 +1959,12 @@ export default function AccountInfoScreen() {
 
                   {/* Stripe Publishable Key */}
                   <div className="space-y-1.5">
-                    <label className="block text-xs font-semibold text-slate-700">
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500">
                       Stripe Publishable Key (inizia con pk_live_ o pk_test_)
                     </label>
                     <input
                       type="text"
-                      className="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#1a3a8f]/20 font-mono"
+                      className="w-full text-xs px-4 py-2.5 rounded-2xl border border-slate-200 bg-white focus:outline-none focus:border-[#1a3a8f] font-mono shadow-2xs transition-all"
                       placeholder="Esempio: pk_live_... o pk_test_..."
                       value={stripePublishableKey}
                       onChange={(e) => setStripePublishableKey(e.target.value)}
@@ -1959,11 +1976,11 @@ export default function AccountInfoScreen() {
 
                   {/* Stripe Environment */}
                   <div className="space-y-1.5">
-                    <label className="block text-xs font-semibold text-slate-700">
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500">
                       Ambiente Stripe
                     </label>
                     <select
-                      className="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#1a3a8f]/20"
+                      className="w-full text-xs px-4 py-2.5 rounded-2xl border border-slate-200 bg-white focus:outline-none focus:border-[#1a3a8f] font-medium shadow-2xs transition-all"
                       value={stripeEnvironment}
                       onChange={(e) => setStripeEnvironment(e.target.value)}
                     >
@@ -1977,12 +1994,12 @@ export default function AccountInfoScreen() {
 
                   {/* Stripe Webhook Secret */}
                   <div className="space-y-1.5">
-                    <label className="block text-xs font-semibold text-slate-700">
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500">
                       Stripe Webhook Secret (opzionale, inizia con whsec_)
                     </label>
                     <input
                       type="password"
-                      className="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#1a3a8f]/20 font-mono"
+                      className="w-full text-xs px-4 py-2.5 rounded-2xl border border-slate-200 bg-white focus:outline-none focus:border-[#1a3a8f] font-mono shadow-2xs transition-all"
                       placeholder="Esempio: whsec_..."
                       value={stripeWebhookSecret}
                       onChange={(e) => setStripeWebhookSecret(e.target.value)}
@@ -1998,7 +2015,7 @@ export default function AccountInfoScreen() {
                     type="button"
                     disabled={stripeKeysSaving}
                     onClick={handleSaveStripeKeys}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1a3a8f] text-white text-xs font-bold hover:bg-[#1a3a8f]/90 transition-all disabled:opacity-50"
+                    className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-2xl bg-[#1a3a8f] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#132c6e] active:scale-[0.98] transition-all disabled:opacity-50 shadow-2xs cursor-pointer"
                   >
                     {stripeKeysSaving ? (
                       <>
@@ -2017,7 +2034,7 @@ export default function AccountInfoScreen() {
                     type="button"
                     disabled={stripeTesting}
                     onClick={handleTestStripeKeys}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-300 transition-all disabled:opacity-50"
+                    className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-2xl bg-white text-slate-700 border border-slate-200 text-xs font-bold uppercase tracking-wider hover:bg-slate-50 active:scale-[0.98] transition-all disabled:opacity-50 shadow-2xs cursor-pointer"
                   >
                     {stripeTesting ? (
                       <>
@@ -2031,10 +2048,10 @@ export default function AccountInfoScreen() {
                 </div>
 
                 {stripeTestResult && (
-                  <div className="mt-3 bg-slate-900 text-slate-200 rounded-xl p-4 font-mono text-[11px] space-y-1.5 overflow-x-auto border border-slate-800">
+                  <div className="mt-3 bg-slate-900 text-slate-200 rounded-2xl p-4 font-mono text-[11px] space-y-1.5 overflow-x-auto border border-slate-800 shadow-2xs">
                     <p className="font-bold text-slate-400 border-b border-slate-800 pb-1.5 flex justify-between items-center">
                       <span>🖥️ Risultato Test Server-Side:</span>
-                      <span className={stripeTestResult.isCustomSecretsActive ? "text-green-400" : "text-amber-400"}>
+                      <span className={stripeTestResult.isCustomSecretsActive ? "text-emerald-400" : "text-amber-400"}>
                         {stripeTestResult.isCustomSecretsActive ? "● Chiavi Personalizzate Attive" : "● Chiavi Globali di Sistema"}
                       </span>
                     </p>
@@ -2048,17 +2065,17 @@ export default function AccountInfoScreen() {
               {/* Interval Switcher */}
               <div className="space-y-4">
                 <div className="text-center">
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
                     Scegli la frequenza di fatturazione
                   </p>
-                  <div className="inline-flex items-center gap-3 bg-gray-50 p-2 rounded-xl border border-gray-100">
+                  <div className="inline-flex items-center gap-1.5 bg-slate-100/90 p-1.5 rounded-2xl border border-slate-200/60 shadow-2xs">
                     <button
                       type="button"
                       onClick={() => setIsYearlyBilling(false)}
-                      className={`text-xs font-bold px-4 py-2 rounded-lg transition-all ${
+                      className={`text-xs font-bold px-5 py-2 rounded-xl transition-all cursor-pointer active:scale-[0.98] ${
                         !isYearlyBilling 
-                          ? "bg-white text-[#1a3a8f] shadow-sm" 
-                          : "text-gray-400 hover:text-gray-600"
+                          ? "bg-white text-[#1a3a8f] shadow-2xs border border-[#1a3a8f]/10" 
+                          : "text-slate-500 hover:text-slate-700"
                       }`}
                     >
                       Mensile
@@ -2066,10 +2083,10 @@ export default function AccountInfoScreen() {
                     <button
                       type="button"
                       onClick={() => setIsYearlyBilling(true)}
-                      className={`text-xs font-bold px-4 py-2 rounded-lg transition-all flex items-center gap-1.5 ${
+                      className={`text-xs font-bold px-5 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer active:scale-[0.98] ${
                         isYearlyBilling 
-                          ? "bg-white text-[#1a3a8f] shadow-sm" 
-                          : "text-gray-400 hover:text-gray-600"
+                          ? "bg-white text-[#1a3a8f] shadow-2xs border border-[#1a3a8f]/10" 
+                          : "text-slate-500 hover:text-slate-700"
                       }`}
                     >
                       Annuale
@@ -2084,60 +2101,60 @@ export default function AccountInfoScreen() {
                 <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-6 pt-4">
                   
                   {/* Solo Pro Card */}
-                  <div className={`relative border rounded-2xl p-6 transition-all flex flex-col justify-between ${
+                  <div className={`relative border rounded-3xl p-6 sm:p-7 transition-all flex flex-col justify-between shadow-2xs ${
                     userPlan === "solo_pro" 
-                      ? "border-[#1a3a8f] bg-[#1a3a8f]/[0.01] ring-2 ring-[#1a3a8f]/10 shadow-md" 
-                      : "border-gray-200 hover:border-gray-300"
+                      ? "border-[#1a3a8f] bg-white ring-2 ring-[#1a3a8f]/20 shadow-xs" 
+                      : "border-slate-200/80 bg-white hover:border-slate-300"
                   }`}>
                     {userPlan === "solo_pro" && (
-                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#1a3a8f] text-white text-[10px] font-extrabold tracking-widest uppercase px-3 py-1 rounded-full shadow">
+                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#1a3a8f] text-white text-[10px] font-bold tracking-widest uppercase px-3.5 py-1 rounded-full shadow-2xs">
                         Piano Attivo
                       </span>
                     )}
                     <div className="space-y-4">
                       <div>
-                        <h4 className="text-lg font-serif font-bold text-gray-800">Solo Pro</h4>
-                        <p className="text-xs text-gray-400 mt-0.5">Ideale per singoli professionisti. Include l'anagrafica clienti completa e le schede tecniche. Esclude il calcolo provvigioni e i listini prezzi dedicati.</p>
+                        <h4 className="text-lg font-bold text-[#1a2035] tracking-tight">Solo Pro</h4>
+                        <p className="text-xs text-slate-400 mt-0.5">Ideale per singoli professionisti. Include l'anagrafica clienti completa e le schede tecniche. Esclude il calcolo provvigioni e i listini prezzi dedicati.</p>
                       </div>
                       
                       <div className="flex items-baseline">
                         <span className="text-3xl font-mono font-bold text-[#1a2035]">
                           €{isYearlyBilling ? PLAN_LIMITS.solo_pro.priceYearly : PLAN_LIMITS.solo_pro.priceMonthly}
                         </span>
-                        <span className="text-xs text-gray-400 font-medium">/mese</span>
+                        <span className="text-xs text-slate-400 font-medium">/mese</span>
                       </div>
 
-                      <div className="border-t border-gray-100 pt-4">
+                      <div className="border-t border-slate-100 pt-4">
                         <ul className="space-y-2.5 text-xs">
-                          <li className="flex items-start gap-2 text-gray-600">
+                          <li className="flex items-start gap-2 text-slate-600">
                             <Check className="w-4 h-4 text-[#1a3a8f] shrink-0 mt-0.5" />
                             <span><strong>1 Salone</strong> associabile</span>
                           </li>
-                          <li className="flex items-start gap-2 text-gray-600">
+                          <li className="flex items-start gap-2 text-slate-600">
                             <Check className="w-4 h-4 text-[#1a3a8f] shrink-0 mt-0.5" />
                             <span>Staff e Collaboratori <strong>Illimitati</strong></span>
                           </li>
-                          <li className="flex items-start gap-2 text-gray-600">
+                          <li className="flex items-start gap-2 text-slate-600">
                             <Check className="w-4 h-4 text-[#1a3a8f] shrink-0 mt-0.5" />
                             <span>Massimo <strong>3 report Excel/mese</strong></span>
                           </li>
-                          <li className="flex items-start gap-2 text-gray-600 font-semibold">
+                          <li className="flex items-start gap-2 text-slate-600 font-semibold">
                             <Check className="w-4 h-4 text-[#1a3a8f] shrink-0 mt-0.5" />
                             <span>Anagrafica Clienti & Schede</span>
                           </li>
-                          <li className="flex items-start gap-2 text-gray-300 line-through">
+                          <li className="flex items-start gap-2 text-slate-300 line-through">
                             <Lock className="w-3.5 h-3.5 shrink-0 mt-0.5" />
                             <span>Provvigioni e Percentuali</span>
                           </li>
-                          <li className="flex items-start gap-2 text-gray-300 line-through">
+                          <li className="flex items-start gap-2 text-slate-300 line-through">
                             <Lock className="w-3.5 h-3.5 shrink-0 mt-0.5" />
                             <span>Listini e Tariffe Speciali Clienti</span>
                           </li>
-                          <li className="flex items-start gap-2 text-gray-300 line-through">
+                          <li className="flex items-start gap-2 text-slate-300 line-through">
                             <Lock className="w-3.5 h-3.5 shrink-0 mt-0.5" />
                             <span>AI Marketing & Generatore Campagne</span>
                           </li>
-                          <li className="flex items-start gap-2 text-gray-300 line-through">
+                          <li className="flex items-start gap-2 text-slate-300 line-through">
                             <Lock className="w-3.5 h-3.5 shrink-0 mt-0.5" />
                             <span>AI Suggeritore Up-selling (Consigli Prodotti)</span>
                           </li>
@@ -2147,12 +2164,12 @@ export default function AccountInfoScreen() {
 
                     <div className="pt-6">
                       {userPlan === "solo_pro" ? (
-                        <div className="w-full text-center bg-gray-100 text-gray-500 font-bold py-2.5 rounded-xl text-xs">
+                        <div className="w-full text-center bg-slate-100 text-slate-500 font-bold py-3 rounded-2xl text-xs">
                           Attualmente in uso
                         </div>
                       ) : (
                         detectIsMobileApp() ? (
-                          <div className="w-full text-center bg-gray-50 text-gray-400 border border-gray-200/50 font-bold py-2.5 rounded-xl text-xs">
+                          <div className="w-full text-center bg-slate-50 text-slate-400 border border-slate-200/50 font-bold py-3 rounded-2xl text-xs">
                             Disponibile su Web
                           </div>
                         ) : (
@@ -2160,12 +2177,12 @@ export default function AccountInfoScreen() {
                             <button
                               type="button"
                               onClick={(e) => handleSelectPlan("solo_pro", e)}
-                              className="w-full bg-white hover:bg-gray-50 text-[#1a3a8f] border border-[#1a3a8f] font-bold py-2.5 rounded-xl text-xs transition-all cursor-pointer"
+                              className="w-full bg-white hover:bg-slate-50 active:scale-[0.98] text-[#1a3a8f] border border-[#1a3a8f] font-bold uppercase tracking-wider py-3 rounded-2xl text-xs transition-all cursor-pointer shadow-2xs"
                             >
                               Passa a Solo Pro
                             </button>
                           ) : (
-                            <div className="text-center text-gray-400 text-[11px] font-semibold">
+                            <div className="text-center text-slate-400 text-[11px] font-semibold">
                               Sola lettura
                             </div>
                           )
@@ -2175,65 +2192,65 @@ export default function AccountInfoScreen() {
                   </div>
 
                   {/* Network Card */}
-                  <div className={`relative border rounded-2xl p-6 transition-all flex flex-col justify-between ${
+                  <div className={`relative border rounded-3xl p-6 sm:p-7 transition-all flex flex-col justify-between shadow-2xs ${
                     userPlan === "network" 
-                      ? "border-[#1a3a8f] bg-[#1a3a8f]/[0.01] ring-2 ring-[#1a3a8f]/10 shadow-md" 
-                      : "border-gray-200 hover:border-gray-300"
+                      ? "border-[#1a3a8f] bg-white ring-2 ring-[#1a3a8f]/20 shadow-xs" 
+                      : "border-slate-200/80 bg-white hover:border-slate-300"
                   }`}>
                     {userPlan === "network" && (
-                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#1a3a8f] text-white text-[10px] font-extrabold tracking-widest uppercase px-3 py-1 rounded-full shadow">
+                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#1a3a8f] text-white text-[10px] font-bold tracking-widest uppercase px-3.5 py-1 rounded-full shadow-2xs">
                         Piano Attivo
                       </span>
                     )}
                     <div className="space-y-4">
                       <div>
                         <div className="flex items-center justify-between">
-                          <h4 className="text-lg font-serif font-bold text-gray-800">Premium Network</h4>
-                          <span className="bg-emerald-100 text-emerald-800 text-[9px] font-black px-2 py-0.5 rounded-md uppercase">
+                          <h4 className="text-lg font-bold text-[#1a2035] tracking-tight">Premium Network</h4>
+                          <span className="bg-emerald-100 text-emerald-800 text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase">
                             Premium
                           </span>
                         </div>
-                        <p className="text-xs text-gray-400 mt-0.5">Sblocca l'anagrafica clienti completa, il calcolo automatico delle provvigioni e listini prezzi dedicati.</p>
+                        <p className="text-xs text-slate-400 mt-0.5">Sblocca l'anagrafica clienti completa, il calcolo automatico delle provvigioni e listini prezzi dedicati.</p>
                       </div>
                       
                       <div className="flex items-baseline">
                         <span className="text-3xl font-mono font-bold text-[#1a2035]">
                           €{isYearlyBilling ? PLAN_LIMITS.network.priceYearly : PLAN_LIMITS.network.priceMonthly}
                         </span>
-                        <span className="text-xs text-gray-400 font-medium">/mese</span>
+                        <span className="text-xs text-slate-400 font-medium">/mese</span>
                       </div>
 
-                      <div className="border-t border-gray-100 pt-4">
+                      <div className="border-t border-slate-100 pt-4">
                         <ul className="space-y-2.5 text-xs">
-                          <li className="flex items-start gap-2 text-gray-600">
+                          <li className="flex items-start gap-2 text-slate-600">
                             <Check className="w-4 h-4 text-[#1a3a8f] shrink-0 mt-0.5" />
                             <span>Fino a <strong>6 Saloni</strong></span>
                           </li>
-                          <li className="flex items-start gap-2 text-gray-600">
+                          <li className="flex items-start gap-2 text-slate-600">
                             <Check className="w-4 h-4 text-[#1a3a8f] shrink-0 mt-0.5" />
                             <span>Staff e Collaboratori <strong>Illimitati</strong></span>
                           </li>
-                          <li className="flex items-start gap-2 text-gray-600">
+                          <li className="flex items-start gap-2 text-slate-600">
                             <Check className="w-4 h-4 text-[#1a3a8f] shrink-0 mt-0.5" />
                             <span>Report Excel <strong>Illimitati</strong></span>
                           </li>
-                          <li className="flex items-start gap-2 text-gray-600">
+                          <li className="flex items-start gap-2 text-slate-600">
                             <Check className="w-4 h-4 text-[#1a3a8f] shrink-0 mt-0.5" />
                             <span>Anagrafica Clienti & Schede</span>
                           </li>
-                          <li className="flex items-start gap-2 text-emerald-700 font-semibold bg-emerald-50/50 p-1 rounded-lg border border-emerald-100">
+                          <li className="flex items-start gap-2 text-emerald-700 font-semibold bg-emerald-50/50 p-1.5 rounded-xl border border-emerald-100">
                             <Check className="w-4 h-4 text-emerald-600 shrink-0" />
                             <span>Provvigioni e Percentuali Collab.</span>
                           </li>
-                          <li className="flex items-start gap-2 text-emerald-700 font-semibold bg-emerald-50/50 p-1 rounded-lg border border-emerald-100">
+                          <li className="flex items-start gap-2 text-emerald-700 font-semibold bg-emerald-50/50 p-1.5 rounded-xl border border-emerald-100">
                             <Check className="w-4 h-4 text-emerald-600 shrink-0" />
                             <span>Listini e Tariffe Speciali Clienti</span>
                           </li>
-                          <li className="flex items-start gap-2 text-gray-300 line-through">
+                          <li className="flex items-start gap-2 text-slate-300 line-through">
                             <Lock className="w-3.5 h-3.5 shrink-0 mt-0.5" />
                             <span>AI Marketing & Generatore Campagne</span>
                           </li>
-                          <li className="flex items-start gap-2 text-gray-300 line-through">
+                          <li className="flex items-start gap-2 text-slate-300 line-through">
                             <Lock className="w-3.5 h-3.5 shrink-0 mt-0.5" />
                             <span>AI Suggeritore Up-selling (Consigli Prodotti)</span>
                           </li>
@@ -2243,12 +2260,12 @@ export default function AccountInfoScreen() {
 
                     <div className="pt-6">
                       {userPlan === "network" ? (
-                        <div className="w-full text-center bg-gray-100 text-gray-500 font-bold py-2.5 rounded-xl text-xs">
+                        <div className="w-full text-center bg-slate-100 text-slate-500 font-bold py-3 rounded-2xl text-xs">
                           Attualmente in uso
                         </div>
                       ) : (
                         detectIsMobileApp() ? (
-                          <div className="w-full text-center bg-gray-50 text-gray-400 border border-gray-200/50 font-bold py-2.5 rounded-xl text-xs">
+                          <div className="w-full text-center bg-slate-50 text-slate-400 border border-slate-200/50 font-bold py-3 rounded-2xl text-xs">
                             Disponibile su Web
                           </div>
                         ) : (
@@ -2256,12 +2273,12 @@ export default function AccountInfoScreen() {
                             <button
                               type="button"
                               onClick={(e) => handleSelectPlan("network", e)}
-                              className="w-full bg-[#1a3a8f] hover:bg-[#152f73] text-white font-bold py-2.5 rounded-xl text-xs transition-all cursor-pointer shadow-sm"
+                              className="w-full bg-[#1a3a8f] hover:bg-[#132c6e] active:scale-[0.98] text-white font-bold uppercase tracking-wider py-3 rounded-2xl text-xs transition-all cursor-pointer shadow-2xs"
                             >
                               Attiva Premium Network
                             </button>
                           ) : (
-                            <div className="text-center text-gray-400 text-[11px] font-semibold">
+                            <div className="text-center text-slate-400 text-[11px] font-semibold">
                               Sola lettura
                             </div>
                           )
@@ -2271,69 +2288,69 @@ export default function AccountInfoScreen() {
                   </div>
 
                   {/* Elite AI Card */}
-                  <div className={`relative border rounded-2xl p-6 transition-all flex flex-col justify-between ${
+                  <div className={`relative border rounded-3xl p-6 sm:p-7 transition-all flex flex-col justify-between shadow-2xs ${
                     userPlan === "elite_ai" 
-                      ? "border-[#1a3a8f] bg-[#1a3a8f]/[0.01] ring-2 ring-[#1a3a8f]/10 shadow-md" 
-                      : "border-gray-200 hover:border-gray-300"
+                      ? "border-[#1a3a8f] bg-white ring-2 ring-[#1a3a8f]/20 shadow-xs" 
+                      : "border-slate-200/80 bg-white hover:border-slate-300"
                   }`}>
                     {userPlan === "elite_ai" && (
-                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#1a3a8f] text-white text-[10px] font-extrabold tracking-widest uppercase px-3 py-1 rounded-full shadow">
+                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#1a3a8f] text-white text-[10px] font-bold tracking-widest uppercase px-3.5 py-1 rounded-full shadow-2xs">
                         Piano Attivo
                       </span>
                     )}
                     <div className="space-y-4">
                       <div>
                         <div className="flex items-center justify-between">
-                          <h4 className="text-lg font-serif font-bold text-gray-800">Elite AI</h4>
-                          <span className="bg-amber-100 text-amber-800 text-[9px] font-black px-2 py-0.5 rounded-md uppercase">
+                          <h4 className="text-lg font-bold text-[#1a2035] tracking-tight">Elite AI</h4>
+                          <span className="bg-amber-100 text-amber-800 text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase">
                             Avanzato
                           </span>
                         </div>
-                        <p className="text-xs text-gray-400 mt-0.5">Tutto il pacchetto Premium potenziato dall'Intelligenza Artificiale per marketing e automazione.</p>
+                        <p className="text-xs text-slate-400 mt-0.5">Tutto il pacchetto Premium potenziato dall'Intelligenza Artificiale per marketing e automazione.</p>
                       </div>
                       
                       <div className="flex items-baseline">
                         <span className="text-3xl font-mono font-bold text-[#1a2035]">
                           €{isYearlyBilling ? PLAN_LIMITS.elite_ai.priceYearly : PLAN_LIMITS.elite_ai.priceMonthly}
                         </span>
-                        <span className="text-xs text-gray-400 font-medium">/mese</span>
+                        <span className="text-xs text-slate-400 font-medium">/mese</span>
                       </div>
 
-                      <div className="border-t border-gray-100 pt-4">
+                      <div className="border-t border-slate-100 pt-4">
                         <ul className="space-y-2.5 text-xs">
-                          <li className="flex items-start gap-2 text-gray-600">
+                          <li className="flex items-start gap-2 text-slate-600">
                             <Check className="w-4 h-4 text-[#1a3a8f] shrink-0 mt-0.5" />
                             <span>Saloni <strong>Illimitati</strong> (Infinity)</span>
                           </li>
-                          <li className="flex items-start gap-2 text-gray-600">
+                          <li className="flex items-start gap-2 text-slate-600">
                             <Check className="w-4 h-4 text-[#1a3a8f] shrink-0 mt-0.5" />
                             <span>Staff e Collaboratori <strong>Illimitati</strong></span>
                           </li>
-                          <li className="flex items-start gap-2 text-gray-600">
+                          <li className="flex items-start gap-2 text-slate-600">
                             <Check className="w-4 h-4 text-[#1a3a8f] shrink-0 mt-0.5" />
                             <span>Report Excel <strong>Illimitati</strong></span>
                           </li>
-                          <li className="flex items-start gap-2 text-gray-600">
+                          <li className="flex items-start gap-2 text-slate-600">
                             <Check className="w-4 h-4 text-[#1a3a8f] shrink-0 mt-0.5" />
                             <span>Anagrafica Clienti & Schede</span>
                           </li>
-                          <li className="flex items-start gap-2 text-emerald-700 font-semibold bg-emerald-50/50 p-1 rounded-lg border border-emerald-100">
+                          <li className="flex items-start gap-2 text-emerald-700 font-semibold bg-emerald-50/50 p-1.5 rounded-xl border border-emerald-100">
                             <Check className="w-4 h-4 text-emerald-600 shrink-0" />
                             <span>Provvigioni e Percentuali Collab.</span>
                           </li>
-                          <li className="flex items-start gap-2 text-emerald-700 font-semibold bg-emerald-50/50 p-1 rounded-lg border border-emerald-100">
+                          <li className="flex items-start gap-2 text-emerald-700 font-semibold bg-emerald-50/50 p-1.5 rounded-xl border border-emerald-100">
                             <Check className="w-4 h-4 text-emerald-600 shrink-0" />
                             <span>Listini e Tariffe Speciali Clienti</span>
                           </li>
-                          <li className="flex items-start gap-2 text-emerald-700 font-bold bg-emerald-50/50 p-1.5 rounded-lg border border-emerald-100">
+                          <li className="flex items-start gap-2 text-emerald-700 font-bold bg-emerald-50/50 p-1.5 rounded-xl border border-emerald-100">
                             <Check className="w-4 h-4 text-emerald-600 shrink-0" />
                             <span>AI Marketing & Generatore Campagne</span>
                           </li>
-                          <li className="flex items-start gap-2 text-emerald-700 font-bold bg-emerald-50/50 p-1.5 rounded-lg border border-emerald-100">
+                          <li className="flex items-start gap-2 text-emerald-700 font-bold bg-emerald-50/50 p-1.5 rounded-xl border border-emerald-100">
                             <Sparkles className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                             <span>SaaS Assistant AI Chatbot attivo</span>
                           </li>
-                          <li className="flex items-start gap-2 text-emerald-700 font-bold bg-emerald-50/50 p-1.5 rounded-lg border border-emerald-100">
+                          <li className="flex items-start gap-2 text-emerald-700 font-bold bg-emerald-50/50 p-1.5 rounded-xl border border-emerald-100">
                             <Sparkles className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                             <span>AI Suggeritore Up-selling (Consigli Prodotti)</span>
                           </li>
@@ -2343,12 +2360,12 @@ export default function AccountInfoScreen() {
 
                     <div className="pt-6">
                       {userPlan === "elite_ai" ? (
-                        <div className="w-full text-center bg-gray-100 text-gray-500 font-bold py-2.5 rounded-xl text-xs">
+                        <div className="w-full text-center bg-slate-100 text-slate-500 font-bold py-3 rounded-2xl text-xs">
                           Attualmente in uso
                         </div>
                       ) : (
                         detectIsMobileApp() ? (
-                          <div className="w-full text-center bg-gray-50 text-gray-400 border border-gray-200/50 font-bold py-2.5 rounded-xl text-xs">
+                          <div className="w-full text-center bg-slate-50 text-slate-400 border border-slate-200/50 font-bold py-3 rounded-2xl text-xs">
                             Disponibile su Web
                           </div>
                         ) : (
@@ -2356,12 +2373,12 @@ export default function AccountInfoScreen() {
                             <button
                               type="button"
                               onClick={(e) => handleSelectPlan("elite_ai", e)}
-                              className="w-full bg-[#1a3a8f] hover:bg-[#152f73] text-white font-bold py-2.5 rounded-xl text-xs transition-all cursor-pointer shadow-sm"
+                              className="w-full bg-[#1a3a8f] hover:bg-[#132c6e] active:scale-[0.98] text-white font-bold uppercase tracking-wider py-3 rounded-2xl text-xs transition-all cursor-pointer shadow-2xs"
                             >
                               Attiva Elite AI
                             </button>
                           ) : (
-                            <div className="text-center text-gray-400 text-[11px] font-semibold">
+                            <div className="text-center text-slate-400 text-[11px] font-semibold">
                               Sola lettura
                             </div>
                           )
@@ -2374,12 +2391,12 @@ export default function AccountInfoScreen() {
               </div>
 
               {/* Stripe Billing and Payments Portal */}
-              <div className="border-t border-gray-100 pt-6">
-                <div className="bg-[#f8fafc] border border-gray-100 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+              <div className="border-t border-slate-100 pt-6">
+                <div className="bg-slate-50/80 border border-slate-200/80 rounded-3xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-2xs">
                   <div className="space-y-1">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-[#1a3a8f] block">Fatturazione & Abbonamento</span>
-                    <h5 className="font-bold text-gray-800 text-sm">Desideri gestire, modificare o disattivare il tuo abbonamento?</h5>
-                    <p className="text-xs text-gray-500">
+                    <h5 className="font-bold text-[#1a2035] text-sm">Desideri gestire, modificare o disattivare il tuo abbonamento?</h5>
+                    <p className="text-xs text-slate-500">
                       Accedi in modo sicuro al Portale Clienti Stripe per visualizzare lo storico delle fatture, aggiornare il metodo di pagamento, cambiare piano o disattivare il rinnovo automatico.
                     </p>
                   </div>
@@ -2389,17 +2406,17 @@ export default function AccountInfoScreen() {
                       type="button"
                       disabled={portalLoading}
                       onClick={handleOpenPortal}
-                      className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 rounded-xl px-5 py-3 text-xs font-bold flex items-center gap-2 transition-all shadow-sm shrink-0 w-full sm:w-auto justify-center cursor-pointer disabled:opacity-50"
+                      className="bg-white hover:bg-slate-50 active:scale-[0.98] text-[#1a2035] border border-slate-200 rounded-2xl px-5 py-3 text-xs font-bold uppercase tracking-wider flex items-center gap-2 transition-all shadow-2xs shrink-0 w-full sm:w-auto justify-center cursor-pointer disabled:opacity-50"
                     >
                       {portalLoading ? (
                         <Loader2 className="w-4 h-4 animate-spin text-[#1a3a8f]" />
                       ) : (
-                        <ExternalLink className="w-4 h-4 text-gray-500" />
+                        <ExternalLink className="w-4 h-4 text-slate-500" />
                       )}
-                      Gestisci Abbonamento su Stripe
+                      Gestisci su Stripe
                     </button>
                   ) : (
-                    <div className="bg-amber-50 border border-amber-100 p-3 rounded-xl flex items-center gap-2 text-amber-800 text-xs font-semibold shrink-0">
+                    <div className="bg-amber-50 border border-amber-200/80 p-3 rounded-2xl flex items-center gap-2 text-amber-800 text-xs font-bold shrink-0 shadow-2xs">
                       <Lock className="w-4 h-4 text-amber-600" />
                       <span>Riservato ai Proprietari</span>
                     </div>
@@ -2412,34 +2429,34 @@ export default function AccountInfoScreen() {
 
           {/* TAB 4: CONFIGURAZIONE EMAIL SMTP */}
           {activeTab === "email" && userRole !== "receptionist" && (
-            <div className="bg-white border border-gray-100 rounded-2xl p-6 md:p-8 shadow-sm space-y-8">
+            <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-2xs space-y-8">
               
               {/* Header */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-gray-100 pb-5">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-100 pb-5">
                 <div>
-                  <h3 className="font-serif text-lg font-bold text-[#1a2035] flex items-center gap-2.5">
+                  <h3 className="text-lg font-bold text-[#1a2035] flex items-center gap-2.5 tracking-tight">
                     <Mail className="w-5 h-5 text-[#1a3a8f]" />
                     Configurazione SMTP ed Invio Email
                   </h3>
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-slate-400 mt-1">
                     Gestisci le credenziali del server mail per l'invio delle comunicazioni, notifiche automatiche e recupero password.
                   </p>
                 </div>
-                <div className="flex items-center gap-1.5 self-start bg-[#1a3a8f]/5 text-[#1a3a8f] px-3 py-1.5 rounded-full text-[11px] font-bold">
+                <div className="flex items-center gap-1.5 self-start bg-[#eef2ff] border border-[#1a3a8f]/15 text-[#1a3a8f] px-3.5 py-1.5 rounded-full text-[11px] font-bold shadow-2xs">
                   <span>Server Personalizzabile</span>
                 </div>
               </div>
 
               {/* Notice / Guide */}
-              <div className="bg-blue-50/50 border border-blue-100 p-4 rounded-xl text-xs text-blue-900 leading-relaxed space-y-2">
-                <p className="font-semibold text-blue-950 flex items-center gap-1.5">
-                  <AlertCircle className="w-4 h-4 text-blue-600 shrink-0" />
+              <div className="bg-[#eef2ff] border border-[#1a3a8f]/15 p-5 rounded-3xl text-xs text-slate-700 leading-relaxed space-y-2 shadow-2xs">
+                <p className="font-bold text-[#1a2035] flex items-center gap-1.5 uppercase tracking-wider text-[11px]">
+                  <AlertCircle className="w-4 h-4 text-[#1a3a8f] shrink-0" />
                   Risoluzione errore 535 (Autenticazione Fallita)
                 </p>
                 <p>
                   Se ricevi l'errore <strong>"535 Authentication Failed"</strong> nella console o nell'app:
                 </p>
-                <ul className="list-disc pl-5 space-y-1">
+                <ul className="list-disc pl-5 space-y-1 text-slate-600">
                   <li>Assicurati di aver inserito l'indirizzo email e la password in modo corretto.</li>
                   <li><strong>Se usi Zoho Mail</strong>: Devi abilitare l'accesso IMAP/SMTP nel pannello Zoho e generare una <strong>"Password dell'Applicazione"</strong> (App-specific password) invece di usare la tua password principale di accesso, specialmente se hai attivo il 2FA (Double Factor Authentication).</li>
                   <li><strong>Se usi Gmail</strong>: Devi impostare una password specifica per le app nel tuo account Google.</li>
@@ -2449,101 +2466,101 @@ export default function AccountInfoScreen() {
               {/* Form Controls */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="space-y-1.5 text-left">
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    Server SMTP (Host): <span className="text-red-500">*</span>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                    Server SMTP (Host) *
                   </label>
                   <input
                     type="text"
                     placeholder="es. smtppro.zoho.eu o smtp.gmail.com"
                     value={smtpHost}
                     onChange={(e) => setSmtpHost(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1a3a8f] focus:bg-white transition-all text-gray-900 font-medium"
+                    className="w-full bg-slate-50/80 border border-slate-200/80 rounded-2xl px-4 py-3 text-sm focus:bg-white focus:border-[#1a3a8f] outline-none transition-all placeholder:text-slate-400 text-slate-900 font-medium shadow-2xs"
                   />
-                  <p className="text-[10px] text-gray-400">L'indirizzo del server di posta in uscita.</p>
+                  <p className="text-[11px] text-slate-400">L'indirizzo del server di posta in uscita.</p>
                 </div>
 
                 <div className="space-y-1.5 text-left">
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    Porta SMTP: <span className="text-red-500">*</span>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                    Porta SMTP *
                   </label>
                   <select
                     value={smtpPort}
                     onChange={(e) => setSmtpPort(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1a3a8f] focus:bg-white transition-all text-gray-900 font-medium"
+                    className="w-full bg-slate-50/80 border border-slate-200/80 rounded-2xl px-4 py-3 text-sm focus:bg-white focus:border-[#1a3a8f] outline-none transition-all text-slate-900 font-medium shadow-2xs"
                   >
                     <option value="465">465 (SSL/TLS - Consigliato)</option>
                     <option value="587">587 (STARTTLS / TLS)</option>
                     <option value="25">25 (Non sicuro)</option>
                   </select>
-                  <p className="text-[10px] text-gray-400">Porta standard per connessioni sicure (criptate).</p>
+                  <p className="text-[11px] text-slate-400">Porta standard per connessioni sicure (criptate).</p>
                 </div>
 
                 <div className="space-y-1.5 text-left">
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    Username SMTP (Email): <span className="text-red-500">*</span>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                    Username SMTP (Email) *
                   </label>
                   <input
                     type="email"
                     placeholder="es. info@tuodominio.it"
                     value={smtpUsername}
                     onChange={(e) => setSmtpUsername(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1a3a8f] focus:bg-white transition-all text-gray-900 font-medium"
+                    className="w-full bg-slate-50/80 border border-slate-200/80 rounded-2xl px-4 py-3 text-sm focus:bg-white focus:border-[#1a3a8f] outline-none transition-all placeholder:text-slate-400 text-slate-900 font-medium shadow-2xs"
                   />
-                  <p className="text-[10px] text-gray-400">L'indirizzo email utilizzato per l'autenticazione.</p>
+                  <p className="text-[11px] text-slate-400">L'indirizzo email utilizzato per l'autenticazione.</p>
                 </div>
 
                 <div className="space-y-1.5 text-left">
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    Password SMTP / App Password: <span className="text-red-500">*</span>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                    Password SMTP / App Password *
                   </label>
                   <input
                     type="password"
                     placeholder="Inserisci la password o l'App Password"
                     value={smtpPassword}
                     onChange={(e) => setSmtpPassword(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1a3a8f] focus:bg-white transition-all text-gray-900 font-medium"
+                    className="w-full bg-slate-50/80 border border-slate-200/80 rounded-2xl px-4 py-3 text-sm focus:bg-white focus:border-[#1a3a8f] outline-none transition-all placeholder:text-slate-400 text-slate-900 font-medium shadow-2xs"
                   />
-                  <p className="text-[10px] text-gray-400">La password della casella o la password app specifica.</p>
+                  <p className="text-[11px] text-slate-400">La password della casella o la password app specifica.</p>
                 </div>
 
                 <div className="space-y-1.5 text-left">
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    Nome Visualizzato (Mittente):
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                    Nome Visualizzato (Mittente)
                   </label>
                   <input
                     type="text"
                     placeholder="es. SforbiciaSmart"
                     value={smtpFromName}
                     onChange={(e) => setSmtpFromName(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1a3a8f] focus:bg-white transition-all text-gray-900 font-medium"
+                    className="w-full bg-slate-50/80 border border-slate-200/80 rounded-2xl px-4 py-3 text-sm focus:bg-white focus:border-[#1a3a8f] outline-none transition-all placeholder:text-slate-400 text-slate-900 font-medium shadow-2xs"
                   />
-                  <p className="text-[10px] text-gray-400">Il nome visualizzato dai clienti quando ricevono l'email.</p>
+                  <p className="text-[11px] text-slate-400">Il nome visualizzato dai clienti quando ricevono l'email.</p>
                 </div>
 
                 <div className="space-y-1.5 text-left">
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    Email di Risposta (Reply-To):
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                    Email di Risposta (Reply-To)
                   </label>
                   <input
                     type="email"
                     placeholder="es. supporto@tuodominio.it"
                     value={smtpFromAddr}
                     onChange={(e) => setSmtpFromAddr(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1a3a8f] focus:bg-white transition-all text-gray-900 font-medium"
+                    className="w-full bg-slate-50/80 border border-slate-200/80 rounded-2xl px-4 py-3 text-sm focus:bg-white focus:border-[#1a3a8f] outline-none transition-all placeholder:text-slate-400 text-slate-900 font-medium shadow-2xs"
                   />
-                  <p className="text-[10px] text-gray-400">Indirizzo a cui risponderanno i clienti (se vuoto, usa l'username SMTP).</p>
+                  <p className="text-[11px] text-slate-400">Indirizzo a cui risponderanno i clienti (se vuoto, usa l'username SMTP).</p>
                 </div>
               </div>
 
               {/* Connection Diagnostics and Testing */}
-              <div className="border border-gray-100 bg-gray-50/50 rounded-2xl p-5 md:p-6 space-y-4">
+              <div className="border border-slate-200/80 bg-slate-50/80 rounded-3xl p-6 sm:p-7 space-y-4 shadow-2xs">
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-[#1a3a8f]" />
-                  <h4 className="font-semibold text-xs text-gray-800 uppercase tracking-wider">
+                  <h4 className="font-bold text-xs text-[#1a2035] uppercase tracking-wider">
                     Strumento di Diagnostica SMTP e Invio Test
                   </h4>
                 </div>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-slate-500">
                   Prima di salvare, puoi verificare in tempo reale se i parametri inseriti sono validi e autorizzati dal tuo provider SMTP.
                 </p>
 
@@ -2552,11 +2569,11 @@ export default function AccountInfoScreen() {
                     type="button"
                     disabled={smtpTesting || !smtpHost || !smtpUsername || !smtpPassword}
                     onClick={handleTestSmtpConnection}
-                    className="bg-[#1a3a8f] hover:bg-[#152e72] disabled:opacity-40 text-white rounded-xl px-5 py-2.5 text-xs font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm w-full sm:w-auto"
+                    className="bg-[#1a3a8f] hover:bg-[#132c6e] active:scale-[0.98] disabled:opacity-40 text-white rounded-2xl px-5 py-3 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs w-full sm:w-auto"
                   >
                     {smtpTesting ? (
                       <>
-                        <Loader2 className="w-4 h-4 animate-spin text-white animate-spin mr-1" />
+                        <Loader2 className="w-4 h-4 animate-spin text-white mr-1" />
                         Verifica in corso...
                       </>
                     ) : (
@@ -2570,10 +2587,10 @@ export default function AccountInfoScreen() {
 
                 {/* Test Diagnostic Result Panel */}
                 {smtpTestResult && (
-                  <div className={`p-4 rounded-xl border text-xs leading-normal animate-fadeIn space-y-2 ${
+                  <div className={`p-4 rounded-2xl border text-xs leading-normal animate-fadeIn space-y-2 shadow-2xs ${
                     smtpTestResult.success 
                       ? "bg-emerald-50/70 border-emerald-200 text-emerald-900" 
-                      : "bg-red-50/70 border-red-200 text-red-900"
+                      : "bg-rose-50/70 border-rose-200 text-rose-900"
                   }`}>
                     <div className="flex items-center gap-2 font-bold text-sm">
                       {smtpTestResult.success ? (
@@ -2583,16 +2600,16 @@ export default function AccountInfoScreen() {
                         </>
                       ) : (
                         <>
-                          <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+                          <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
                           <span>Connessione Fallita</span>
                         </>
                       )}
                     </div>
-                    <p className="font-mono text-[11px] bg-white/70 border border-black/5 p-2 rounded-lg break-all">
+                    <p className="font-mono text-[11px] bg-white/80 border border-black/5 p-3 rounded-xl break-all">
                       {smtpTestResult.message}
                     </p>
                     {smtpTestResult.advice && (
-                      <p className="font-semibold text-gray-800 bg-white/40 p-2 rounded-lg">
+                      <p className="font-semibold text-slate-800 bg-white/60 p-3 rounded-xl">
                         <strong>Suggerimento:</strong> {smtpTestResult.advice}
                       </p>
                     )}
@@ -2601,12 +2618,12 @@ export default function AccountInfoScreen() {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex justify-end pt-4 border-t border-gray-100">
+              <div className="flex justify-end pt-4 border-t border-slate-100">
                 <button
                   type="button"
                   disabled={smtpSaving || !smtpHost || !smtpUsername || !smtpPassword}
                   onClick={handleSaveSmtpSettings}
-                  className="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-white rounded-xl px-6 py-3 text-xs font-extrabold flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer"
+                  className="bg-[#1a3a8f] hover:bg-[#132c6e] active:scale-[0.98] disabled:opacity-40 text-white rounded-2xl px-6 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-2xs cursor-pointer"
                 >
                   {smtpSaving ? (
                     <>
@@ -2630,36 +2647,36 @@ export default function AccountInfoScreen() {
 
       {/* DOUBLE CONFIRMATION MODAL FOR GDPR ACCOUNT DELETION */}
       {showDeleteConfirmModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fadeIn">
-          <div className="bg-white border border-red-100 rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-2xl relative animate-scaleIn">
-            <div className="flex items-center gap-3 text-red-600 mb-4">
-              <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center">
-                <Trash2 className="w-6 h-6 text-red-600" />
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fadeIn">
+          <div className="bg-white border border-rose-100 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative animate-scaleIn">
+            <div className="flex items-center gap-3 text-rose-600 mb-4">
+              <div className="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center">
+                <Trash2 className="w-6 h-6 text-rose-600" />
               </div>
               <div>
-                <h3 className="font-serif text-lg font-extrabold text-gray-900 leading-tight">
+                <h3 className="text-lg font-bold text-slate-900 leading-tight tracking-tight">
                   Sei ASSOLUTAMENTE sicuro?
                 </h3>
-                <p className="text-xs text-red-600 font-bold uppercase tracking-wider">
+                <p className="text-[11px] text-rose-600 font-bold uppercase tracking-wider">
                   Questa azione è immediata e irreversibile!
                 </p>
               </div>
             </div>
 
-            <div className="space-y-4 text-xs md:text-sm text-gray-600 leading-relaxed border-t border-b border-gray-100 py-4 my-4">
+            <div className="space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-b border-slate-100 py-4 my-4">
               <p>
                 Facendo clic su "Elimina Definitivamente", avvierai una procedura automatica atomica che eliminerà permanentemente l'intero database aziendale dei tuoi saloni, l'elenco dei dipendenti, tutti gli appuntamenti storici e futuri, il magazzino, le impostazioni fiscali, le anagrafiche dei clienti e le configurazioni relative al codice <strong>{ownerId}</strong>.
               </p>
-              <p className="font-semibold text-red-700 bg-red-50/50 p-2.5 rounded-lg border border-red-100">
+              <p className="font-semibold text-rose-800 bg-rose-50/60 p-3 rounded-2xl border border-rose-200/80">
                 La cancellazione dell'account rimuoverà istantaneamente tutti i dati della tua sottoscrizione nel database locale/Firestore. Riceverai un'email Zoho Mail di avvenuto adempimento e diritto all'oblio.
               </p>
 
               {auth.currentUser?.providerData.some(p => p.providerId === "password") && (
-                <div className="bg-amber-50/40 border border-amber-200/60 p-4 rounded-xl space-y-2 mt-4 text-left">
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                <div className="bg-amber-50/60 border border-amber-200/80 p-4 rounded-2xl space-y-2 mt-4 text-left shadow-2xs">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700">
                     Conferma Password per l'Eliminazione Credenziali:
                   </label>
-                  <p className="text-xs text-gray-500 leading-normal">
+                  <p className="text-xs text-slate-600 leading-normal">
                     Per eliminare definitivamente il tuo utente da Firebase Authentication e impedire futuri accessi, inserisci la tua password attuale:
                   </p>
                   <input
@@ -2668,15 +2685,15 @@ export default function AccountInfoScreen() {
                     value={deletePassword}
                     onChange={(e) => setDeletePassword(e.target.value)}
                     disabled={deletingAccount}
-                    className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-red-500 transition-all text-gray-900 font-medium"
+                    className="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-sm outline-none focus:border-rose-500 transition-all text-slate-900 font-medium shadow-2xs"
                   />
                 </div>
               )}
             </div>
 
             {deleteError && (
-              <div className="p-3 mb-4 rounded-xl bg-red-50 border border-red-100 text-red-800 text-xs font-semibold flex items-center gap-2 animate-fadeIn">
-                <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
+              <div className="p-3.5 mb-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold flex items-center gap-2 animate-fadeIn shadow-2xs">
+                <AlertCircle className="w-4 h-4 text-rose-500 shrink-0" />
                 <span>{deleteError}</span>
               </div>
             )}
@@ -2689,7 +2706,7 @@ export default function AccountInfoScreen() {
                   setShowDeleteConfirmModal(false);
                   setDeleteError("");
                 }}
-                className="px-5 py-3 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 text-xs font-bold transition-all cursor-pointer w-full sm:w-auto text-center disabled:opacity-50"
+                className="px-5 py-3 rounded-2xl border border-slate-200 text-slate-700 hover:bg-slate-50 active:scale-[0.98] text-xs font-bold uppercase tracking-wider transition-all cursor-pointer w-full sm:w-auto text-center disabled:opacity-50 shadow-2xs"
               >
                 Annulla e Torna Indietro
               </button>
@@ -2697,7 +2714,7 @@ export default function AccountInfoScreen() {
                 type="button"
                 disabled={deletingAccount}
                 onClick={handleDeleteAccount}
-                className="bg-red-600 hover:bg-red-700 text-white rounded-xl px-5 py-3 text-xs font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer w-full sm:w-auto disabled:opacity-50"
+                className="bg-rose-600 hover:bg-rose-700 active:scale-[0.98] text-white rounded-2xl px-5 py-3 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer w-full sm:w-auto disabled:opacity-50 shadow-2xs"
               >
                 {deletingAccount ? (
                   <>

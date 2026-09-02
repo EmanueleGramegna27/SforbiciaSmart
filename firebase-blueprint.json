@@ -194,6 +194,52 @@
         "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" }
       },
       "required": ["name", "type", "targetGroup", "sentDate", "deliveryRate", "openRate", "bookingsCount", "text", "ownerId"]
+    },
+    "FlashSlot": {
+      "title": "FlashSlot",
+      "description": "Exclusive flash seat promotion blast",
+      "type": "object",
+      "properties": {
+        "salonId": { "type": "string", "description": "Operating salon ID" },
+        "salonName": { "type": "string", "description": "Operating salon name" },
+        "salonPhone": { "type": "string", "description": "Salon contact phone" },
+        "date": { "type": "string", "description": "Date ISO string YYYY-MM-DD" },
+        "time": { "type": "string", "description": "Time string HH:MM" },
+        "serviceName": { "type": "string", "description": "Offered service name" },
+        "originalPrice": { "type": "number", "description": "Original standard price" },
+        "discountPrice": { "type": "number", "description": "Discounted flash price" },
+        "status": { "type": "string", "enum": ["open", "claimed", "expired"], "description": "Claim status" },
+        "ownerId": { "type": "string", "description": "SaaS owner administrator ID" }
+      },
+      "required": ["salonId", "salonName", "date", "time", "serviceName", "originalPrice", "discountPrice", "status", "ownerId"]
+    },
+    "FeedbackShieldRequest": {
+      "title": "FeedbackShieldRequest",
+      "description": "Smart reputation shield feedback request tracking and review gateway",
+      "type": "object",
+      "properties": {
+        "salonId": { "type": "string", "description": "Operating salon ID" },
+        "salonName": { "type": "string", "description": "Operating salon name" },
+        "ownerId": { "type": "string", "description": "SaaS owner administrator ID" },
+        "appointmentId": { "type": "string", "description": "Referenced appointment ID" },
+        "customerId": { "type": "string", "description": "Customer ID" },
+        "customerName": { "type": "string", "description": "Customer full name" },
+        "customerPhone": { "type": "string", "description": "Customer telephone number" },
+        "serviceName": { "type": "string", "description": "Service rendered" },
+        "staffName": { "type": "string", "description": "Assigned staff member" },
+        "googleReviewUrl": { "type": "string", "description": "Salon Google Review link" },
+        "status": { "type": "string", "enum": ["scheduled", "sent", "answered_positive", "answered_negative", "cancelled"], "description": "Request delivery/response status" },
+        "scheduledFor": { "type": "string", "format": "date-time", "description": "Scheduled delivery timestamp" },
+        "sentAt": { "type": "string", "format": "date-time", "description": "Actual delivery timestamp" },
+        "channel": { "type": "string", "enum": ["whatsapp", "sms"], "description": "Communication channel" },
+        "channelStatus": { "type": "string", "description": "Detailed transport status" },
+        "answer": { "type": "string", "enum": ["positive", "negative"], "description": "Customer rating selection" },
+        "feedbackNotes": { "type": "string", "description": "Customer private feedback notes" },
+        "token": { "type": "string", "description": "Secret one-time token for magic link" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last update timestamp" }
+      },
+      "required": ["salonId", "salonName", "ownerId", "customerId", "customerName", "customerPhone", "status", "scheduledFor", "channel", "token"]
     }
   },
   "firestore": {
@@ -244,6 +290,14 @@
     "/campaigns/{campaignId}": {
       "schema": "Campaign",
       "description": "Blasted campaign records and logs"
+    },
+    "/flash_slots/{slotId}": {
+      "schema": "FlashSlot",
+      "description": "Flash seat campaigns"
+    },
+    "/feedback_shield_requests/{reqId}": {
+      "schema": "FeedbackShieldRequest",
+      "description": "Smart reputation shield feedback records and queues"
     }
   }
 }
